@@ -14,12 +14,12 @@ ProviderRouter.get('/google',
 );
 
 ProviderRouter.get('/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: '/auth/login' }),
+    passport.authenticate('google', { session: false, failureRedirect: '/auth/login'}),
     async (req, res) => {
         const refreshToken = await RefreshToken.findOne({ userId: req.user._id });
         res.cookie('accessToken', createAccessToken(req.user), { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.redirect('/');
+        res.redirect('http://localhost:3000/');
     }
 );
 
@@ -36,7 +36,7 @@ ProviderRouter.get('/facebook/callback',
         const refreshToken = await RefreshToken.findOne({ userId: req.user._id });
         res.cookie('accessToken', createAccessToken(req.user), { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.redirect('/');
+        res.redirect('http://localhost:3000/');
     }
 );
 

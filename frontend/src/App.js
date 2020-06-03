@@ -4,15 +4,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
+import MainLayout from './skeleton/MainLayout';
+import AuthRoutes from './pages/Auth/Routes';
 
 const App = () => <>
-  <Router>
-    <Switch>
-      <Route exact path='/' component={MainPage} />
+  <MainLayout>
+    <Router>
+      <Switch>
+        <Route exact path='/' component={MainPage} />
+        <Route path='/auth' component={AuthRoutes} />
 
-      <Route component={NotFoundPage} />
-    </Switch>
-  </Router>
+        <Route component={NotFoundPage} />
+      </Switch>
+    </Router>
+  </MainLayout>
 </>
 
 export default App;
