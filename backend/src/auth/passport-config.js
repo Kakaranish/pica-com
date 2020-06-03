@@ -20,6 +20,7 @@ passport.use('register', new LocalStrategy({
         const user = new User({
             provider: 'CREDENTIALS',
             providerKey: email,
+            email: email,
             password: await bcryptjs.hash(password, 10),
             firstName: req.body.firstName,
             lastName: req.body.lastName
