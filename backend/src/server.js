@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
     res.status(200).json({ msg: "Hello world" });
 });
 
-
 app.use('/auth', AuthRouter);
 
 app.get('*', (_req, res) => {

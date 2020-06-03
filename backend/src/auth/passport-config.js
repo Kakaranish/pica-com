@@ -3,6 +3,7 @@ import bcryptjs from "bcryptjs";
 import User from '../db/models/User';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { createRefreshToken } from './utils';
 
 require('dotenv').config();
@@ -59,6 +60,44 @@ passport.use(new GoogleStrategy({
     if (!user) {
         const newUser = new User({
             provider: 'GOOGLE',
+            providerKey: profile.id,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+            email: profile.emails[0].value,
+        });
+        await newUser.save();
+
+        await createRefreshToken(newUser);
+
+        req.user = newUser;
+        return done(null, newUser);
+    }
+
+    const profileInfoChanged = user.firstName !== profile.name.givenName ||
+        user.lastName !== profile.name.familyName;
+    if (profileInfoChanged) {
+        user.firstName = profile.name.givenName;
+        user.lastName = profile.name.familyName;
+        user.update();
+    }
+    req.user = user;
+    done(null, user);
+}));
+
+passport.use(new FacebookStrategy({
+    callbackURL: 'http://localhost:9000/auth/provider/facebook/callback',
+    clientID: process.env.FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    passReqToCallback: true,
+    profileFields: ['id', 'email', 'link', 'locale', 'name',
+        'timezone', 'updated_time', 'verified', 'displayName']
+}, async (req, _accessToken, _refreshToken, profile, done) => {
+    console.log(profile);
+    let user = await User.findOne({ provider: 'FACEBOOK', providerKey: profile.id });
+
+    if (!user) {
+        const newUser = new User({
+            provider: 'FACEBOOK',
             providerKey: profile.id,
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
