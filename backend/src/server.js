@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
 
+connectDb();
+
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
