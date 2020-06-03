@@ -1,0 +1,30 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "npx nodemon --exec babel-node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "pica-com"
+  },
+  "author": "Stanislaw Gruz & Krystian Latkowski",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/node": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "moment": "^2.26.0",
+    "mongoose": "^5.9.17",
+    "nodemon": "^2.0.4",
+    "socket.io": "^2.3.0"
+  }
+}
