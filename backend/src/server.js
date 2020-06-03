@@ -22,9 +22,13 @@ app.get('/', (req, res) => {
 
 app.use('/auth', AuthRouter);
 
-app.use(async (_req, res) => {
-    console.log('Error: Unknown internal error');
-    if (res) res.status(500).json({ errors: ['Internal error'] });
+app.get('*', (_req, res) => {
+    res.sendStatus(404);
+});
+
+app.use((err, req, res) => {
+    console.log(err)
+    res.status(500).json({ errors: ['Internal error'] });
 });
 
 const port = process.env.PORT || 9000;

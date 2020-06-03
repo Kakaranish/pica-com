@@ -12,7 +12,8 @@ export const createAccessToken = user => {
     if (!user) return null;
     const jwtPayload = {
         userId: user._id,
-        email: user.email,
+        provider: user.provider,
+        providerKey: user.providerKey,
         role: user.role
     };
     return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET,
@@ -29,7 +30,8 @@ export const createRefreshToken = async user => {
 
     const jwtPayload = {
         userId: user._id,
-        email: user.email,
+        provider: user.provider,
+        providerKey: user.providerKey,
         role: user.role
     };
     const token = jwt.sign(jwtPayload, process.env.REFRESH_TOKEN_SECRET);
@@ -56,7 +58,8 @@ export const refreshAccessToken = async jwtRefreshToken => {
     if (!tokenExists) return null;
     return createAccessToken({
         _id: refreshToken.userId,
-        email: refreshToken.email,
+        provider: user.provider,
+        providerKey: user.providerKey,
         role: refreshToken.role
     });
 }
