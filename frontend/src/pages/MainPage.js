@@ -45,6 +45,12 @@ const MainPage = (props) => {
                 Upload Image
             </Link>
         </p>
+
+        <p>
+            <Link to={'/authorized'} >
+                For authorized only
+            </Link>
+        </p>
     </>
 };
 

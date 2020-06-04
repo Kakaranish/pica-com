@@ -7,6 +7,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import MainLayout from './skeleton/MainLayout';
 import AuthRoutes from './pages/Auth/Routes';
 import UploadImage from './pages/UploadImage';
+import AuthorizedOnlyRoute from './route-types/AuthorizedOnlyRoute';
+import TestAuthorizedPage from './TestAuthorizedPage';
 
 const App = () => <>
   <MainLayout>
@@ -15,6 +17,7 @@ const App = () => <>
         <Route exact path='/' component={MainPage} />
         <Route path='/auth' component={AuthRoutes} />
         <Route path='/upload-image' component={UploadImage} />
+        <AuthorizedOnlyRoute path='/authorized' component={TestAuthorizedPage} roles={['USER', 'ADMIN']} />
 
         <Route component={NotFoundPage} />
       </Switch>

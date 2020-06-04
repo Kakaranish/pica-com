@@ -3,12 +3,13 @@ import { Switch, Route } from 'react-router-dom';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import SuccessPage from './SuccessPage';
+import NotAuthorizedRouteOnly from '../../route-types/NotAuthorizedRouteOnly';
 
 const Routes = () => <>
     <Switch>
         <Route path='/auth/success' component={SuccessPage} />
-        <Route path='/auth/login' component={LoginPage} />
-        <Route path='/auth/register' component={RegisterPage} />
+        <NotAuthorizedRouteOnly path='/auth/login' component={LoginPage} />
+        <NotAuthorizedRouteOnly path='/auth/register' component={RegisterPage} />
     </Switch>
 </>
 
