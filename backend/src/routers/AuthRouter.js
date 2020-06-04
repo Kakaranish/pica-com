@@ -21,7 +21,13 @@ AuthRouter.post('/register', registerValidators(), async (req, res) => {
             const refreshToken = await createRefreshToken(user);
             res.cookie('accessToken', createAccessToken(user), { httpOnly: true });
             res.cookie('refreshToken', refreshToken, { httpOnly: true });
-            res.sendStatus(200);
+            
+            res.status(200).json({
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role
+            });
         }
     )(req, res);
 });
@@ -41,7 +47,13 @@ AuthRouter.post('/login', loginValidators(), async (req, res, next) => {
         const refreshTokenDoc = await RefreshToken.findOne({ userId: user._id });
         res.cookie('accessToken', createAccessToken(user), { httpOnly: true });
         res.cookie('refreshToken', refreshTokenDoc.token, { httpOnly: true });
-        return res.sendStatus(200);
+        
+        res.status(200).json({
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role
+        });
     })(req, res, next);
 });
 
@@ -49,6 +61,14 @@ AuthRouter.post('/logout', async (req, res) => {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
     res.sendStatus(200);
+});
+
+AuthRouter.post('/logout/all', async (req, res) => {
+    const accessTokenPayload = decodeJwtAccessToken(res.cookies.accessToken);
+    await RefreshToken.deleteOne({userId: accessTokenPayload.userId});
+    await createRefreshToken(accessTokenPayload);
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
 });
 
 AuthRouter.post('/verify', async (req, res) => {

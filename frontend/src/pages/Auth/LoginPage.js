@@ -4,11 +4,12 @@ import axios from 'axios';
 import googleIcon from '../../assets/img/google.svg';
 import facebookIcon from '../../assets/img/facebook.svg';
 import { getFormDataJsonFromEvent } from '../../common/utils';
+import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
-const LoginPage = () => {
+const LoginPage = (props) => {
 
     const history = useHistory();
-    
+
     const [validationErrors, setValidationErrors] = useState(null);
 
     const logWithGoogleOnClick = () =>
@@ -27,6 +28,13 @@ const LoginPage = () => {
             return;
         }
         
+        props.setIdentity({
+            email: result.data.email,
+            firstName: result.data.firstName,
+            lastName: result.data.lastName,
+            role: result.data.role,
+        });
+
         setValidationErrors(null);
         history.push('/');
     };
@@ -72,4 +80,6 @@ const LoginPage = () => {
     </>
 };
 
-export default LoginPage;
+export default new AwareComponentBuilder()
+    .withIdentityAwareness()
+    .build(LoginPage);

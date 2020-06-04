@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { getFormDataJsonFromEvent } from '../../common/utils';
+import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
-const RegisterPage = () => {
+const RegisterPage = (props) => {
 
     const history = useHistory();
 
@@ -19,17 +20,25 @@ const RegisterPage = () => {
         }
 
         const result = await axios.post('/auth/register', formData, { validateStatus: false });
-        if(result.status === 500) {
+        if (result.status === 500) {
             alert('Internal error');
             return;
         }
-        console.log(result);
+
         if (result.data.errors?.length > 0) {
             setValidationErrors(result.data.errors.map(e => e.msg ?? e));
             return;
         }
+
+        props.setIdentity({
+            email: result.data.email,
+            firstName: result.data.firstName,
+            lastName: result.data.lastName,
+            role: result.data.role,
+        });
+
         setValidationErrors(null);
-        history.push('/')
+        history.push('/');
     }
 
     return <>
@@ -85,4 +94,6 @@ const RegisterPage = () => {
     </>
 };
 
-export default RegisterPage;
+export default new AwareComponentBuilder()
+    .withIdentityAwareness()
+    .build(RegisterPage);

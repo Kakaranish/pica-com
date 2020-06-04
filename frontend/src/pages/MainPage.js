@@ -1,15 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import AwareComponentBuilder from '../common/AwareComponentBuilder';
 
-const MainPage = () => {
-    
+const MainPage = (props) => {
+
+    const history = useHistory();
+
     const verifyOnClick = async () => {
         const result = await axios.post('/auth/verify');
-        if(result.data.user) alert('Logged in');
+        if (result.data.user) alert('Logged in');
         else alert('Not logged in');
-    }
-    
+    };
+
+    const logOutOnClick = async () => {
+        await axios.post('/auth/logout');
+        props.unsetIdentity();
+        history.go();
+    };
+
     return <>
         <p>
             <Link to={'/auth/login'} >
@@ -27,14 +36,18 @@ const MainPage = () => {
             Verify
         </button>
 
+        <button className="btn btn-primary" onClick={logOutOnClick}>
+            Log Out
+        </button>
 
         <p>
             <Link to={'/upload-image'} >
                 Upload Image
             </Link>
         </p>
-
     </>
 };
 
-export default MainPage;
+export default new AwareComponentBuilder()
+    .withIdentityAwareness()
+    .build(MainPage);

@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
 import MainLayout from './skeleton/MainLayout';
 import AuthRoutes from './pages/Auth/Routes';
+import UploadImage from './pages/UploadImage';
 
 const App = () => <>
   <MainLayout>
