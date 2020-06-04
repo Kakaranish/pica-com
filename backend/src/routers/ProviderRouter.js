@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 import RefreshToken from '../db/models/RefreshToken';
 import { createAccessToken } from '../auth/utils';
+import queryString from 'query-string';
 import '../auth/passport-config';
 
 const ProviderRouter = express();
@@ -14,12 +15,19 @@ ProviderRouter.get('/google',
 );
 
 ProviderRouter.get('/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: '/auth/login'}),
+    passport.authenticate('google', { session: false, failureRedirect: '/auth/login' }),
     async (req, res) => {
         const refreshToken = await RefreshToken.findOne({ userId: req.user._id });
         res.cookie('accessToken', createAccessToken(req.user), { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.redirect('http://localhost:3000/');
+
+        const identity = {
+            email: req.user.email,
+            firstName: req.user.firstName,
+            lastName: req.user.lastName,
+            role: req.user.role
+        };
+        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(identity)}`);
     }
 );
 
@@ -36,7 +44,14 @@ ProviderRouter.get('/facebook/callback',
         const refreshToken = await RefreshToken.findOne({ userId: req.user._id });
         res.cookie('accessToken', createAccessToken(req.user), { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.redirect('http://localhost:3000/');
+
+        const identity = {
+            email: req.user.email,
+            firstName: req.user.firstName,
+            lastName: req.user.lastName,
+            role: req.user.role
+        };
+        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(identity)}`);
     }
 );
 
