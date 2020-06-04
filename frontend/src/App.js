@@ -13,6 +13,7 @@ const App = () => <>
       <Switch>
         <Route exact path='/' component={MainPage} />
         <Route path='/auth' component={AuthRoutes} />
+        <Route path='/upload-image' component={UploadImage} />
 
         <Route component={NotFoundPage} />
       </Switch>

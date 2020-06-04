@@ -27,6 +27,13 @@ const MainPage = () => {
             Verify
         </button>
 
+
+        <p>
+            <Link to={'/upload-image'} >
+                Upload Image
+            </Link>
+        </p>
+
     </>
 };
 
