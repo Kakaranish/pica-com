@@ -1,0 +1,7 @@
+const IDENTITY_SET = 'IDENTITY_SET';
+const IDENTITY_UNSET = 'IDENTITY_UNSET';
+
+export default {
+    IDENTITY_SET,
+    IDENTITY_UNSET
+};
