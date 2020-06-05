@@ -9,9 +9,11 @@ import AuthRoutes from './pages/Auth/Routes';
 import UploadImage from './pages/UploadImage';
 import AuthorizedOnlyRoute from './route-types/AuthorizedOnlyRoute';
 import TestAuthorizedPage from './TestAuthorizedPage';
+import SocketComponent from './skeleton/SocketComponent';
 
 const App = () => <>
   <MainLayout>
+    <SocketComponent />
     <Router>
       <Switch>
         <Route exact path='/' component={MainPage} />
