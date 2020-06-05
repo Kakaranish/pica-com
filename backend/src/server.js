@@ -10,52 +10,28 @@ import cors from 'cors';
 import { v4 as uuid } from 'uuid';
 import { connectDb } from './db/utils';
 import AuthRouter from './routers/AuthRouter';
+import createSocketAwareRouter from './routers/SocketAwareRouter';
 
 require('dotenv').config();
 
 connectDb();
 
 const app = express();
+const server = http.createServer(app);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(fileUpload());
 app.use(cors());
 
-const server = http.createServer(app);
-
-// ---  SOCKET  ----------------------------------------------------------------
-
 let connectedUsers = {};
-
 const io = socketio(server);
-io.on('connection', socket => {
-    socket.on('join', ({ email }) => {
-        console.log(`${email} connected to the server`);
+io.on('connection', socket =>
+    require('./socketio-config').config(io, socket, connectedUsers));
 
-        connectedUsers[socket.id] = email;
-        console.log('connected users:');
-        console.log(connectedUsers);
-
-        socket.emit('joinRes', "welcome to the server");
-    });
-    socket.on('disconnect', () => {
-        console.log(`${connectedUsers[socket.id]} disconnected server`);
-        
-        delete connectedUsers[socket.id];
-        console.log('connected users:');
-        console.log(connectedUsers);
-    });
-});
-
-// -----------------------------------------------------------------------------
-
-app.post('/notify', async (req, res) => {
-    const providerKey = req.body.providerKey;
-    const key = Object.keys(connectedUsers).find(u => connectedUsers[u] === providerKey);
-    io.to().sockets[key].emit('serverMessage', 'Notified!');
-    res.json(key);
-});
+app.use('/', createSocketAwareRouter(io, connectedUsers));
+app.use('/auth', AuthRouter);
 
 app.post('/upload', async (req, res) => {
     if (!req.files) return res.status(400).json({
@@ -69,9 +45,9 @@ app.post('/upload', async (req, res) => {
     const blobService = azure.createBlobService();
 
     let blobOptions;
-    if (ext === '.jpg' || ext === '.jpeg')
+    if (fileExt === '.jpg' || fileExt === '.jpeg')
         blobOptions = { contentSettings: { contentType: 'image/jpeg' } }
-    else if (ext === '.png')
+    else if (fileExt === '.png')
         blobOptions = { contentSettings: { contentType: 'image/png' } };
     else return res.json({ errors: ['must be image type'] });
 
@@ -84,8 +60,6 @@ app.post('/upload', async (req, res) => {
 app.get('/', (req, res) => {
     res.status(200).json({ msg: "Hello world" });
 });
-
-app.use('/auth', AuthRouter);
 
 app.get('*', (_req, res) => {
     res.sendStatus(404);
