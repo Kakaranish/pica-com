@@ -21,7 +21,17 @@ const MainPage = (props) => {
 
     const buyOnClick = async () => {
         await axios.post('/buy', { content: 'NOTIF' }, { validateStatus: false });
-    }
+    };
+
+    const clearNotifsOnClick = async () => {
+        const clearResult = await axios.post('/notifications', {}, { validateStatus: false });
+        if(clearResult.status !== 200) {
+            alert('Failed when trying to clear notifs');
+            console.log(clearResult.data);
+            return;
+        }
+        props.clearNotifs();
+    };
 
     return <>
         <p>
@@ -56,12 +66,21 @@ const MainPage = (props) => {
             </Link>
         </p>
 
-        <button className="btn btn-primary" onClick={buyOnClick}>
-            Buy
-        </button>
+        <p>
+            <button className="btn btn-primary" onClick={buyOnClick}>
+                Buy
+            </button>
+        </p>
+
+        <p>
+            <button className="btn btn-primary" onClick={clearNotifsOnClick}>
+                See & Clear notifs
+            </button>
+        </p>
     </>
 };
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()
+    .withNotifsAwareness()
     .build(MainPage);

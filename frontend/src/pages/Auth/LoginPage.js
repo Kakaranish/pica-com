@@ -22,18 +22,20 @@ const LoginPage = (props) => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        const result = await axios.post('/auth/login', formData, { validateStatus: false });
-        if (result.status !== 200) {
-            setValidationErrors(result.data.errors.map(m => m.msg));
+        const loginResult = await axios.post('/auth/login', formData, { validateStatus: false });
+        if (loginResult.status !== 200) {
+            setValidationErrors(loginResult.data.errors.map(m => m.msg));
             return;
         }
-        
-        props.setIdentity({
-            email: result.data.email,
-            firstName: result.data.firstName,
-            lastName: result.data.lastName,
-            role: result.data.role,
-        });
+
+        const fetchNotifsResult = await axios.get('/notifications', { validateStatus: false });
+        if(loginResult.status !== 200) {
+            alert('Unknown error occured');
+            return;
+        }
+
+        props.setIdentity(loginResult.data);
+        props.setNotifs(fetchNotifsResult.data.map(notif => notif._id));
 
         setValidationErrors(null);
         history.push('/');
@@ -82,4 +84,5 @@ const LoginPage = (props) => {
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()
+    .withNotifsAwareness()
     .build(LoginPage);

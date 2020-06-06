@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import * as IdentityActions from './reducers/profileReducer/actions';
+import * as NotifsActions from './reducers/notifReducer/actions';
 
 class AwareComponentBuilder {
     constructor() {
@@ -11,11 +12,28 @@ class AwareComponentBuilder {
         const partialMapDispatch = dispatch => ({
             setIdentity: identity => dispatch(IdentityActions.setIdentity(identity)),
             unsetIdentity: () => dispatch(IdentityActions.unsetIdentity())
-        })
+        });
         this.partialDispatchToPropsList.push(partialMapDispatch);
 
         const partialMapState = state => ({
             identity: state.identity
+        });
+        this.partialMapStateToPropsList.push(partialMapState);
+
+        return this;
+    }
+
+    withNotifsAwareness() {
+        const partialMapDispatch = dispatch => ({
+            setNotifs: notifs => dispatch(NotifsActions.setNotifs(notifs)),
+            addNotif: notif => dispatch(NotifsActions.addNotif(notif)),
+            removeNotif: notifId => dispatch(NotifsActions.removeNotif(notifId)),
+            clearNotifs: () => dispatch(NotifsActions.clearNotifs())
+        });
+        this.partialDispatchToPropsList.push(partialMapDispatch);
+
+        const partialMapState = state => ({
+            notifs: state.notifs
         });
         this.partialMapStateToPropsList.push(partialMapState);
 

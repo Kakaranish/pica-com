@@ -30,12 +30,7 @@ const RegisterPage = (props) => {
             return;
         }
 
-        props.setIdentity({
-            email: result.data.email,
-            firstName: result.data.firstName,
-            lastName: result.data.lastName,
-            role: result.data.role,
-        });
+        props.setIdentity(result.data);
 
         setValidationErrors(null);
         history.push('/');

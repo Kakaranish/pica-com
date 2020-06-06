@@ -1,0 +1,11 @@
+const NOTIF_SET = 'NOTIF_SET'
+const NOTIF_ADD = 'NOTIF_ADD'
+const NOTIF_REMOVE = 'NOTIF_REMOVE'
+const NOTIF_CLEAR = 'NOTIF_CLEAR';
+
+export default {
+    NOTIF_SET,
+    NOTIF_ADD,
+    NOTIF_REMOVE,
+    NOTIF_CLEAR
+};

@@ -16,8 +16,8 @@ const SocketComponent = (props) => {
 
             socket = io('http://localhost:8000');
 
-            socket.on('notification', ({content, createdAt}) => {
-                alert(`${content} at ${moment(createdAt).toISOString()}`);
+            socket.on('notification', ({content, createdAt, _id}) => {
+                props.addNotif(_id);
             });
         }
         initSocket();
@@ -29,4 +29,5 @@ const SocketComponent = (props) => {
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()
+    .withNotifsAwareness()
     .build(SocketComponent);

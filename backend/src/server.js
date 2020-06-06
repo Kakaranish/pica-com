@@ -11,6 +11,7 @@ import AuthRouter from './routers/AuthRouter';
 import axios from 'axios';
 import { createInterserviceToken } from './auth/utils';
 import { tokenValidatorMW } from './auth/validators';
+import NotificationRouter from "./routers/NotificationRouter";
 
 require('dotenv').config();
 
@@ -25,6 +26,7 @@ app.use(fileUpload());
 app.use(cors());
 
 app.use('/auth', AuthRouter);
+app.use('/notifications', NotificationRouter);
 
 app.post('/buy', tokenValidatorMW, async (req, res) => {
     const payload = {
