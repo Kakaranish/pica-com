@@ -16,6 +16,7 @@ const MainPage = (props) => {
     const logOutOnClick = async () => {
         await axios.post('/auth/logout');
         props.unsetIdentity();
+        props.clearNotifs();
         history.go();
     };
 
@@ -24,7 +25,7 @@ const MainPage = (props) => {
     };
 
     const clearNotifsOnClick = async () => {
-        const clearResult = await axios.post('/notifications', {}, { validateStatus: false });
+        const clearResult = await axios.delete('/notifications', {}, { validateStatus: false });
         if(clearResult.status !== 200) {
             alert('Failed when trying to clear notifs');
             console.log(clearResult.data);

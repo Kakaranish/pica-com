@@ -12,13 +12,15 @@ const SocketComponent = (props) => {
         const initSocket = async () => {
             if (!props.identity) return;
             const result = await axios.post('/auth/verify');
-            if(!result.data.identity) return;
+            if (!result.data.identity) return;
 
             socket = io('http://localhost:8000');
 
-            socket.on('notification', ({content, createdAt, _id}) => {
+            socket.on('notif', ({ content, createdAt, _id }) => {
                 props.addNotif(_id);
             });
+
+            socket.on('clearNotifs', () => props.clearNotifs());
         }
         initSocket();
 

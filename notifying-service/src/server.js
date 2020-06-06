@@ -34,7 +34,14 @@ app.post('/notify', interserviceTokenValidatorMW, async (req, res) => {
     await notification.save();
 
     socketIds.forEach(socketId =>
-        io.to().sockets[socketId].emit('notification', notification.toJSON()));
+        io.to().sockets[socketId].emit('notif', notification.toJSON()));
+    res.json(socketIds);
+});
+
+app.post('/clear', interserviceTokenValidatorMW, async(req, res) => {
+    const socketIds = socketRepository.getUserSocketIds(req.payload.identity.id);
+    socketIds.forEach(socketId =>
+        io.to().sockets[socketId].emit('clearNotifs'));
     res.json(socketIds);
 });
 
