@@ -67,7 +67,7 @@ describe('createRefreshToken', () => {
             provider: 'CREDENTIALS',
             providerKey: 'user@mail.com',
             role: 'USER'
-        }
+        };
 
         // Act:
         const result = await AuthUtils.createRefreshToken(identity);
