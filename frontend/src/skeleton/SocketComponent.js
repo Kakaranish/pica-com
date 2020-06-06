@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
+import moment from 'moment';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 
 let socket;
@@ -15,9 +16,9 @@ const SocketComponent = (props) => {
 
             socket = io('http://localhost:8000');
 
-            socket.on('joinRes', res => console.log(res));
-
-            socket.on('serverMessage', res => console.log(res));
+            socket.on('notification', ({content, createdAt}) => {
+                alert(`${content} at ${moment(createdAt).toISOString()}`);
+            });
         }
         initSocket();
 

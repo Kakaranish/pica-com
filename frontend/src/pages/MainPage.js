@@ -20,7 +20,7 @@ const MainPage = (props) => {
     };
 
     const buyOnClick = async () => {
-        await axios.post('/buy', {}, {validateStatus: false});
+        await axios.post('/buy', { content: 'NOTIF' }, { validateStatus: false });
     }
 
     return <>

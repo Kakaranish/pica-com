@@ -2,11 +2,16 @@ import http from 'http';
 import express from "express";
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { interserviceTokenValidatorMW } from './auth/validators';
-import configSocketIO from './socketio/socketio-config';
+import moment from 'moment';
+import configSocketIO from './socketio/config';
 import SocketRepository from './socketio/SocketRepository';
+import Notification from './db/models/Notification';
+import { interserviceTokenValidatorMW } from './auth/validators';
+import { connectDb } from './db/utils';
 
 require('dotenv').config();
+
+connectDb();
 
 const socketRepository = new SocketRepository();
 
@@ -20,8 +25,16 @@ app.use(cors());
 
 app.post('/notify', interserviceTokenValidatorMW, async (req, res) => {
     const socketIds = socketRepository.getUserSocketIds(req.payload.identity.id);
+
+    const notification = new Notification({
+        userId: req.payload.identity.id,
+        content: req.payload.content,
+        createdAt: moment().toDate()
+    });
+    await notification.save();
+
     socketIds.forEach(socketId =>
-        io.to().sockets[socketId].emit('serverMessage', 'Notified!'));
+        io.to().sockets[socketId].emit('notification', notification.toJSON()));
     res.json(socketIds);
 });
 

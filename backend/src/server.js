@@ -27,7 +27,11 @@ app.use(cors());
 app.use('/auth', AuthRouter);
 
 app.post('/buy', tokenValidatorMW, async (req, res) => {
-    const interserviceToken = createInterserviceToken({ identity: req.identity });
+    const payload = {
+        identity: req.identity,
+        content: req.body.content
+    }
+    const interserviceToken = createInterserviceToken(payload);
     axios.post('http://localhost:8000/notify', { interserviceToken });
     res.sendStatus(200);
 });

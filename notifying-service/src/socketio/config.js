@@ -5,7 +5,6 @@ import SocketRepository from './SocketRepository';
 
 /**
  * @param {import("socket.io").Server} io 
- * @param {import("socket.io").Socket} socket 
  * @param {SocketRepository} socketRepository 
  */
 const configSocketIO = (server, socketRepository) => {
@@ -16,7 +15,6 @@ const configSocketIO = (server, socketRepository) => {
         if (!identity) return;
 
         socketRepository.add(socket.id, identity.id);
-        socket.emit('joinRes', "welcome to the server");
 
         logConnectedUsers(socketRepository);
 
