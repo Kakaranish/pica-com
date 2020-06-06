@@ -2,7 +2,12 @@ import mongoose from 'mongoose';
 import { connectTestDb } from '../../src/db/utils';
 import RefreshToken from '../../src/db/models/RefreshToken';
 import User from '../../src/db/models/User';
-import { tokenValidatorMW } from '../../src/auth/validators';
+import {
+    tokenValidatorMW,
+    userValidatorMW,
+    adminValidatorMW,
+    ownerValidatorMW
+} from '../../src/auth/validators';
 import * as AuthUtils from '../../src/auth/utils';
 import * as TestUtils from '../test-utils';
 import * as Mocks from 'node-mocks-http';
@@ -138,6 +143,111 @@ describe('tokenValidatorMW', () => {
         expect(req.identity.provider).toBe('CREDENTIALS');
         expect(req.identity.providerKey).toBe('credentialsUser@mail.com');
         expect(req.identity.role).toBe('USER');
+    });
+});
+
+describe('userValidatorMW', () => {
+    it('When role is different than USER then error message is returned', async () => {
+        // Arrange:
+        const req = Mocks.createRequest();
+        req.identity = { role: 'USER' };
+        const res = Mocks.createResponse();
+        const next = jest.fn();
+
+        // Act:
+        adminValidatorMW(req, res, next);
+
+        // Assert:
+        expect(next).not.toBeCalled();
+        expect(res._getStatusCode()).toBe(401);
+        expect(res._getJSONData().errors).toHaveLength(1);
+        expect(res._getJSONData().errors[0].includes('admin role required'));
+    });
+
+    it('When everything is OK then next middleware is called', async () => {
+        // Arrange:
+        const req = Mocks.createRequest();
+        req.identity = { role: 'USER' };
+        const res = Mocks.createResponse();
+        const next = jest.fn();
+
+        // Act:
+        userValidatorMW(req, res, next);
+
+        // Assert:
+        expect(next).toBeCalled();
+        expect(res._getStatusCode()).toBe(200);
+        expect(res._getData()).toBe("");
+    });
+});
+
+describe('ownerValidatorMW', () => {
+    it('When role is different than OWNER then error message is returned', async () => {
+        // Arrange:
+        const req = Mocks.createRequest();
+        req.identity = { role: 'USER' };
+        const res = Mocks.createResponse();
+        const next = jest.fn();
+
+        // Act:
+        adminValidatorMW(req, res, next);
+
+        // Assert:
+        expect(next).not.toBeCalled();
+        expect(res._getStatusCode()).toBe(401);
+        expect(res._getJSONData().errors).toHaveLength(1);
+        expect(res._getJSONData().errors[0].includes('owner role required'));
+    });
+
+    it('When everything is OK then next middleware is called', async () => {
+        // Arrange:
+        const req = Mocks.createRequest();
+        req.identity = { role: 'OWNER' };
+        const res = Mocks.createResponse();
+        const next = jest.fn();
+
+        // Act:
+        ownerValidatorMW(req, res, next);
+
+        // Assert:
+        expect(next).toBeCalled();
+        expect(res._getStatusCode()).toBe(200);
+        expect(res._getData()).toBe("");
+    });
+});
+
+describe('adminValidatorMW', () => {
+    it('When role is different than USER then error message is returned', async () => {
+        // Arrange:
+        const req = Mocks.createRequest();
+        req.identity = { role: 'USER' };
+        const res = Mocks.createResponse();
+        const next = jest.fn();
+
+        // Act:
+        adminValidatorMW(req, res, next);
+
+        // Assert:
+        expect(next).not.toBeCalled();
+        expect(res._getStatusCode()).toBe(401);
+        expect(res._getJSONData().errors).toHaveLength(1);
+        expect(res._getJSONData().errors[0].includes('admin role required'));
+    });
+
+    it('When everything is OK then next middleware is called', async () => {
+        // Arrange:
+        const req = Mocks.createRequest();
+        req.identity = { role: 'ADMIN' };
+        const res = Mocks.createResponse();
+        const next = jest.fn();
+
+        // Act:
+        adminValidatorMW(req, res, next);
+
+        // Assert:
+        expect(next).toBeCalled();
+        expect(res._getStatusCode()).toBe(200);
+        expect(res._getData()).toBe("");
     });
 });
 

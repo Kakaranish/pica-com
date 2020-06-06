@@ -31,3 +31,21 @@ export const tokenValidatorMW = async (req, res, next) => {
     req.identity = decodedTokenToIdentityJson(decodedRefreshToken);
     next();
 };
+
+export const userValidatorMW = (req, res, next) => {
+    if (req?.identity?.role !== 'USER')
+        return res.status(401).json({ errors: ['user role required'] });
+    next();
+}
+
+export const ownerValidatorMW = (req, res, next) => {
+    if (req?.identity?.role !== 'OWNER')
+        return res.status(401).json({ errors: ['owner role required'] });
+    next();
+}
+
+export const adminValidatorMW = (req, res, next) => {
+    if (req.identity.role !== 'ADMIN')
+        return res.status(401).json({ errors: ['admin role required'] });
+    next();
+}
