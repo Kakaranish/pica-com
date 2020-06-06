@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import { body, validationResult } from 'express-validator';
 import RefreshToken from '../db/models/RefreshToken';
-import {createAccessToken, createRefreshToken} from '../auth/utils';
+import { createAccessToken, createRefreshToken } from '../auth/utils';
 import { decodeJwtAccessToken, decodeJwtRefreshToken, refreshAccessToken } from '../auth/utils';
 import '../auth/passport-config';
 import ProviderRouter from './ProviderRouter';
@@ -18,10 +18,12 @@ AuthRouter.post('/register', registerValidators(), async (req, res) => {
     passport.authenticate('register', { session: false },
         async (error, user) => {
             if (!user) return res.status(400).json({ errors: [error] });
-            const refreshToken = await createRefreshToken(user);
-            res.cookie('accessToken', createAccessToken(user), { httpOnly: true });
-            res.cookie('refreshToken', refreshToken, { httpOnly: true });
-            
+
+            const jwtRefreshToken = await createRefreshToken(user.toIdentityJson());
+            const jwtAccessToken = createAccessToken(user.toIdentityJson());
+            res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
+            res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+
             res.status(200).json({
                 email: user.email,
                 firstName: user.firstName,
@@ -44,10 +46,11 @@ AuthRouter.post('/login', loginValidators(), async (req, res, next) => {
             }]
         });
 
-        const refreshTokenDoc = await RefreshToken.findOne({ userId: user._id });
-        res.cookie('accessToken', createAccessToken(user), { httpOnly: true });
-        res.cookie('refreshToken', refreshTokenDoc.token, { httpOnly: true });
-        
+        const jwtAccessToken = createAccessToken(user.toIdentityJson());
+        const jwtRefreshToken = (await RefreshToken.findOne({ userId: user._id })).token;
+        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
+        res.cookie('refreshToken', jwtRefreshToken.token, { httpOnly: true });
+
         res.status(200).json({
             email: user.email,
             firstName: user.firstName,
@@ -65,34 +68,24 @@ AuthRouter.post('/logout', async (req, res) => {
 
 AuthRouter.post('/logout/all', async (req, res) => {
     const accessTokenPayload = decodeJwtAccessToken(res.cookies.accessToken);
-    await RefreshToken.deleteOne({userId: accessTokenPayload.userId});
+    await RefreshToken.deleteOne({ userId: accessTokenPayload.userId });
     await createRefreshToken(accessTokenPayload);
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
 });
 
 AuthRouter.post('/verify', async (req, res) => {
-    const accessToken = decodeJwtAccessToken(req.cookies.accessToken);
-    if (accessToken) return res.status(200).json({
-        user: {
-            provider: accessToken.provider,
-            providerKey: accessToken.providerKey,
-            role: accessToken.role
-        }
-    });
+    const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken);
+    if (decodedAccessToken) return res.status(200)
+        .json({ identity: decodedAccessToken });
 
-    const refreshToken = await decodeJwtRefreshToken(req.cookies.refreshToken);
-    if (!refreshToken) return res.status(200).json({ user: null });
+    const decodedRefreshToken = await decodeJwtRefreshToken(req.cookies.refreshToken);
+    if (!decodedRefreshToken) return res.status(200).json({ identity: null });
 
-    const newAccessToken = await refreshAccessToken(req.cookies.refreshToken);
-    if (!newAccessToken) return res.status(200).json({ user: null });
-    res.cookie('accessToken', newAccessToken, { httpOnly: true });
-    res.status(200).json({
-        user: {
-            email: refreshToken.email,
-            role: refreshToken.role
-        }
-    });
+    const newJwtAccessToken = await refreshAccessToken(req.cookies.refreshToken);
+    if (!newJwtAccessToken) return res.status(200).json({ identity: null });
+    res.cookie('accessToken', newJwtAccessToken, { httpOnly: true });
+    res.status(200).json({ identity: decodedRefreshToken });
 });
 
 function registerValidators() {

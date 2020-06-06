@@ -1,23 +1,21 @@
-import http from 'http';
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import path from "path";
 import azure from 'azure-storage';
-import socketio from 'socket.io';
 import cors from 'cors';
 import { v4 as uuid } from 'uuid';
 import { connectDb } from './db/utils';
 import AuthRouter from './routers/AuthRouter';
-import createSocketAwareRouter from './routers/SocketAwareRouter';
+import axios from 'axios';
+import { createInterserviceToken, tokenValidatorMW } from './auth/utils';
 
 require('dotenv').config();
 
 connectDb();
 
 const app = express();
-const server = http.createServer(app);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -25,13 +23,13 @@ app.use(cookieParser());
 app.use(fileUpload());
 app.use(cors());
 
-let connectedUsers = {};
-const io = socketio(server);
-io.on('connection', socket =>
-    require('./socketio-config').config(io, socket, connectedUsers));
-
-app.use('/', createSocketAwareRouter(io, connectedUsers));
 app.use('/auth', AuthRouter);
+
+app.post('/buy', tokenValidatorMW, async (req, res) => {
+    const interserviceToken = createInterserviceToken({identity: req.identity});
+    axios.post('http://localhost:8000/notify', { interserviceToken });
+    res.sendStatus(200);
+});
 
 app.post('/upload', async (req, res) => {
     if (!req.files) return res.status(400).json({
@@ -71,6 +69,6 @@ app.use((err, req, res) => {
 });
 
 const port = process.env.PORT || 9000;
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`Listening on ${port}...`);
 });

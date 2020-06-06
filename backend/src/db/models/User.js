@@ -46,6 +46,15 @@ const legalRoles = ['USER', 'OWNER', 'ADMIN'];
 schema.path('role').validate(role => legalRoles.some(
     legalRole => legalRole === role), 'invalid role');
 
+schema.methods.toIdentityJson = function ()  {
+    return {
+        id: this._id,
+        provider: this.provider,
+        providerKey: this.providerKey,
+        role: this.role
+    };
+}
+
 schema.pre('save', function (next) {
     if (this.provider === 'CREDENTIALS' && !this.password)
         this.invalidate('password', 'CREDENTIALS provider requires password');

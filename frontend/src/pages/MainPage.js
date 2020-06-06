@@ -9,7 +9,7 @@ const MainPage = (props) => {
 
     const verifyOnClick = async () => {
         const result = await axios.post('/auth/verify');
-        if (result.data.user) alert('Logged in');
+        if (result.data.identity) alert('Logged in');
         else alert('Not logged in');
     };
 
@@ -18,6 +18,10 @@ const MainPage = (props) => {
         props.unsetIdentity();
         history.go();
     };
+
+    const buyOnClick = async () => {
+        await axios.post('/buy', {}, {validateStatus: false});
+    }
 
     return <>
         <p>
@@ -51,6 +55,10 @@ const MainPage = (props) => {
                 For authorized only
             </Link>
         </p>
+
+        <button className="btn btn-primary" onClick={buyOnClick}>
+            Buy
+        </button>
     </>
 };
 

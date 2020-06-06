@@ -1,14 +1,10 @@
 {
-  "name": "backend",
+  "name": "notifying-service",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "npx nodemon --exec babel-node src/server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "pica-com"
   },
   "author": "Stanislaw Gruz & Krystian Latkowski",
   "license": "ISC",
@@ -17,25 +13,13 @@
     "@babel/node": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
     "axios": "^0.19.2",
-    "azure-storage": "^2.10.3",
-    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "cookie": "^0.4.1",
-    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-fileupload": "^1.1.7-alpha.3",
-    "express-validator": "^6.5.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.26.0",
     "mongoose": "^5.9.17",
     "nodemon": "^2.0.4",
-    "passport": "^0.4.1",
-    "passport-facebook": "^3.0.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0",
-    "query-string": "^6.12.1",
-    "uuid": "^8.1.0"
+    "socket.io": "^2.3.0"
   }
 }

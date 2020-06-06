@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import io from 'socket.io-client';
+import axios from 'axios';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 
 let socket;
@@ -7,14 +8,18 @@ let socket;
 const SocketComponent = (props) => {
 
     useEffect(() => {
-        if (!props.identity) return;
+        const initSocket = async () => {
+            if (!props.identity) return;
+            const result = await axios.post('/auth/verify');
+            if(!result.data.identity) return;
 
-        socket = io('http://localhost:9000');
-        socket.emit('join', { email: props.identity.email });
+            socket = io('http://localhost:8000');
 
-        socket.on('joinRes', res => console.log(res));
-        
-        socket.on('serverMessage', res => console.log(res));
+            socket.on('joinRes', res => console.log(res));
+
+            socket.on('serverMessage', res => console.log(res));
+        }
+        initSocket();
 
     }, [props.identity]);
 

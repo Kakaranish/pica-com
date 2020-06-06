@@ -1,67 +1,61 @@
 import jwt from 'jsonwebtoken';
-import User from '../db/models/User';
 import RefreshToken from '../db/models/RefreshToken';
 import { parseObjectId } from '../common/utils';
 
 require('dotenv').config();
 
 /**
- * @param {User} user 
+ * @param {any} payload 
  */
-export const createAccessToken = user => {
-    if (!user) return null;
-    const jwtPayload = {
-        userId: user._id,
-        provider: user.provider,
-        providerKey: user.providerKey,
-        role: user.role
-    };
-    return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET,
+export const createInterserviceToken = payload => {
+    if (!payload) return null;
+    return jwt.sign(payload, process.env.INTERSERVICE_TOKEN_SECRET,
+        { expiresIn: process.env.INTERSERVICE_TOKEN_EXPIRATION });
+}
+
+/**
+ * @param {Object} identityJson 
+ */
+export const createAccessToken = identityJson => {
+    if (!identityJson) return null;
+
+    return jwt.sign(identityJson, process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION });
 }
 
 /**
- * @param {User} user 
+ * @param {Object} identityJson 
  */
-export const createRefreshToken = async user => {
-    if (!user) return null;
-    const userId = parseObjectId(user._id);
-    if (!userId) return null;
+export const createRefreshToken = async identityJson => {
+    if (!identityJson) return null;
+    if (!parseObjectId(identityJson.id)) return null;
 
-    const jwtPayload = {
-        userId: user._id,
-        provider: user.provider,
-        providerKey: user.providerKey,
-        role: user.role
-    };
-    const token = jwt.sign(jwtPayload, process.env.REFRESH_TOKEN_SECRET);
+    const jwtToken = jwt.sign(identityJson, process.env.REFRESH_TOKEN_SECRET);
     const refreshToken = new RefreshToken({
-        userId: user._id,
-        token: token
+        userId: identityJson.id,
+        token: jwtToken
     });
     await refreshToken.save();
 
-    return token;
+    return jwtToken;
 }
 
 /**
  * @param {String} jwtRefreshToken 
  */
 export const refreshAccessToken = async jwtRefreshToken => {
-    let refreshToken = decodeJwtRefreshToken(jwtRefreshToken);
-    if (!refreshToken || !parseObjectId(refreshToken.userId)) return null;
+    let decodedRefreshToken = decodeJwtRefreshToken(jwtRefreshToken);
+    if (!decodedRefreshToken || !parseObjectId(decodedRefreshToken.id))
+        return null;
 
+    const identity = decodedTokenToIdentityJson(decodedRefreshToken);
     const tokenExists = await RefreshToken.exists({
-        userId: refreshToken.userId,
+        userId: identity.id,
         token: jwtRefreshToken
     });
     if (!tokenExists) return null;
-    return createAccessToken({
-        _id: refreshToken.userId,
-        provider: user.provider,
-        providerKey: user.providerKey,
-        role: refreshToken.role
-    });
+
+    return createAccessToken(identity);
 }
 
 /**
@@ -85,3 +79,32 @@ export const decodeJwtRefreshToken = jwtRefreshToken => {
         return null;
     }
 }
+
+export const tokenValidatorMW = async (req, res, next) => {
+    const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken)
+    if (decodedAccessToken) {
+        req.identity = decodedTokenToIdentityJson(decodedAccessToken);
+        return next();
+    }
+
+    const decodedRefreshToken = await decodeJwtRefreshToken(req.cookies.refreshToken);
+    if (!decodedRefreshToken) return res.status(401).json({
+        errors: ['cannot refresh access token - no/invalid refresh token provided']
+    });
+
+    const newAccessToken = await refreshAccessToken(req.cookies.refreshToken);
+    if (!newAccessToken) return res.status(401).json({
+        errors: ['cannot refresh access token - such user does not exist']
+    });
+
+    res.cookie('accessToken', newAccessToken, { httpOnly: true });
+    req.identity = decodedTokenToIdentityJson(decodedRefreshToken);
+    next();
+};
+
+const decodedTokenToIdentityJson = payload => ({
+    id: payload.id,
+    provider: payload.provider,
+    providerKey: payload.providerKey,
+    role: payload.role   
+})

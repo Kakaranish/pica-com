@@ -17,17 +17,18 @@ ProviderRouter.get('/google',
 ProviderRouter.get('/google/callback',
     passport.authenticate('google', { session: false, failureRedirect: '/auth/login' }),
     async (req, res) => {
-        const refreshToken = await RefreshToken.findOne({ userId: req.user._id });
-        res.cookie('accessToken', createAccessToken(req.user), { httpOnly: true });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+        const jwtAccessToken = createAccessToken(req.user.toIdentityJson());
+        const jwtRefreshToken = (await RefreshToken.findOne({ userId: req.user._id })).token;
+        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
+        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
 
-        const identity = {
+        const userBasicInfo = {
             email: req.user.email,
             firstName: req.user.firstName,
             lastName: req.user.lastName,
             role: req.user.role
         };
-        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(identity)}`);
+        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(userBasicInfo)}`);
     }
 );
 
@@ -41,17 +42,18 @@ ProviderRouter.get('/facebook',
 ProviderRouter.get('/facebook/callback',
     passport.authenticate('facebook', { session: false, failureRedirect: '/auth/login' }),
     async (req, res) => {
-        const refreshToken = await RefreshToken.findOne({ userId: req.user._id });
-        res.cookie('accessToken', createAccessToken(req.user), { httpOnly: true });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+        const jwtRefreshToken = (await RefreshToken.findOne({ userId: req.user._id })).token;
+        const jwtAccessToken = createAccessToken(req.user.toIdentityJson());
+        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
+        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
 
-        const identity = {
+        const userBasicInfo = {
             email: req.user.email,
             firstName: req.user.firstName,
             lastName: req.user.lastName,
             role: req.user.role
         };
-        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(identity)}`);
+        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(userBasicInfo)}`);
     }
 );
 

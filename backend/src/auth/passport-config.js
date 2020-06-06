@@ -68,7 +68,7 @@ passport.use(new GoogleStrategy({
         });
         await newUser.save();
 
-        await createRefreshToken(newUser);
+        await createRefreshToken(newUser.toIdentityJson());
 
         req.user = newUser;
         return done(null, newUser);
@@ -81,6 +81,7 @@ passport.use(new GoogleStrategy({
         user.lastName = profile.name.familyName;
         user.update();
     }
+
     req.user = user;
     done(null, user);
 }));
@@ -90,9 +91,10 @@ passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     passReqToCallback: true,
-    profileFields: ['id', 'email', 'displayName']
+    profileFields: ['id', 'email', 'displayName', 'name']
 }, async (req, _accessToken, _refreshToken, profile, done) => {
     let user = await User.findOne({ provider: 'FACEBOOK', providerKey: profile.id });
+    console.log(profile);
 
     if (!user) {
         const newUser = new User({
@@ -104,7 +106,7 @@ passport.use(new FacebookStrategy({
         });
         await newUser.save();
 
-        await createRefreshToken(newUser);
+        await createRefreshToken(newUser.toIdentityJson());
 
         req.user = newUser;
         return done(null, newUser);
