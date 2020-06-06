@@ -1,5 +1,6 @@
 import moment from 'moment';
 import mongoose from 'mongoose';
+import 'regenerator-runtime';
 
 /**
  * @param {String} datetime 
