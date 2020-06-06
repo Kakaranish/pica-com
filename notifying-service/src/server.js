@@ -1,32 +1,29 @@
 import http from 'http';
 import express from "express";
 import cors from 'cors';
-import socketio from 'socket.io';
 import bodyParser from 'body-parser';
-import { interserviceTokenValidatorMW } from './auth-utils';
+import { interserviceTokenValidatorMW } from './auth/validators';
+import configSocketIO from './socketio/socketio-config';
+import SocketRepository from './socketio/SocketRepository';
 
 require('dotenv').config();
 
-const connectedUsers = [];
+const socketRepository = new SocketRepository();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+const io = configSocketIO(server, socketRepository);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/notify', interserviceTokenValidatorMW, async (req, res) => {
-    const identityId = req.payload.identity.id;
-    const keys = Object.keys(connectedUsers)
-        .filter(u => connectedUsers[u] === identityId);
-    keys.forEach(key => io.to().sockets[key].emit('serverMessage', 'Notified!'));
-    res.json(keys);
+    const socketIds = socketRepository.getUserSocketIds(req.payload.identity.id);
+    socketIds.forEach(socketId =>
+        io.to().sockets[socketId].emit('serverMessage', 'Notified!'));
+    res.json(socketIds);
 });
-
-io.on('connection', socket =>
-    require('./socketio-config').config(io, socket, connectedUsers));
 
 const port = process.env.PORT || 8000;
 server.listen(port, () => console.log(`Listening on ${port}...`));

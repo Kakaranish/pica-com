@@ -10,7 +10,6 @@ import {
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-
 export const tokenValidatorMW = async (req, res, next) => {
     const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken)
     if (decodedAccessToken) {
