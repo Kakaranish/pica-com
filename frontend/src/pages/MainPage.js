@@ -24,16 +24,6 @@ const MainPage = (props) => {
         await axios.post('/notify', { content: 'NOTIF' }, { validateStatus: false });
     };
 
-    const clearNotifsOnClick = async () => {
-        const clearResult = await axios.delete('/notifications', {}, { validateStatus: false });
-        if (clearResult.status !== 200) {
-            alert('Failed when trying to clear notifs');
-            console.log(clearResult.data);
-            return;
-        }
-        props.clearNotifs();
-    };
-
     return <>
         <p>
             <Link to={'/auth/login'} >
@@ -70,12 +60,6 @@ const MainPage = (props) => {
         <p>
             <button className="btn btn-primary" onClick={generateNotifOnClick}>
                 Generate notif
-            </button>
-        </p>
-
-        <p>
-            <button className="btn btn-primary" onClick={clearNotifsOnClick}>
-                See & Clear notifs
             </button>
         </p>
     </>

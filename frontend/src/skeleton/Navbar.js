@@ -1,26 +1,22 @@
 import React from 'react';
-import NotificationIndicator from './NotificationIndicator';
+import NotifIndicator from './NotifiIndicator';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 
-const Navbar = (props) => {
-    
-    return <>
-        <div style={{ border: "1px solid red" }}>
-            {
-                props.identity &&
-                <p>{props.identity.firstName} {props.identity.lastName} ({props.identity.email})</p>
-            }
+const Navbar = (props) =>
+    <div className="p-3" style={{ border: "1px solid red" }}>
+        {
+            props.identity &&
+            <>{props.identity.firstName} {props.identity.lastName} ({props.identity.email})</>
+        }
 
-            {
-                props.identity && 
-                <>
-                    <NotificationIndicator />
-                </>
-            }
+        {
+            props.identity &&
+            <span className="ml-3">
+                <NotifIndicator />
+            </span>
+        }
 
-        </div>
-    </>
-};
+    </div>
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()

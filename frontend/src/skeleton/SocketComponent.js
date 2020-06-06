@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import moment from 'moment';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,7 +18,7 @@ const SocketComponent = (props) => {
             socket = io('http://localhost:8000');
 
             socket.on('notif', ({ content, createdAt, _id }) => {
-                props.addNotif(_id);
+                props.addNotif({content, createdAt});
                 toast(content, {
                     position: "top-right",
                     autoClose: 5000,

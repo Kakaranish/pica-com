@@ -35,7 +35,7 @@ const LoginPage = (props) => {
         }
 
         props.setIdentity(loginResult.data);
-        props.setNotifs(fetchNotifsResult.data.map(notif => notif._id));
+        props.setNotifs(fetchNotifsResult.data);
 
         setValidationErrors(null);
         history.push('/');

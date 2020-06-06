@@ -21,7 +21,7 @@ const SuccessPage = (props) => {
                 return;
             }
 
-            props.setNotifs(fetchNotifsResult.data.map(notif => notif._id));
+            props.setNotifs(fetchNotifsResult.data);
             props.setIdentity({
                 email: queryParams.email,
                 firstName: queryParams.firstName,
