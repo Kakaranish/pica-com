@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import 'regenerator-runtime';
 
 require('dotenv').config();
 

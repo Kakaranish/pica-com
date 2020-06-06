@@ -22,6 +22,8 @@ require('dotenv').config();
     await Common.owner.save();
     await createRefreshToken(Common.owner.toIdentityJson());
 
+    // ---  ON EXIT  -----------------------------------------------------------
+
     await mongoose.connection.close();
     const dbName = process.env.DB_NAME_TEST;
     console.log(`OK - '${dbName}' has been populated.`);
