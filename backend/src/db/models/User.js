@@ -53,6 +53,15 @@ schema.methods.toIdentityJson = function ()  {
         providerKey: this.providerKey,
         role: this.role
     };
+};
+
+schema.methods.toProfileInfoJson = function () {
+    return {
+        email: this.email,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        role: this.role
+    };
 }
 
 schema.pre('save', function (next) {

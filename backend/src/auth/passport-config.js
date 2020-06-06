@@ -56,16 +56,11 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     passReqToCallback: true
 }, async (req, _accessToken, _refreshToken, profile, done) => {
+    
     let user = await User.findOne({ provider: 'GOOGLE', providerKey: profile.id });
 
     if (!user) {
-        const newUser = new User({
-            provider: 'GOOGLE',
-            providerKey: profile.id,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
-            email: profile.emails[0].value,
-        });
+        const newUser = createUserFromProfile(profile, 'GOOGLE');
         await newUser.save();
 
         await createRefreshToken(newUser.toIdentityJson());
@@ -74,13 +69,7 @@ passport.use(new GoogleStrategy({
         return done(null, newUser);
     }
 
-    const profileInfoChanged = user.firstName !== profile.name.givenName ||
-        user.lastName !== profile.name.familyName;
-    if (profileInfoChanged) {
-        user.firstName = profile.name.givenName;
-        user.lastName = profile.name.familyName;
-        user.update();
-    }
+    updateUserIfNeeded(user, profile);
 
     req.user = user;
     done(null, user);
@@ -93,17 +82,11 @@ passport.use(new FacebookStrategy({
     passReqToCallback: true,
     profileFields: ['id', 'email', 'displayName', 'name']
 }, async (req, _accessToken, _refreshToken, profile, done) => {
+    
     let user = await User.findOne({ provider: 'FACEBOOK', providerKey: profile.id });
-    console.log(profile);
 
     if (!user) {
-        const newUser = new User({
-            provider: 'FACEBOOK',
-            providerKey: profile.id,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
-            email: profile.emails[0].value,
-        });
+        const newUser = createUserFromProfile(profile, 'FACEBOOK');
         await newUser.save();
 
         await createRefreshToken(newUser.toIdentityJson());
@@ -112,13 +95,36 @@ passport.use(new FacebookStrategy({
         return done(null, newUser);
     }
 
-    const profileInfoChanged = user.firstName !== profile.name.givenName ||
-        user.lastName !== profile.name.familyName;
-    if (profileInfoChanged) {
-        user.firstName = profile.name.givenName;
-        user.lastName = profile.name.familyName;
-        user.update();
-    }
+    updateUserIfNeeded(user, profile);
+
     req.user = user;
     done(null, user);
 }));
+
+/**
+ * @param {import("passport").Profile} profile 
+ * @param {String} provider
+ */
+const createUserFromProfile = (profile, provider) => {
+    return new User({
+        provider: provider,
+        providerKey: profile.id,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
+        email: profile.emails[0].value,
+    });
+};
+
+/**
+ * @param {User} user 
+ * @param {import("passport").Profile} profile 
+ */
+const updateUserIfNeeded = async (user, profile) => {
+    const userChanged = user.firstName !== profile.name.givenName ||
+        user.lastName !== profile.name.familyName;
+    if (userChanged) {
+        user.firstName = profile.name.givenName;
+        user.lastName = profile.name.familyName;
+        await user.update();
+    }
+};

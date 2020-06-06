@@ -2,8 +2,16 @@ import express from "express";
 import passport from "passport";
 import { body, validationResult } from 'express-validator';
 import RefreshToken from '../db/models/RefreshToken';
-import { createAccessToken, createRefreshToken } from '../auth/utils';
-import { decodeJwtAccessToken, decodeJwtRefreshToken, refreshAccessToken } from '../auth/utils';
+import {
+    createAccessToken,
+    createRefreshToken,
+    decodedTokenToIdentityJson
+} from '../auth/utils';
+import {
+    decodeJwtAccessToken,
+    decodeJwtRefreshToken,
+    refreshAccessToken
+} from '../auth/utils';
 import '../auth/passport-config';
 import ProviderRouter from './ProviderRouter';
 
@@ -24,12 +32,7 @@ AuthRouter.post('/register', registerValidators(), async (req, res) => {
             res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
             res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
 
-            res.status(200).json({
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                role: user.role
-            });
+            res.status(200).json(user.toProfileInfoJson());
         }
     )(req, res);
 });
@@ -49,14 +52,9 @@ AuthRouter.post('/login', loginValidators(), async (req, res, next) => {
         const jwtAccessToken = createAccessToken(user.toIdentityJson());
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: user._id })).token;
         res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken.token, { httpOnly: true });
+        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
 
-        res.status(200).json({
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role
-        });
+        res.status(200).json(user.toProfileInfoJson());
     })(req, res, next);
 });
 
@@ -67,9 +65,9 @@ AuthRouter.post('/logout', async (req, res) => {
 });
 
 AuthRouter.post('/logout/all', async (req, res) => {
-    const accessTokenPayload = decodeJwtAccessToken(res.cookies.accessToken);
-    await RefreshToken.deleteOne({ userId: accessTokenPayload.userId });
-    await createRefreshToken(accessTokenPayload);
+    const decodedAccessToken = decodeJwtAccessToken(res.cookies.accessToken);
+    await RefreshToken.deleteOne({ userId: decodedAccessToken.id });
+    await createRefreshToken(decodedTokenToIdentityJson(decodedAccessToken));
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
 });

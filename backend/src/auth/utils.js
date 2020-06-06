@@ -11,7 +11,7 @@ export const createInterserviceToken = payload => {
     if (!payload) return null;
     return jwt.sign(payload, process.env.INTERSERVICE_TOKEN_SECRET,
         { expiresIn: process.env.INTERSERVICE_TOKEN_EXPIRATION });
-}
+};
 
 /**
  * @param {Object} identityJson 
@@ -21,7 +21,7 @@ export const createAccessToken = identityJson => {
 
     return jwt.sign(identityJson, process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION });
-}
+};
 
 /**
  * @param {Object} identityJson 
@@ -38,7 +38,7 @@ export const createRefreshToken = async identityJson => {
     await refreshToken.save();
 
     return jwtToken;
-}
+};
 
 /**
  * @param {String} jwtRefreshToken 
@@ -56,7 +56,7 @@ export const refreshAccessToken = async jwtRefreshToken => {
     if (!tokenExists) return null;
 
     return createAccessToken(identity);
-}
+};
 
 /**
  * @param {String} jwtAccessToken 
@@ -78,33 +78,19 @@ export const decodeJwtRefreshToken = jwtRefreshToken => {
     } catch (error) {
         return null;
     }
-}
-
-export const tokenValidatorMW = async (req, res, next) => {
-    const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken)
-    if (decodedAccessToken) {
-        req.identity = decodedTokenToIdentityJson(decodedAccessToken);
-        return next();
-    }
-
-    const decodedRefreshToken = await decodeJwtRefreshToken(req.cookies.refreshToken);
-    if (!decodedRefreshToken) return res.status(401).json({
-        errors: ['cannot refresh access token - no/invalid refresh token provided']
-    });
-
-    const newAccessToken = await refreshAccessToken(req.cookies.refreshToken);
-    if (!newAccessToken) return res.status(401).json({
-        errors: ['cannot refresh access token - such user does not exist']
-    });
-
-    res.cookie('accessToken', newAccessToken, { httpOnly: true });
-    req.identity = decodedTokenToIdentityJson(decodedRefreshToken);
-    next();
 };
 
-const decodedTokenToIdentityJson = payload => ({
+/**
+ * 
+ * @param {Object} payload 
+ * @param {String | any} payload.id
+ * @param {String} payload.provider
+ * @param {String} payload.providerKey
+ * @param {String} payload.role
+ */
+export const decodedTokenToIdentityJson = payload => ({
     id: payload.id,
     provider: payload.provider,
     providerKey: payload.providerKey,
     role: payload.role   
-})
+});

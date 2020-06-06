@@ -9,7 +9,8 @@ import { v4 as uuid } from 'uuid';
 import { connectDb } from './db/utils';
 import AuthRouter from './routers/AuthRouter';
 import axios from 'axios';
-import { createInterserviceToken, tokenValidatorMW } from './auth/utils';
+import { createInterserviceToken } from './auth/utils';
+import { tokenValidatorMW } from './auth/validators';
 
 require('dotenv').config();
 
@@ -26,7 +27,7 @@ app.use(cors());
 app.use('/auth', AuthRouter);
 
 app.post('/buy', tokenValidatorMW, async (req, res) => {
-    const interserviceToken = createInterserviceToken({identity: req.identity});
+    const interserviceToken = createInterserviceToken({ identity: req.identity });
     axios.post('http://localhost:8000/notify', { interserviceToken });
     res.sendStatus(200);
 });
