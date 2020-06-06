@@ -20,13 +20,13 @@ const MainPage = (props) => {
         history.go();
     };
 
-    const buyOnClick = async () => {
-        await axios.post('/buy', { content: 'NOTIF' }, { validateStatus: false });
+    const generateNotifOnClick = async () => {
+        await axios.post('/notify', { content: 'NOTIF' }, { validateStatus: false });
     };
 
     const clearNotifsOnClick = async () => {
         const clearResult = await axios.delete('/notifications', {}, { validateStatus: false });
-        if(clearResult.status !== 200) {
+        if (clearResult.status !== 200) {
             alert('Failed when trying to clear notifs');
             console.log(clearResult.data);
             return;
@@ -68,8 +68,8 @@ const MainPage = (props) => {
         </p>
 
         <p>
-            <button className="btn btn-primary" onClick={buyOnClick}>
-                Buy
+            <button className="btn btn-primary" onClick={generateNotifOnClick}>
+                Generate notif
             </button>
         </p>
 

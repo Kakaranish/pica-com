@@ -3,6 +3,8 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import moment from 'moment';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 let socket;
 
@@ -18,6 +20,15 @@ const SocketComponent = (props) => {
 
             socket.on('notif', ({ content, createdAt, _id }) => {
                 props.addNotif(_id);
+                toast(content, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             });
 
             socket.on('clearNotifs', () => props.clearNotifs());
@@ -26,7 +37,9 @@ const SocketComponent = (props) => {
 
     }, [props.identity]);
 
-    return <></>
+    return <>
+        <ToastContainer />
+    </>
 };
 
 export default new AwareComponentBuilder()

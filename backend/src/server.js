@@ -28,7 +28,7 @@ app.use(cors());
 app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
 
-app.post('/buy', tokenValidatorMW, async (req, res) => {
+app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {
         identity: req.identity,
         content: req.body.content
