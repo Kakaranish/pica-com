@@ -1,7 +1,35 @@
 import mongoose, { Schema } from 'mongoose';
 import moment from 'moment';
 
-const schema = new Schema({
+const addressSchema = new Schema({
+    city: {
+        type: String,
+        required: true
+    },
+    postcode: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    houseOrFlatNumber: {
+        type: String,
+        required: true
+    },
+    flatCode: {
+        type: String,
+        required: false
+    },
+    isDefault: {
+        type: Boolean,
+        required: true,
+        default: true
+    }
+});
+
+const userSchema = new Schema({
     provider: {
         type: String,
         required: true
@@ -35,18 +63,22 @@ const schema = new Schema({
         type: Date,
         default: moment.utc().toDate(),
         required: true
+    }, 
+    addresses: {
+        type: [addressSchema],
+        required: false
     }
 });
 
 const legalProviders = ['CREDENTIALS', 'GOOGLE', 'FACEBOOK'];
-schema.path('provider').validate(provider => legalProviders.some(
+userSchema.path('provider').validate(provider => legalProviders.some(
     legalProvider => legalProvider === provider), 'invalid provider');
 
 const legalRoles = ['USER', 'OWNER', 'ADMIN'];
-schema.path('role').validate(role => legalRoles.some(
+userSchema.path('role').validate(role => legalRoles.some(
     legalRole => legalRole === role), 'invalid role');
 
-schema.methods.toIdentityJson = function ()  {
+userSchema.methods.toIdentityJson = function ()  {
     return {
         id: this._id,
         provider: this.provider,
@@ -55,7 +87,7 @@ schema.methods.toIdentityJson = function ()  {
     };
 };
 
-schema.methods.toProfileInfoJson = function () {
+userSchema.methods.toProfileInfoJson = function () {
     return {
         email: this.email,
         firstName: this.firstName,
@@ -64,12 +96,12 @@ schema.methods.toProfileInfoJson = function () {
     };
 }
 
-schema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
     if (this.provider === 'CREDENTIALS' && !this.password)
         this.invalidate('password', 'CREDENTIALS provider requires password');
     next();
 });
 
-const User = mongoose.model('user', schema);
+const User = mongoose.model('user', userSchema);
 
 export default User;

@@ -1,6 +1,6 @@
 import express from 'express';
 import bcryptjs from 'bcryptjs';
-import { param, body, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
 import { tokenValidatorMW } from '../auth/validators';
 import { withAsyncRequestHandler } from '../common/utils';
 import User from '../db/models/User';
@@ -50,6 +50,47 @@ AccountRouter.put('/password', tokenValidatorMW, changePasswordValidationMWs(),
     }
 );
 
+AccountRouter.get('/addresses', tokenValidatorMW, async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const user = await User.findById(req.identity.id);
+        if (!user?.addresses?.length) res.status(200).json([]);
+        else res.status(200).json(user.addresses);
+    });
+});
+
+AccountRouter.post('/address', tokenValidatorMW, createAddressValidationMWs(),
+    async (req, res) => {
+        if (validationResult(req).errors.length > 0)
+            return res.status(400).json(validationResult(req).errors);
+
+        withAsyncRequestHandler(res, async () => {
+            const user = await User.findById(req.identity.id);
+            if (!user) return res.sendStatus(404);
+
+            if(!user.addresses) user.addresses = [];
+            if (req.body.isDefault) user.addresses.forEach(a => a.isDefault = false);
+
+            const address = {
+                city: req.body.city,
+                postcode: req.body.postcode,
+                address: req.body.address,
+                houseOrFlatNumber: req.body.houseOrFlatNumber,
+                flatCode: req.body.flatCode,
+                isDefault: req.body.isDefault
+            };
+            user.addresses.push(address);
+
+            await User.findByIdAndUpdate(user.id, {
+                $set: {
+                    addresses: user.addresses
+                }
+            });
+
+            res.sendStatus(200);
+        });
+    }
+);
+
 function updateProfileValidationMWs() {
     return [
         body('email').isEmail().withMessage('is not email'),
@@ -72,6 +113,16 @@ function changePasswordValidationMWs() {
             .withMessage('must have at least 5 characters').bail()
             .custom((value, { req }) => value !== req.body.newPassord)
             .withMessage('passwords are different')
+    ];
+}
+
+function createAddressValidationMWs() {
+    return [
+        body('city').notEmpty().withMessage('cannot be empty'),
+        body('postcode').notEmpty().withMessage('cannot be empty'),
+        body('address').notEmpty().withMessage('cannot be empty'),
+        body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
+        body('isDefault').notEmpty().withMessage('cannot be empty'),
     ];
 }
 

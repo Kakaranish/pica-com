@@ -14,8 +14,9 @@ const RegisterPage = (props) => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        if (formData.password !== formData.repeatPassword) {
-            setValidationErrors(["passwords are different"])
+        const passwordValidation = validateFormPasswords(formData);
+        if(passwordValidation.length) {
+            setValidationErrors(passwordValidation);
             return;
         }
 
@@ -88,6 +89,15 @@ const RegisterPage = (props) => {
         </form>
     </>
 };
+
+function validateFormPasswords(formData) {
+    const errors = [];
+    if (formData.password !== formData.repeatPassword)
+        errors.push('passwords are different');
+    if (formData.password.length < 5)
+        errors.push('password must have at least 5 characters');
+    return errors;
+}
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()

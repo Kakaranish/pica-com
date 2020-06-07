@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const GeneralInfoPage = () => {
+const AccountPage = () => {
     return <>
         <p>
             <Link to='/account/edit/profile'>
@@ -16,11 +16,11 @@ const GeneralInfoPage = () => {
         </p>
 
         <p>
-            <Link to='/account/edit/address'>
-                Edit address
+            <Link to='/account/addresses'>
+                Shipping addresses
             </Link>
         </p>
     </>
 };
 
-export default GeneralInfoPage;
+export default AccountPage;
