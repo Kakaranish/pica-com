@@ -14,6 +14,7 @@ import {
 } from '../auth/utils';
 import '../auth/passport-config';
 import ProviderRouter from './ProviderRouter';
+import { tokenValidatorMW } from "../auth/validators";
 
 const AuthRouter = express();
 
@@ -64,10 +65,9 @@ AuthRouter.post('/logout', async (req, res) => {
     res.sendStatus(200);
 });
 
-AuthRouter.post('/logout/all', async (req, res) => {
-    const decodedAccessToken = decodeJwtAccessToken(res.cookies.accessToken);
-    await RefreshToken.deleteOne({ userId: decodedAccessToken.id });
-    await createRefreshToken(decodedTokenToIdentityJson(decodedAccessToken));
+AuthRouter.post('/logout/all', tokenValidatorMW, async (req, res) => {
+    await RefreshToken.deleteOne({ userId: req.identity.id });
+    await createRefreshToken(req.identity);
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
 });

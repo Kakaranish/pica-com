@@ -6,7 +6,7 @@ const Navbar = (props) =>
     <div className="p-3" style={{ border: "1px solid red" }}>
         {
             props.identity &&
-            <>{props.identity.firstName} {props.identity.lastName} ({props.identity.email})</>
+            <>Logged as {props.identity.firstName} {props.identity.lastName} ({props.identity.email})</>
         }
 
         {

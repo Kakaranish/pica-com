@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import RefreshToken from '../db/models/RefreshToken';
 import { parseObjectId } from '../common/utils';
+import User from '../db/models/User';
 
 require('dotenv').config();
 
@@ -56,6 +57,16 @@ export const refreshAccessToken = async jwtRefreshToken => {
     if (!tokenExists) return null;
 
     return createAccessToken(identity);
+};
+
+/**
+ * @param {String | any} userId 
+ */
+export const reCreateRefreshToken = async userId => {
+    const user = await User.findById(userId);
+    if(!user) return null;
+    await RefreshToken.deleteOne({userId: userId});
+    return await createRefreshToken(user.toIdentityJson());
 };
 
 /**

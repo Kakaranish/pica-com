@@ -20,40 +20,71 @@ const MainPage = (props) => {
         history.go();
     };
 
+    const logOutAllOnClick = async () => {
+        await axios.post('/auth/logout/all');
+        props.unsetIdentity();
+        props.clearNotifs();
+        history.go();
+    };
+
     const generateNotifOnClick = async () => {
         await axios.post('/notify', { content: 'NOTIF' }, { validateStatus: false });
     };
 
     return <>
-        <p>
-            <Link to={'/auth/login'} >
-                Login
-            </Link>
-        </p>
 
-        <p>
-            <Link to={'/auth/register'} >
-                Register
-            </Link>
-        </p>
+        {
+            props.identity?.role === 'ADMIN' &&
+            <>
+                <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
+                    <p>Admin-only actions:</p>
+
+                    <Link to={'/admin/manage/users'}>
+                        Manage Users
+                    </Link>
+
+                </div>
+            </>
+        }
+
+        {
+            !props.identity
+                ? <>
+                    <p>
+                        <Link to={'/auth/login'} >
+                            Login
+                        </Link>
+                    </p>
+
+                    <p>
+                        <Link to={'/auth/register'} >
+                            Register
+                        </Link>
+                    </p>
+                </>
+
+                : <>
+                    <p>
+                        <button className="btn btn-primary" onClick={logOutOnClick}>
+                            Log Out
+                        </button>
+                    </p>
+                    
+                    <p>
+                        <button className="btn btn-primary" onClick={logOutAllOnClick}>
+                            Log out "All"
+                        </button>
+                    </p>
+                </>
+        }
 
         <button className="btn btn-primary" onClick={verifyOnClick}>
             Verify
         </button>
 
-        <button className="btn btn-primary" onClick={logOutOnClick}>
-            Log Out
-        </button>
-
         <p>
             <Link to={'/upload-image'} >
                 Upload Image
-            </Link>
-        </p>
-
-        <p>
-            <Link to={'/authorized'} >
-                For authorized only
             </Link>
         </p>
 

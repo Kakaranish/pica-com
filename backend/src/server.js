@@ -5,17 +5,19 @@ import fileUpload from 'express-fileupload';
 import path from "path";
 import azure from 'azure-storage';
 import cors from 'cors';
-import { v4 as uuid } from 'uuid';
-import { connectDb } from './db/utils';
-import AuthRouter from './routers/AuthRouter';
 import axios from 'axios';
+import { v4 as uuid } from 'uuid';
+import { connectDb, initRootUser } from './db/utils';
+import AuthRouter from './routers/AuthRouter';
 import { createInterserviceToken } from './auth/utils';
 import { tokenValidatorMW } from './auth/validators';
 import NotificationRouter from "./routers/NotificationRouter";
+import AdminRouter from "./routers/AdminRouter";
 
 require('dotenv').config();
 
 connectDb();
+initRootUser();
 
 const app = express();
 
@@ -27,6 +29,7 @@ app.use(cors());
 
 app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
+app.use('/admin', AdminRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {
