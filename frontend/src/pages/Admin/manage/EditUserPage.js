@@ -4,7 +4,7 @@ import moment from 'moment';
 import { getFormDataJsonFromEvent } from '../../../common/utils';
 import { useHistory } from 'react-router-dom';
 
-const UserPage = (props) => {
+const EditUserPage = (props) => {
 
     const history = useHistory();
     const userId = props.match.params.id;
@@ -104,4 +104,4 @@ const UserPage = (props) => {
     </>
 };
 
-export default UserPage;
+export default EditUserPage;

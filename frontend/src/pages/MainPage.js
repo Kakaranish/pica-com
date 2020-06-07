@@ -48,6 +48,20 @@ const MainPage = (props) => {
         }
 
         {
+            props.identity &&
+            <>
+                <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
+                    <p>Authorized only actions:</p>
+
+                    <Link to={'/account'}>
+                        Manage Account
+                    </Link>
+
+                </div>
+            </>
+        }
+
+        {
             !props.identity
                 ? <>
                     <p>
@@ -69,7 +83,7 @@ const MainPage = (props) => {
                             Log Out
                         </button>
                     </p>
-                    
+
                     <p>
                         <button className="btn btn-primary" onClick={logOutAllOnClick}>
                             Log out "All"

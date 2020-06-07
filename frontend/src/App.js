@@ -8,7 +8,8 @@ import MainLayout from './skeleton/MainLayout';
 import AuthRoutes from './pages/Auth/Routes';
 import UploadImage from './pages/UploadImage';
 import SocketComponent from './skeleton/SocketComponent';
-import Routes from './pages/Admin/Routes';
+import AdminRoutes from './pages/Admin/Routes';
+import AccountRoutes from './pages/Account/Routes';
 
 const App = () => <>
   <MainLayout>
@@ -17,7 +18,8 @@ const App = () => <>
       <Switch>
         <Route exact path='/' component={MainPage} />
         <Route path='/auth' component={AuthRoutes} />
-        <Route path='/admin' component={Routes} />
+        <Route path='/admin' component={AdminRoutes} />
+        <Route path='/account' component={AccountRoutes} />
         <Route path='/upload-image' component={UploadImage} />
 
         <Route component={NotFoundPage} />

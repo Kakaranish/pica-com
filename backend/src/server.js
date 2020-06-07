@@ -13,6 +13,7 @@ import { createInterserviceToken } from './auth/utils';
 import { tokenValidatorMW } from './auth/validators';
 import NotificationRouter from "./routers/NotificationRouter";
 import AdminRouter from "./routers/AdminRouter";
+import AccountRouter from "./routers/AccountRouter";
 
 require('dotenv').config();
 
@@ -30,6 +31,7 @@ app.use(cors());
 app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
+app.use('/account', AccountRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {
