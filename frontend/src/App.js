@@ -10,6 +10,7 @@ import SocketComponent from './skeleton/SocketComponent';
 import AdminRoutes from './pages/Admin/Routes';
 import AccountRoutes from './pages/Account/Routes';
 import ErrorPage from './pages/ErrorPage';
+import OwnerRoutes from './pages/Owner/Routes';
 
 const App = () => <>
   <MainLayout>
@@ -20,6 +21,7 @@ const App = () => <>
         <Route path='/auth' component={AuthRoutes} />
         <Route path='/admin' component={AdminRoutes} />
         <Route path='/account' component={AccountRoutes} />
+        <Route path='/owner' component={OwnerRoutes} />
         <Route path='/upload-image' component={UploadImage} />
 
         <Route path='/error/:code' component={ErrorPage} />

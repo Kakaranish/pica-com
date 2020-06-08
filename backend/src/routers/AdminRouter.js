@@ -49,7 +49,7 @@ AdminRouter.put('/users/:id', tokenValidatorMW,
 
 function updateUserValidationMWs() {
     const allowedProviders = ['CREDENTIALS', 'GOOGLE', 'FACEBOOK'];
-    const allowedRoles = ['USER', 'OWNNER', 'ADMIN'];
+    const allowedRoles = ['USER', 'OWNER', 'ADMIN'];
 
     return [
         body('provider').notEmpty().withMessage('cannot be empty').bail()

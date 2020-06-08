@@ -92,6 +92,7 @@ userSchema.methods.toProfileInfoJson = function () {
         email: this.email,
         firstName: this.firstName,
         lastName: this.lastName,
+        provider: this.provider,
         role: this.role
     };
 }

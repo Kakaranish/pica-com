@@ -22,13 +22,7 @@ ProviderRouter.get('/google/callback',
         res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
         res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
 
-        const userBasicInfo = {
-            email: req.user.email,
-            firstName: req.user.firstName,
-            lastName: req.user.lastName,
-            role: req.user.role
-        };
-        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(userBasicInfo)}`);
+        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(req.user.toProfileInfoJson())}`);
     }
 );
 
@@ -47,13 +41,7 @@ ProviderRouter.get('/facebook/callback',
         res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
         res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
 
-        const userBasicInfo = {
-            email: req.user.email,
-            firstName: req.user.firstName,
-            lastName: req.user.lastName,
-            role: req.user.role
-        };
-        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(userBasicInfo)}`);
+        res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(req.user.toProfileInfoJson())}`);
     }
 );
 
