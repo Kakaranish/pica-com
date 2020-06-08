@@ -1,6 +1,6 @@
 import express from 'express';
 import bcryptjs from 'bcryptjs';
-import { body, validationResult } from 'express-validator';
+import { body, validationResult, param } from 'express-validator';
 import { tokenValidatorMW } from '../auth/validators';
 import { withAsyncRequestHandler } from '../common/utils';
 import User from '../db/models/User';
@@ -58,6 +58,18 @@ AccountRouter.get('/addresses', tokenValidatorMW, async (req, res) => {
     });
 });
 
+AccountRouter.get('/address/:id', tokenValidatorMW, getAddressValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            const user = await User.findById(req.identity.id);
+            if (!user?.addresses) res.status(200).json(null);
+
+            const address = user.addresses.find(a => a.id === req.params.id);
+            res.status(200).json(address);
+        });
+    }
+);
+
 AccountRouter.post('/address', tokenValidatorMW, createAddressValidationMWs(),
     async (req, res) => {
         if (validationResult(req).errors.length > 0)
@@ -67,7 +79,7 @@ AccountRouter.post('/address', tokenValidatorMW, createAddressValidationMWs(),
             const user = await User.findById(req.identity.id);
             if (!user) return res.sendStatus(404);
 
-            if(!user.addresses) user.addresses = [];
+            if (!user.addresses) user.addresses = [];
             if (req.body.isDefault) user.addresses.forEach(a => a.isDefault = false);
 
             const address = {
@@ -84,6 +96,40 @@ AccountRouter.post('/address', tokenValidatorMW, createAddressValidationMWs(),
                 $set: {
                     addresses: user.addresses
                 }
+            });
+
+            res.sendStatus(200);
+        });
+    }
+);
+
+AccountRouter.put('/address/:id', tokenValidatorMW, updateAddressValidationMWs(),
+    async (req, res) => {
+        if (validationResult(req).errors.length > 0)
+            return res.status(400).json(validationResult(req).errors);
+
+        withAsyncRequestHandler(res, async () => {
+            const user = await User.findById(req.identity.id);
+            if (!user) return res.sendStatus(404);
+
+            if (!user.addresses) user.addresses = [];
+            if (req.body.isDefault) user.addresses.forEach(a => a.isDefault = false);
+
+            const updatedAddress = {
+                _id: req.params._id,
+                city: req.body.city,
+                postcode: req.body.postcode,
+                address: req.body.address,
+                houseOrFlatNumber: req.body.houseOrFlatNumber,
+                flatCode: req.body.flatCode,
+                isDefault: req.body.isDefault
+            };
+            const addressToUpdateIndex = user.addresses.findIndex(a =>
+                a.id === req.params.id);
+            user.addresses[addressToUpdateIndex] = updatedAddress;
+
+            await User.findByIdAndUpdate(user.id, {
+                $set: { addresses: user.addresses }
             });
 
             res.sendStatus(200);
@@ -123,6 +169,23 @@ function createAddressValidationMWs() {
         body('address').notEmpty().withMessage('cannot be empty'),
         body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
         body('isDefault').notEmpty().withMessage('cannot be empty'),
+    ];
+}
+
+function updateAddressValidationMWs() {
+    return [
+        param('id').notEmpty().withMessage('cannot be empty'),
+        body('city').notEmpty().withMessage('cannot be empty'),
+        body('postcode').notEmpty().withMessage('cannot be empty'),
+        body('address').notEmpty().withMessage('cannot be empty'),
+        body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
+        body('isDefault').notEmpty().withMessage('cannot be empty'),
+    ];
+}
+
+function getAddressValidationMWs() {
+    return [
+        param('id').notEmpty().withMessage('cannot be empty')
     ];
 }
 
