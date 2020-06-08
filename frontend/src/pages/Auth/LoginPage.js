@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import googleIcon from '../../assets/img/google.svg';
 import facebookIcon from '../../assets/img/facebook.svg';
-import { getFormDataJsonFromEvent } from '../../common/utils';
+import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
 const LoginPage = (props) => {
@@ -22,20 +22,23 @@ const LoginPage = (props) => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        const loginResult = await axios.post('/auth/login', formData, { validateStatus: false });
-        if (loginResult.status !== 200) {
-            setValidationErrors(loginResult.data.errors.map(m => m.msg));
-            return;
-        }
+        const loginAction = async () => axios.post('/auth/login', formData,
+            { validateStatus: false });
+        const loginResult = await requestHandler(loginAction, {
+            status: 400,
+            callback: async result =>
+                setValidationErrors(result.errors.map(m => m.msg))
+        });
+        if (!loginResult) return;
 
-        const fetchNotifsResult = await axios.get('/notifications', { validateStatus: false });
-        if(loginResult.status !== 200) {
-            alert('Unknown error occured');
-            return;
-        }
 
-        props.setIdentity(loginResult.data);
-        props.setNotifs(fetchNotifsResult.data);
+        const fetchNotifsAction = async () => axios.get('/notifications',
+            { validateStatus: false });
+        const fetchNotifsResult = await requestHandler(fetchNotifsAction);
+        if(!fetchNotifsResult) return;
+
+        props.setIdentity(loginResult);
+        props.setNotifs(fetchNotifsResult);
 
         setValidationErrors(null);
         history.push('/');

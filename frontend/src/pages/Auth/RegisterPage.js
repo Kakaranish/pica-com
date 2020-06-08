@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { getFormDataJsonFromEvent } from '../../common/utils';
+import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
 const RegisterPage = (props) => {
@@ -15,24 +15,21 @@ const RegisterPage = (props) => {
         const formData = getFormDataJsonFromEvent(event);
 
         const passwordValidation = validateFormPasswords(formData);
-        if(passwordValidation.length) {
+        if (passwordValidation.length) {
             setValidationErrors(passwordValidation);
             return;
         }
 
-        const result = await axios.post('/auth/register', formData, { validateStatus: false });
-        if (result.status === 500) {
-            alert('Internal error');
-            return;
-        }
+        const action = async () => axios.post('/auth/register', formData,
+            { validateStatus: false });
+        const result = await requestHandler(action, {
+            status: 400,
+            callback: async result =>
+                setValidationErrors(result.errors.map(e => e.msg ?? e))
+        })
 
-        if (result.data.errors?.length > 0) {
-            setValidationErrors(result.data.errors.map(e => e.msg ?? e));
-            return;
-        }
-
-        props.setIdentity(result.data);
-
+        props.setIdentity(result);
+        
         setValidationErrors(null);
         history.push('/');
     }

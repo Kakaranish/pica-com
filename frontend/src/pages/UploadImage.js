@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ImageUploader from './ImageUploader';
+import { requestHandler } from '../common/utils';
 
 const UploadImage = () => {
 
@@ -16,15 +17,12 @@ const UploadImage = () => {
         const formData = new FormData(event.target);
         formData.append('file', file);
         
-        const result = await axios.post('/upload', formData, {
+        const action = async () => axios.post('/upload', formData, {
             validateStatus: false,
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-        if (result.status !== 200) {
-            alert('Error');
-            console.log(result);
-            return;
-        }
+        const result = await requestHandler(action);
+        if(!result) return;
 
         alert('Ok, image uploaded');
         history.go();

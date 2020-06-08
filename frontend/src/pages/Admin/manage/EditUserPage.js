@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { getFormDataJsonFromEvent } from '../../../common/utils';
+import { getFormDataJsonFromEvent, requestHandler } from '../../../common/utils';
 import { useHistory } from 'react-router-dom';
 
 const EditUserPage = (props) => {
@@ -12,15 +12,10 @@ const EditUserPage = (props) => {
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const result = await axios.get(`/admin/users/${userId}`,
+            const action = async () => axios.get(`/admin/users/${userId}`,
                 { validateStatus: false });
-            if (result.status !== 200) {
-                alert('Error occured');
-                console.log(result);
-                setState({ loading: false });
-                return;
-            }
-            setState({ loading: false, user: result.data });
+            const result = await requestHandler(action);
+            setState({ loading: false, user: result });
         };
 
         fetch();
@@ -30,15 +25,10 @@ const EditUserPage = (props) => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        const result = await axios.put(`/admin/users/${userId}`, formData,
+        const action = async () => axios.put(`/admin/users/${userId}`, formData,
             { validateStatus: false });
-        if (result.status !== 200) {
-            alert('Error occured');
-            console.log(result);
-            return;
-        }
-
-        history.go();
+        const result = await requestHandler(action);
+        if(result) history.go();
     }
 
     if (state.loading) return <></>;

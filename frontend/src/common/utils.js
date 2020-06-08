@@ -24,12 +24,16 @@ export const getFormDataJsonFromEvent = event => {
 export const requestHandler = async (action, ...handlers) => {
     const result = await action();
     if (result.status === 200) return result.data;
-
+    
     handlers = handlers ?? [];
     let handlersDict = Object.assign({}, ...handlers.map(h => ({ [h.status]: h.callback })));
     
-    const handler = handlersDict[result.status];
-    if (handler) return await handler.callback();
+    const anyStatus = -1;
+    const callbackForAnyStatus = handlersDict[anyStatus];
+    if(callbackForAnyStatus) return callbackForAnyStatus(result.data);
+        
+    const callback = handlersDict[result.status];
+    if (callback) return await callback(result.data);
     
-    window.location = `/error/${result.status}`;
+    document.location = `/error/${result.status}`;
 };

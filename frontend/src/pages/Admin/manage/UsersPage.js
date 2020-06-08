@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { requestHandler } from '../../../common/utils';
 
 const ManageUsersPage = () => {
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const result = await axios.get('/admin/users', { validateStatus: false });
-            if (result.status !== 200) {
-                alert('Error occured');
-                console.log(result);
-                setState({ loading: false });
-                return;
-            }
-            setState({ loading: false, users: result.data });
+            const action = async () => axios.get('/admin/users',
+                { validateStatus: false });
+            const result = await requestHandler(action);
+            setState({ loading: false, users: result });
         };
 
         fetch();

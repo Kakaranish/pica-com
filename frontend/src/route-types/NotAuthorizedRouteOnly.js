@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 import { useHistory, Route } from 'react-router-dom';
 import axios from 'axios';
+import { requestHandler } from '../common/utils';
 
 const NotAuthorizedRouteOnly = ({ component: Component, ...rest }) => {
 
@@ -16,9 +17,9 @@ const NotAuthorizedRouteOnly = ({ component: Component, ...rest }) => {
                 return;
             }
 
-            const result = await axios.post('/auth/verify', {},
-                { validateStatus: false })
-            if (result.data?.user) {
+            const result = await requestHandler(async () =>
+                axios.post('/auth/verify', {}, { validateStatus: false }));
+            if (result?.user) {
                 alert('This page requires not to be logged in. Redirecting to main page...');
                 history.push('/');
                 return;

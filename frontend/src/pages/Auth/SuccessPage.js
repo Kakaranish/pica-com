@@ -3,25 +3,21 @@ import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 import axios from 'axios';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
+import { requestHandler } from '../../common/utils';
 
 const SuccessPage = (props) => {
 
+    const queryParams = queryString.parse(props.location.search);
 
     const [state, setState] = useState({ loading: true });
-    const queryParams = queryString.parse(props.location.search);
 
     useEffect(() => {
         const fetch = async () => {
             
-            const fetchNotifsResult = await axios.get('/notifications');
-            if(fetchNotifsResult.status !== 200) {
-                alert('Unknown error');
-                console.log(fetchNotifsResult.data);
-                setState({loading: false});
-                return;
-            }
+            const action = async () => axios.get('/notifications');
+            const result = await requestHandler(action);
 
-            props.setNotifs(fetchNotifsResult.data);
+            props.setNotifs(result);
             props.setIdentity({
                 email: queryParams.email,
                 firstName: queryParams.firstName,
@@ -33,8 +29,6 @@ const SuccessPage = (props) => {
 
         fetch();
     }, []);
-
-    
 
     if (state.loading) return <></>
     return <Redirect to={'/'} />

@@ -3,6 +3,7 @@ import moment from 'moment';
 import axios from 'axios';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 import notifIcon from '../assets/img/notification.svg';
+import { requestHandler } from '../common/utils';
 
 const NotifIndicator = (props) => {
 
@@ -17,12 +18,9 @@ const NotifIndicator = (props) => {
             setIsExpanded(isExpanded => !isExpanded);
             document.removeEventListener("click", handleClickOutside, false);
 
-            const clearResult = await axios.delete('/notifications', {}, { validateStatus: false });
-            if (clearResult.status !== 200) {
-                alert('Failed when trying to clear notifs');
-                console.log(clearResult.data);
-                return;
-            }
+            const action = async () => axios.delete('/notifications', {},
+                { validateStatus: false });
+            await requestHandler(action);
             props.clearNotifs();
         }
     };

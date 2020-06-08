@@ -90,7 +90,7 @@ function registerValidators() {
     return [
         body('email').notEmpty().withMessage('cannot be empty').bail()
             .isEmail().withMessage('must have email format'),
-        body('password').notEmpty().withMessage('cannot be empty'),
+        body('password').isLength({min: 5}).withMessage('min 5 characters required'),
         body('firstName').notEmpty().withMessage('cannot be empty'),
         body('lastName').notEmpty().withMessage('cannot be empty')
     ];

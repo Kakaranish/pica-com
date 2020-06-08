@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getFormDataJsonFromEvent } from '../../common/utils';
+import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
@@ -18,25 +18,20 @@ const ChangePasswordPage = () => {
             return;
         }
 
-        const result = await axios.put('/account/password', formData,
+        const action = async () => axios.put('/account/password', formData,
             { validateStatus: false });
-
-        if (result.status === 400) {
-            setValidationErrors(result.data.map(e => e.msg));
-            return;
-        }
-        if (result.status === 500) {
-            alert('Error occured');
-            console.log(result);
-            return;
-        }
+        const result = await requestHandler(action,
+            {
+                status: 400,
+                callback: async result => setValidationErrors(result.map(e => e.msg))
+            });
+        if (!result) return;
 
         alert('Password has been updated');
         history.goBack();
     }
 
     return <>
-
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <label>Old password</label>

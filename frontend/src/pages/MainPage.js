@@ -2,33 +2,35 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
+import { requestHandler } from '../common/utils';
 
 const MainPage = (props) => {
 
     const history = useHistory();
 
     const verifyOnClick = async () => {
-        const result = await axios.post('/auth/verify');
-        if (result.data.identity) alert('Logged in');
+        const result = await requestHandler(async () => axios.post('/auth/verify'));
+        if (result.identity) alert('Logged in');
         else alert('Not logged in');
     };
 
     const logOutOnClick = async () => {
-        await axios.post('/auth/logout');
+        await requestHandler(async () => axios.post('/auth/logout'));
         props.unsetIdentity();
         props.clearNotifs();
         history.go();
     };
 
     const logOutAllOnClick = async () => {
-        await axios.post('/auth/logout/all');
+        await requestHandler(async () => axios.post('/auth/logout/all'));
         props.unsetIdentity();
         props.clearNotifs();
         history.go();
     };
 
     const generateNotifOnClick = async () => {
-        await axios.post('/notify', { content: 'NOTIF' }, { validateStatus: false });
+        await requestHandler(async () =>
+            axios.post('/notify', { content: 'NOTIF' }, { validateStatus: false }));
     };
 
     return <>
