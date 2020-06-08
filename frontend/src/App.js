@@ -1,15 +1,15 @@
 import React from 'react';
-import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
+import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import MainPage from './pages/MainPage';
-import NotFoundPage from './pages/NotFoundPage';
 import MainLayout from './skeleton/MainLayout';
 import AuthRoutes from './pages/Auth/Routes';
 import UploadImage from './pages/UploadImage';
 import SocketComponent from './skeleton/SocketComponent';
 import AdminRoutes from './pages/Admin/Routes';
 import AccountRoutes from './pages/Account/Routes';
+import ErrorPage from './pages/ErrorPage';
 
 const App = () => <>
   <MainLayout>
@@ -22,7 +22,8 @@ const App = () => <>
         <Route path='/account' component={AccountRoutes} />
         <Route path='/upload-image' component={UploadImage} />
 
-        <Route component={NotFoundPage} />
+        <Route path='/error/:code' component={ErrorPage} />
+        <Redirect to='/error/404' />
       </Switch>
     </Router>
   </MainLayout>
