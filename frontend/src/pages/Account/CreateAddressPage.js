@@ -1,6 +1,6 @@
 import React from 'react';
 import AddressForm from './components/AddressForm';
-import { getFormDataJsonFromEvent } from '../../common/utils';
+import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
@@ -14,14 +14,10 @@ const CreateAddressPage = () => {
         formData.isDefault = formData.isDefault === 'on' ? true : false;
         formData.flatCode = formData.flatCode === '' ? null : formData.flatCode;
 
-        const result = await axios.post('/account/address', formData,
+        const action = async () => axios.post('/account/address', formData,
             { validateStatus: false });
-        if (result.status !== 200) {
-            alert('Error occured');
-            console.log(result);
-            return;
-        }
-
+        await requestHandler(action);
+        
         history.goBack();
     };
 

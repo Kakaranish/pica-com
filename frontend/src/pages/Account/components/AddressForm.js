@@ -28,7 +28,7 @@ const AddressForm = ({ address, onSubmitCb }) => {
             <div className="form-group">
                 <label>House or flat number</label>
                 <input name="houseOrFlatNumber" type="text" className="form-control" placeholder="House or flat number..."
-                    defaultValue={address?.houseOrFlatNumber} />
+                    defaultValue={address?.houseOrFlatNumber} required />
             </div>
 
             <div className="form-group">
@@ -38,7 +38,8 @@ const AddressForm = ({ address, onSubmitCb }) => {
             </div>
 
             <div className="form-check">
-                <input type="checkbox" className="form-check-input" name="isDefault" defaultChecked />
+                <input type="checkbox" className="form-check-input"
+                    name="isDefault" defaultChecked={address?.isDefault} />
                 <label className="form-check-label">
                     Is default address?
                 </label>

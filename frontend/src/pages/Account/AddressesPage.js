@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { requestHandler } from '../../common/utils';
 
 const AddressesPage = () => {
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-
-            const result = await axios.get('/account/addresses',
+            const action = async () => axios.get('/account/addresses',
                 { validateStatus: false });
-            if (result.status !== 200) {
-                alert('Error occured');
-                console.log(result);
-                setState({ loading: false });
-                return;
-            }
-            setState({ loading: false, addresses: result.data });
+            const result = await requestHandler(action);
+            setState({ loading: false, addresses: result });
         };
-
         fetch();
     }, []);
 
@@ -37,18 +31,21 @@ const AddressesPage = () => {
             state.addresses.map((address, i) => <div className="p-3 mb-3"
                 style={{ border: "1px solid red" }} key={`a-${i}`}>
                 <p>City: {address.city}</p>
-                <p>Postcode: {address.postocde}</p>
+                <p>Postcode: {address.postcode}</p>
                 <p>Address: {address.address}</p>
                 <p>House or flat number: {address.houseOrFlatNumber}</p>
-                <p>Flat code: {address.flatCode}</p>
+                {
+                    address.flatCode &&
+                    <p>Flat code: {address.flatCode}</p>
+                }
                 <p>Is default: {address.isDefault ? 'Yes' : 'No'}</p>
-                <Link className="btn btn-primary" to='/'>
+                <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
                     Edit
                 </Link>
             </div>)
         }
 
-        <Link to='/account/edit/address/:id' className="btn btn-success mt-2">
+        <Link to='/account/create/address' className="btn btn-success mt-2">
             Create new address
         </Link>
     </>
