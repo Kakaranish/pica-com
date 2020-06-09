@@ -48,6 +48,20 @@ const MainPage = (props) => {
                 </div>
             </>
         }
+        
+        {
+            props.identity?.role === 'OWNER' &&
+            <>
+                <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
+                    <p>Owner-only actions:</p>
+
+                    <Link to={'/owner/restaurants'}>
+                        Manage Restaurants
+                    </Link>
+
+                </div>
+            </>
+        }
 
         {
             props.identity &&
