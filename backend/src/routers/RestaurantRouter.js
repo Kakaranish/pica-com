@@ -4,7 +4,7 @@ import { body, validationResult, param } from 'express-validator';
 import { tokenValidatorMW, ownerValidatorMW } from '../auth/validators';
 import Restaurant from '../db/models/Restaurant';
 import { withAsyncRequestHandler } from '../common/utils';
-import { uploadPictureMW, validationExaminator } from '../common/middlewares';
+import { validationExaminator, uploadImageMW } from '../common/middlewares';
 
 const RestaurantRouter = express.Router();
 
@@ -29,47 +29,47 @@ RestaurantRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
     }
 );
 
-RestaurantRouter.get('/:id/pic-urls/', miscPicUrlsValidationMWs(), async (req, res) => {
+RestaurantRouter.get('/:id/images', miscPicUrlsValidationMWs(), async (req, res) => {
     if (validationResult(req).errors.length > 0)
         return res.status(400).json(validationResult(req).errors);
     withAsyncRequestHandler(res, async () => {
         res.status(200).json({
             name: req.restaurant.name,
             location: req.restaurant.location,
-            pictures: req.restaurant.pictures
+            images: req.restaurant.images
         });
     })
 });
 
-RestaurantRouter.post('/:id/pic-url', miscPicUrlsValidationMWs(),
-    uploadPictureMW, async (req, res) => {
+RestaurantRouter.post('/:id/image', miscPicUrlsValidationMWs(),
+    uploadImageMW, async (req, res) => {
 
-        if (!req.picture) return res.status(400).json({
+        if (!req.image) return res.status(400).json({
             errors: ['failed to upload image']
         });
 
-        req.restaurant.pictures.push(req.picture);
+        req.restaurant.images.push(req.image);
         await Restaurant.findByIdAndUpdate(req.params.id, {
-            $set: { pictures: req.restaurant.pictures }
+            $set: { images: req.restaurant.images }
         });
 
-        res.status(200).json(req.picture);
+        res.status(200).json(req.image);
     }
 );
 
-RestaurantRouter.delete('/:id/pic-url', deletePicUrlValidationMWs(),
+RestaurantRouter.delete('/:id/image', deletePicUrlValidationMWs(),
     async (req, res) => {
 
-        req.restaurant.pictures = req.restaurant.pictures.filter(
-            picture => picture.id !== req.body.imageId);
+        req.restaurant.images = req.restaurant.images.filter(
+            image => image.id !== req.body.imageId);
 
         await Restaurant.findByIdAndUpdate(req.params.id, {
-            $set: { pictures: req.restaurant.pictures }
+            $set: { images: req.restaurant.images }
         });
 
         const blobService = azure.createBlobService();
-        blobService.deleteBlobIfExists(req.picture.blobContainer, req.picture.blobName,
-            err => console.log(err));
+        blobService.deleteBlobIfExists(req.image.blobContainer,
+            req.image.blobName, err => console.log(err));
 
         res.sendStatus(200);
     }
@@ -146,9 +146,9 @@ function deletePicUrlValidationMWs() {
         }),
         body('imageId').notEmpty().withMessage('cannot be empty').bail()
             .custom((value, { req }) => {
-                const picture = req.restaurant.pictures.find(p => p.id == value);
-                if (!picture) throw new Error('restaurant has no such pic url');
-                else req.picture = picture;
+                const image = req.restaurant.images.find(i => i.id == value);
+                if (!image) throw new Error('restaurant has no such image url');
+                else req.image = image;
 
                 return true;
             }),

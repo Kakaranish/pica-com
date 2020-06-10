@@ -1,16 +1,18 @@
 import React from 'react';
 import ImagePreview from './ImagePreview';
 
-const ImagesPreviews = ({ pictures, restaurantId }) => {
-	if (!pictures?.length) return <h3> No images yet </h3>
+const ImagesPreviews = ({ images, restaurantId }) => {
+	if (!images?.length) return <div className="container m-3">
+		<h3> No images in gallery </h3>
+	</div>
 	return <>
 		<div className="container my-3">
 			<h3>Images in gallery</h3>
 			<div className="row">
 				{
-					pictures.map((picture, i) => <>
+					images.map((image, i) => <>
 						<div className="col-6" key={`prev-${i}`}>
-							<ImagePreview picture={picture} restaurantId={restaurantId} />
+							<ImagePreview image={image} restaurantId={restaurantId} />
 						</div>
 					</>)
 				}

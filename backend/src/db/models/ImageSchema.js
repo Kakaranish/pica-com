@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const PictureSchema = new Schema({
+const ImageSchema = new Schema({
     uri: {
         type: String,
         required: true
@@ -15,4 +15,4 @@ const PictureSchema = new Schema({
     }
 });
 
-export default PictureSchema;
+export default ImageSchema;

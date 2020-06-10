@@ -5,7 +5,7 @@ import { validationResult } from 'express-validator';
 
 require('dotenv').config();
 
-export const uploadPictureMW = async (req, res, next) => {
+export const uploadImageMW = async (req, res, next) => {
     if (!req.files?.file) return next();
 
     const file = req.files.file;
@@ -25,7 +25,7 @@ export const uploadPictureMW = async (req, res, next) => {
     blobService.createBlockBlobFromText(container, generatedFilename, file.data,
         blobOptions, err => { if (err) throw err; });
 
-    req.picture = {
+    req.image = {
         uri: blobService.getUrl('images', generatedFilename),
         blobName: generatedFilename,
         blobContainer: container

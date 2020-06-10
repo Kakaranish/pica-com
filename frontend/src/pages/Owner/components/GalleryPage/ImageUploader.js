@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { requestHandler } from '../../../common/utils';
+import { requestHandler } from '../../../../common/utils';
 import { useHistory } from 'react-router-dom';
 
-const ImageUploader = ({ restaurantId, onImageUploadCb }) => {
+const maxSizeInMB = 3;
+
+const ImageUploader = ({ restaurantId }) => {
 
     const history = useHistory();
     const [image, setImage] = useState(null);
@@ -14,6 +16,11 @@ const ImageUploader = ({ restaurantId, onImageUploadCb }) => {
             setImage(null);
             return;
         }
+        if (!hasValidSize(file)) {
+            alert(`Max image size is ${maxSizeInMB}MB`)
+            return;
+        }
+
         setImage(file);
     };
 
@@ -27,25 +34,14 @@ const ImageUploader = ({ restaurantId, onImageUploadCb }) => {
         const formData = new FormData(event.target);
         formData.append('file', image);
 
-        const uri = `/restaurants/${restaurantId}/pic-url`;
+        const uri = `/restaurants/${restaurantId}/image`;
         const action = async () => axios.post(uri, formData, {
             validateStatus: false,
             headers: { 'Content-Type': 'multipart/form-data' }
         });
 
-        const result = await requestHandler(action, {
-            status: 400,
-            callback: async (res) => {
-                console.log(res);
-                // todo:
-            }
-        });
-        if (!result) return;
-
-        setImage(null);
-
-        onImageUploadCb(result);
-        history.go();
+        const result = await requestHandler(action);
+        if (result) history.go();
     }
 
     return (
@@ -67,7 +63,6 @@ const ImageUploader = ({ restaurantId, onImageUploadCb }) => {
                     <img src={URL.createObjectURL(image)} className="img-fluid" />
                 </div>
             }
-
         </>
     );
 };
@@ -80,5 +75,10 @@ const isFileImageType = file => {
     const validImageTypes = ['image/jpeg', 'image/png'];
     return validImageTypes.includes(fileType);
 }
+
+/**
+ * @param {File} file 
+ */
+const hasValidSize = file => file.size / 1024 / 1024 < maxSizeInMB;
 
 export default ImageUploader;

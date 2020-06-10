@@ -3,28 +3,28 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import { requestHandler } from '../../../common/utils';
+import "./style.css";
+import { requestHandler } from '../../../../common/utils';
 
-const ImagePreview = ({ picture, restaurantId }) => {
+const ImagePreview = ({ image, restaurantId }) => {
 
     const history = useHistory();
-    
+
     const [isOpen, setIsOpen] = useState(false);
 
     const onDelete = async () => {
-
-        const uri = `/restaurants/${restaurantId}/pic-url`;
+        const uri = `/restaurants/${restaurantId}/image`;
         const action = async () => axios.delete(uri, {
-            data: { imageId: picture._id },
+            data: { imageId: image._id },
             validateStatus: false
         });
         const result = await requestHandler(action);
-        if(result) history.go();
+        if (result) history.go();
     };
 
     return <>
         <div className="card mb-2">
-            <img src={picture.uri} className="card-img-top thumb-img img-fluid"
+            <img src={image.uri} className="card-img-top thumb-img img-fluid"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setIsOpen(true)} />
             <div className="card-body">
@@ -36,7 +36,7 @@ const ImagePreview = ({ picture, restaurantId }) => {
 
         {
             isOpen &&
-            <Lightbox mainSrc={picture.uri}
+            <Lightbox mainSrc={image.uri}
                 onCloseRequest={() => setIsOpen(false)}
             />
         }

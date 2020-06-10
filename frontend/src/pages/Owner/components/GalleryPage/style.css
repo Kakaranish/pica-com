@@ -1,0 +1,5 @@
+.thumb-img {
+  object-fit: cover;
+  overflow: hidden;
+  height: 30vw;
+}
