@@ -13,7 +13,7 @@ const CreateRestaurantPage = () => {
             const action = async () => axios.get('/restaurants/draft',
                 { validateStatus: false });
             const result = await requestHandler(action);
-            if (result) {
+            if (result !== true) {
                 alert('You have already restaurant in draft.\nDelete it or finalize.');
                 history.goBack();
                 return;
@@ -27,15 +27,15 @@ const CreateRestaurantPage = () => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        const action = async () => axios.post('/restaurants/draft', formData,
+        const action = async () => axios.post('/restaurants', formData,
             { validateStatus: false });
-        const result = await requestHandler(action);
+        await requestHandler(action);
     }
 
     if (state.loading) return <></>
     return <>
 
-        <h3>Step 1: Provide basic restaurant info</h3>
+        <h3>Provide basic restaurant info</h3>
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <label>Name</label>

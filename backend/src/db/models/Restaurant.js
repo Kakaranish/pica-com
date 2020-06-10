@@ -50,7 +50,8 @@ const restaurantSchema = new Schema({
     },
     menu: {
         type: menuSchema,
-        required: false
+        required: true,
+        default: { }
     }
 }, {
     timestamps: {

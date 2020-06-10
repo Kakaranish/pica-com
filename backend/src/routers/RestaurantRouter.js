@@ -29,6 +29,13 @@ RestaurantRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
     }
 );
 
+RestaurantRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const restaurant = await Restaurant.findById(req.params.id);
+        res.status(200).json(restaurant);
+    });
+});
+
 RestaurantRouter.get('/:id/images', miscPicUrlsValidationMWs(), async (req, res) => {
     if (validationResult(req).errors.length > 0)
         return res.status(400).json(validationResult(req).errors);
@@ -75,7 +82,7 @@ RestaurantRouter.delete('/:id/image', deletePicUrlValidationMWs(),
     }
 );
 
-RestaurantRouter.post('/draft', createDraftValidationMWs(), async (req, res) => {
+RestaurantRouter.post('/', createDraftValidationMWs(), async (req, res) => {
     if (validationResult(req).errors.length > 0)
         return res.status(400).json(validationResult(req).errors);
     withAsyncRequestHandler(res, async () => {
@@ -95,6 +102,48 @@ RestaurantRouter.post('/draft', createDraftValidationMWs(), async (req, res) => 
         res.status(200).json({ id: restaurant._id });
     });
 });
+
+RestaurantRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            await Restaurant.findByIdAndUpdate(req.params.id, {
+                $set: {
+                    name: req.body.name,
+                    description: req.body.description,
+                    contactNumber: req.body.contactNumber,
+                    location: {
+                        city: req.body.city,
+                        postcode: req.body.postcode,
+                        address: req.body.address
+                    }
+                }
+            });
+
+            res.sendStatus(200);
+        });
+    }
+);
+
+
+function updateBasicInfoValidationMWs() {
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('id').custom(async (value, { req }) => {
+            const restaurant = await Restaurant.findById(value);
+            if (!restaurant || restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such restaurant');
+            req.restaurant = restaurant;
+        }),
+        body('name').notEmpty().withMessage('cannot be empty'),
+        body('description').notEmpty().withMessage('cannot be empty'),
+        body('city').notEmpty().withMessage('cannot be empty'),
+        body('postcode').notEmpty().withMessage('cannot be empty'),
+        body('address').notEmpty().withMessage('cannot be empty'),
+        body('contactNumber').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
+    ];
+}
 
 function createDraftValidationMWs() {
     return [

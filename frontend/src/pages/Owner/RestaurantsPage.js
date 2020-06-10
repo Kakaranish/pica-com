@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom';
 import { requestHandler } from '../../common/utils';
 import axios from 'axios';
 import RestaurantInfo from './components/RestaurantInfo';
-import RestaurantsTabContent from './components/RestaurantsTabContent';
-import RestaurantsTab from './components/RestaurantsTab';
-import AcceptedRestaurants from './components/AcceptedRestaurants';
-import PendingRestaurants from './components/PendingRestaurants';
-import RejectedRestaurants from './components/RejectedRestaurants';
-import CancelledRestaurants from './components/CancelledRestaurants';
+import RestaurantsTab from './components/RestaurantsPage/RestaurantsTab';
+import AcceptedRestaurants from './components/RestaurantsPage/AcceptedRestaurants';
+import PendingRestaurants from './components/RestaurantsPage/PendingRestaurants';
+import RejectedRestaurants from './components/RestaurantsPage/RejectedRestaurants';
+import CancelledRestaurants from './components/RestaurantsPage/CancelledRestaurants';
 
 const RestaurantsPage = () => {
 

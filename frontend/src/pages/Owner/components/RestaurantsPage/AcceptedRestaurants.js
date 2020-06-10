@@ -1,6 +1,6 @@
 import React from 'react';
 import RestaurantsTabContent from './RestaurantsTabContent';
-import RestaurantInfo from './RestaurantInfo';
+import RestaurantInfo from '../RestaurantInfo';
 
 const AcceptedRestaurants = ({ restaurants, isActive }) => {
 

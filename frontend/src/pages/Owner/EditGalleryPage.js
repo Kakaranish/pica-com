@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { requestHandler } from '../../common/utils';
-import BasicRestaurantInfo from './components/BasicRestaurantInfo';
 import ImagesPreviews from './components/GalleryPage/ImagesPreviews';
 import ImageUploader from '../Owner/components/GalleryPage/ImageUploader';
+import RestaurantInfo from './components/RestaurantInfo';
 
 const EditGalleryPage = ({ match }) => {
 
@@ -28,7 +28,7 @@ const EditGalleryPage = ({ match }) => {
     if (state.loading) return <></>
 
     return <>
-        <BasicRestaurantInfo restaurant={state.restaurant} />
+        <RestaurantInfo restaurant={state.restaurant} />
 
         <ImagesPreviews images={images} restaurantId={restaurantId} />
 

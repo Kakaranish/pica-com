@@ -18,11 +18,7 @@ const pizzaSchema = new Schema({
         type: Number,
         set: v => v.toFixed(0),
         required: true
-    },
-    picUrl: {
-        type: String,
-        required: false
-    },
+    }
 });
 
 const Pizza = mongoose.model('pizza', pizzaSchema);

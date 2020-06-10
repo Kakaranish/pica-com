@@ -2,7 +2,7 @@ import React from 'react';
 
 const RestaurantInfo = ({ restaurant, children }) => {
     return <>
-        <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
+        <div className="p-3 mb-2" style={{ border: '1px solid green' }}>
             <p>
                 <b>Name: </b>{restaurant.name}
             </p>
