@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import LocationSchema from './LocationSchema';
 import menuSchema from './MenuSchema';
+import PictureSchema from './PictureSchema';
 
 const restaurantSchema = new Schema({
     ownerId: {
@@ -23,8 +24,8 @@ const restaurantSchema = new Schema({
         type: String,
         required: true
     },
-    picUrls: {
-        type: [String],
+    pictures: {
+        type: [PictureSchema],
         required: true,
         default: []
     },

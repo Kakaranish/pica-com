@@ -14,6 +14,7 @@ import { tokenValidatorMW } from './auth/validators';
 import NotificationRouter from "./routers/NotificationRouter";
 import AdminRouter from "./routers/AdminRouter";
 import AccountRouter from "./routers/AccountRouter";
+import RestaurantRouter from "./routers/RestaurantRouter";
 
 require('dotenv').config();
 
@@ -32,6 +33,7 @@ app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
+app.use('/restaurants', RestaurantRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {

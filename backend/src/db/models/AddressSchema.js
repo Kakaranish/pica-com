@@ -13,10 +13,6 @@ const AddressSchema = new Schema({
         type: String,
         required: true
     },
-    houseOrFlatNumber: {
-        type: String,
-        required: true
-    },
     flatCode: {
         type: String,
         required: false

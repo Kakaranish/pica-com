@@ -9,10 +9,7 @@ const ErrorPage = ({ match }) => {
         <h2>404</h2>
         <h2>This page appears to be lost in the infinite <code>void**</code> :((</h2>
     </>
-    else return <>
-        <h3>Error {code} </h3>
-        <h3>Unknown error occured</h3>
-    </>
+    else return <h3>Error {code} </h3>
 };
 
 export default ErrorPage;
