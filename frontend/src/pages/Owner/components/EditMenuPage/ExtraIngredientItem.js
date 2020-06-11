@@ -17,7 +17,7 @@ const ExtraIngredientItem = ({ extraIngredient }) => {
         let formData = getFormDataJsonFromEvent(event);
         formData.price = parseFloat(formData.price);
 
-        const uri = `/extra-ingredient/${extraIngredientState._id}`;
+        const uri = `/owner/extra-ingredient/${extraIngredientState._id}`;
         const action = async () => axios.put(uri, formData, { validateStatus: false });
         await requestHandler(action);
 
@@ -27,7 +27,7 @@ const ExtraIngredientItem = ({ extraIngredient }) => {
 
     const onDelete = async () => {
         if (window.confirm("Are you sure to remove pernamently this extra ingredient?")) {
-            const action = async () => axios.delete(`/extra-ingredient/${extraIngredientState._id}`,
+            const action = async () => axios.delete(`/owner/extra-ingredient/${extraIngredientState._id}`,
                 { validateStatus: false });
             await requestHandler(action);
             history.go();

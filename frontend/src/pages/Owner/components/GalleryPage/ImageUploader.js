@@ -34,7 +34,7 @@ const ImageUploader = ({ restaurantId }) => {
         const formData = new FormData(event.target);
         formData.append('file', image);
 
-        const uri = `/restaurants/${restaurantId}/image`;
+        const uri = `/owner/restaurants/${restaurantId}/image`;
         const action = async () => axios.post(uri, formData, {
             validateStatus: false,
             headers: { 'Content-Type': 'multipart/form-data' }

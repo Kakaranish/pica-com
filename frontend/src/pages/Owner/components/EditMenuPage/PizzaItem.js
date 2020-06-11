@@ -17,7 +17,7 @@ const PizzaItem = ({ pizza }) => {
         formData.price = parseFloat(formData.price);
         formData.diameter = parseInt(formData.diameter);
 
-        const action = async () => axios.put(`/pizza/${pizzaState._id}`, formData,
+        const action = async () => axios.put(`/owner/pizza/${pizzaState._id}`, formData,
             { validateStatus: false });
         await requestHandler(action);
 
@@ -27,7 +27,7 @@ const PizzaItem = ({ pizza }) => {
 
     const onDelete = async () => {
         if (window.confirm("Are you sure to remove pernamently this pizza?")) {
-            const action = async () => axios.delete(`/pizza/${pizzaState._id}`,
+            const action = async () => axios.delete(`/owner/pizza/${pizzaState._id}`,
                 { validateStatus: false });
             await requestHandler(action);
             history.go();

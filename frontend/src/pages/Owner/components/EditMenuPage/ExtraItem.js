@@ -16,7 +16,7 @@ const ExtraItem = ({ extra }) => {
         let formData = getFormDataJsonFromEvent(event);
         formData.price = parseFloat(formData.price);
 
-        const uri = `/extra/${extraState._id}`;
+        const uri = `/owner/extra/${extraState._id}`;
         const action = async () => axios.put(uri, formData, { validateStatus: false });
         await requestHandler(action);
 
@@ -26,7 +26,7 @@ const ExtraItem = ({ extra }) => {
 
     const onDelete = async () => {
         if (window.confirm("Are you sure to remove pernamently this extra ingredient?")) {
-            const action = async () => axios.delete(`/extra/${extraState._id}`,
+            const action = async () => axios.delete(`/owner/extra/${extraState._id}`,
                 { validateStatus: false });
             await requestHandler(action);
             history.go();

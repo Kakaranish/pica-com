@@ -10,11 +10,11 @@ const ImagesPreviews = ({ images, restaurantId }) => {
 			<h3>Images in gallery</h3>
 			<div className="row">
 				{
-					images.map((image, i) => <>
+					images.map((image, i) =>
 						<div className="col-6" key={`prev-${i}`}>
 							<ImagePreview image={image} restaurantId={restaurantId} />
 						</div>
-					</>)
+					)
 				}
 			</div>
 		</div>

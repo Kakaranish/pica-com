@@ -13,7 +13,7 @@ const EditRestaurantBasicInfoPage = ({ match }) => {
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const action = async () => axios.get(`/restaurants/${restaurantId}`,
+            const action = async () => axios.get(`/owner/restaurants/${restaurantId}`,
                 { validateStatus: false });
             const result = await requestHandler(action);
             setState({ loading: false, restaurant: result });
@@ -26,7 +26,7 @@ const EditRestaurantBasicInfoPage = ({ match }) => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        const uri = `/restaurants/${restaurantId}/basic`;
+        const uri = `/owner/restaurants/${restaurantId}/basic`;
         const action = async () => axios.put(uri, formData, { validateStatus: false });
         const result = await requestHandler(action);
         if(result) {

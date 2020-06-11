@@ -10,7 +10,7 @@ const CreateRestaurantPage = () => {
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const action = async () => axios.get('/restaurants/draft',
+            const action = async () => axios.get('/owner/restaurants/draft',
                 { validateStatus: false });
             const result = await requestHandler(action);
             if (result !== true) {
@@ -27,7 +27,7 @@ const CreateRestaurantPage = () => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
-        const action = async () => axios.post('/restaurants', formData,
+        const action = async () => axios.post('/owner/restaurants', formData,
             { validateStatus: false });
         await requestHandler(action);
     }

@@ -14,7 +14,7 @@ const EditMenuPage = ({ match }) => {
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const uri = `/restaurants/${restaurantId}/menu`;
+            const uri = `/owner/restaurants/${restaurantId}/menu`;
             const action = async () => axios.get(uri, { validateStatus: false });
             const result = await requestHandler(action);
 

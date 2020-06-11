@@ -16,7 +16,7 @@ const CreatePizzaPage = ({ match }) => {
         formData.price = parseFloat(formData.price);
         formData.diameter = parseInt(formData.diameter);
 
-        const action = async () => axios.post('/pizza', formData,
+        const action = async () => axios.post('/owner/pizza', formData,
             { validateStatus: false });
         await requestHandler(action);
         

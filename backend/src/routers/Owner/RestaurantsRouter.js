@@ -6,18 +6,18 @@ import Restaurant from '../../db/models/Restaurant';
 import { withAsyncRequestHandler } from '../../common/utils';
 import { validationExaminator, uploadImageMW } from '../../common/middlewares';
 
-const RestaurantRouter = express.Router();
+const RestaurantsRouter = express.Router();
 
 require('dotenv').config();
 
-RestaurantRouter.get('/', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
+RestaurantsRouter.get('/', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const restaurants = await Restaurant.find({ ownerId: req.identity.id });
         res.status(200).json(restaurants);
     });
 });
 
-RestaurantRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
+RestaurantsRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
             const draftRestaurant = await Restaurant.findOne({
@@ -29,14 +29,14 @@ RestaurantRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
     }
 );
 
-RestaurantRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
+RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const restaurant = await Restaurant.findById(req.params.id);
         res.status(200).json(restaurant);
     });
 });
 
-RestaurantRouter.get('/:id/images', miscPicUrlsValidationMWs(), async (req, res) => {
+RestaurantsRouter.get('/:id/images', miscPicUrlsValidationMWs(), async (req, res) => {
     if (validationResult(req).errors.length > 0)
         return res.status(400).json(validationResult(req).errors);
     withAsyncRequestHandler(res, async () => {
@@ -48,7 +48,7 @@ RestaurantRouter.get('/:id/images', miscPicUrlsValidationMWs(), async (req, res)
     })
 });
 
-RestaurantRouter.post('/:id/image', miscPicUrlsValidationMWs(),
+RestaurantsRouter.post('/:id/image', miscPicUrlsValidationMWs(),
     uploadImageMW, async (req, res) => {
 
         if (!req.image) return res.status(400).json({
@@ -64,7 +64,7 @@ RestaurantRouter.post('/:id/image', miscPicUrlsValidationMWs(),
     }
 );
 
-RestaurantRouter.delete('/:id/image', deletePicUrlValidationMWs(),
+RestaurantsRouter.delete('/:id/image', deletePicUrlValidationMWs(),
     async (req, res) => {
 
         req.restaurant.images = req.restaurant.images.filter(
@@ -82,7 +82,7 @@ RestaurantRouter.delete('/:id/image', deletePicUrlValidationMWs(),
     }
 );
 
-RestaurantRouter.post('/', createDraftValidationMWs(), async (req, res) => {
+RestaurantsRouter.post('/', createDraftValidationMWs(), async (req, res) => {
     if (validationResult(req).errors.length > 0)
         return res.status(400).json(validationResult(req).errors);
     withAsyncRequestHandler(res, async () => {
@@ -103,7 +103,7 @@ RestaurantRouter.post('/', createDraftValidationMWs(), async (req, res) => {
     });
 });
 
-RestaurantRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
+RestaurantsRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
             await Restaurant.findByIdAndUpdate(req.params.id, {
@@ -124,7 +124,7 @@ RestaurantRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
     }
 );
 
-RestaurantRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
+RestaurantsRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const menu = await Restaurant.findById(req.params.id)
             .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended -_id')
@@ -222,4 +222,4 @@ function deletePicUrlValidationMWs() {
     ];
 }
 
-export default RestaurantRouter;
+export default RestaurantsRouter;

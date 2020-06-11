@@ -2,11 +2,11 @@ import express from 'express';
 import PizzaRouter from './PizzaRouter';
 import ExtraIngredientRouter from './ExtraIngredientRouter';
 import ExtraRouter from './ExtraRouter';
-import RestaurantRouter from './RestaurantRouter';
+import RestaurantsRouter from './RestaurantsRouter';
 
 const OwnerRouter = express.Router();
 
-OwnerRouter.use('/restaurants', RestaurantRouter);
+OwnerRouter.use('/restaurants', RestaurantsRouter);
 OwnerRouter.use('/pizza', PizzaRouter);
 OwnerRouter.use('/extra-ingredient', ExtraIngredientRouter);
 OwnerRouter.use('/extra', ExtraRouter);

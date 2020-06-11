@@ -15,7 +15,7 @@ const CreateExtraIngredientPage = ({ match }) => {
         formData.price = parseFloat(formData.price);
         formData.restaurantId = restaurantId;
 
-        const action = async () => axios.post('/extra-ingredient/', formData,
+        const action = async () => axios.post('/owner/extra-ingredient/', formData,
             { validateStatus: false });
 
         await requestHandler(action);

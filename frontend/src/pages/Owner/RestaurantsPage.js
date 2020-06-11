@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { requestHandler } from '../../common/utils';
 import axios from 'axios';
 import RestaurantInfo from './components/RestaurantInfo';
@@ -11,10 +11,12 @@ import CancelledRestaurants from './components/RestaurantsPage/CancelledRestaura
 
 const RestaurantsPage = () => {
 
+    const history = useHistory();
+
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const action = async () => axios.get('/restaurants');
+            const action = async () => axios.get('/owner/restaurants');
             const result = await requestHandler(action);
             setState({ loading: false, restaurants: result });
         };
@@ -37,9 +39,11 @@ const RestaurantsPage = () => {
             <>
                 <h3>In draft</h3>
                 <RestaurantInfo restaurant={draftRestaurant} >
-                    <Link to={`/owner/restaurants/${draftRestaurant._id}/edit`}>
+                    <Link to={`/owner/restaurants/${draftRestaurant._id}/edit`}
+                        className="btn btn-secondary">
                         Edit
                     </Link>
+
                 </RestaurantInfo>
             </>
         }

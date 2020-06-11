@@ -13,7 +13,7 @@ const ImagePreview = ({ image, restaurantId }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const onDelete = async () => {
-        const uri = `/restaurants/${restaurantId}/image`;
+        const uri = `/owner/restaurants/${restaurantId}/image`;
         const action = async () => axios.delete(uri, {
             data: { imageId: image._id },
             validateStatus: false
