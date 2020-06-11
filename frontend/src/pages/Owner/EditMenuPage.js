@@ -5,6 +5,7 @@ import PizzasTab from './components/EditMenuPage/PizzasTab';
 import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 import ExtraIngredientsTab from './components/EditMenuPage/ExtraIngredientsTab';
+import ExtrasTab from './components/EditMenuPage/ExtrasTab';
 
 const EditMenuPage = ({ match }) => {
 
@@ -47,6 +48,10 @@ const EditMenuPage = ({ match }) => {
             <TabContent uniqueInitial={'nav-extra-ing'}>
                 <ExtraIngredientsTab extraIngredients={state.menu.extraIngredients}
                     restaurantId={restaurantId} />
+            </TabContent>
+
+            <TabContent uniqueInitial={'nav-extras'}>
+                <ExtrasTab extras={state.menu.extras} restaurantId={restaurantId} />
             </TabContent>
 
         </div>

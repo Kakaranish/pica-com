@@ -4,7 +4,7 @@ import axios from 'axios';
 import ExtraForm from './components/ExtraForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 
-const CreateExtraIngredientPage = ({ match }) => {
+const CreateExtraPage = ({ match }) => {
 
     const restaurantId = match.params.id;
     const history = useHistory();
@@ -15,16 +15,16 @@ const CreateExtraIngredientPage = ({ match }) => {
         formData.price = parseFloat(formData.price);
         formData.restaurantId = restaurantId;
 
-        const action = async () => axios.post('/extra-ingredient/', formData,
+        const action = async () => axios.post('/extra/', formData,
             { validateStatus: false });
 
         await requestHandler(action);
-        alert('Extra ingredient created');
-            history.goBack();
+        alert('Extra created');
+        history.goBack();
     };
 
     return <>
-        <h3>Create Pizza Extra Ingredient</h3>
+        <h3>Create Extra</h3>
 
         <ExtraForm onSubmitCb={onSubmitCb}>
             <button type="submit" className="btn btn-success btn-block">
@@ -34,4 +34,4 @@ const CreateExtraIngredientPage = ({ match }) => {
     </>
 };
 
-export default CreateExtraIngredientPage;
+export default CreateExtraPage;
