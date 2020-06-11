@@ -9,12 +9,9 @@ import { createInterserviceToken } from './auth/utils';
 import { tokenValidatorMW } from './auth/validators';
 import AuthRouter from './routers/AuthRouter';
 import NotificationRouter from "./routers/NotificationRouter";
-import AdminRouter from "./routers/AdminRouter";
+import AdminRouter from "./routers/Admin/AdminRouter";
 import AccountRouter from "./routers/AccountRouter";
-import RestaurantRouter from "./routers/RestaurantRouter";
-import PizzaRouter from "./routers/PizzaRouter";
-import ExtraIngredientRouter from "./routers/ExtraIngredientRouter";
-import ExtraRouter from "./routers/ExtraRouter";
+import OwnerRouter from './routers/Owner/OwnerRouter';
 
 require('dotenv').config();
 
@@ -33,10 +30,7 @@ app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
-app.use('/restaurants', RestaurantRouter);
-app.use('/pizza', PizzaRouter);
-app.use('/extra-ingredient', ExtraIngredientRouter);
-app.use('/extra', ExtraRouter);
+app.use('/', OwnerRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {

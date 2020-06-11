@@ -1,13 +1,13 @@
 import express from 'express';
-import { param, body, validationResult } from 'express-validator';
-import { tokenValidatorMW, adminValidatorMW } from '../auth/validators';
-import User from '../db/models/User';
-import { withAsyncRequestHandler, parseObjectId } from '../common/utils';
-import { reCreateRefreshToken } from '../auth/utils';
+import { body, param, validationResult } from 'express-validator';
+import { reCreateRefreshToken } from '../../auth/utils';
+import { adminValidatorMW, tokenValidatorMW } from '../../auth/validators';
+import { parseObjectId, withAsyncRequestHandler } from '../../common/utils';
+import User from '../../db/models/User';
 
-const AdminRouter = express.Router();
+const UsersRouter = express.Router();
 
-AdminRouter.get('/users', tokenValidatorMW, adminValidatorMW, async (req, res) => {
+UsersRouter.get('/', tokenValidatorMW, adminValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const users = await User.find({ providerKey: { $ne: 'root@pica.com' } })
             .select('_id provider providerKey firstName lastName');
@@ -15,16 +15,16 @@ AdminRouter.get('/users', tokenValidatorMW, adminValidatorMW, async (req, res) =
     });
 });
 
-AdminRouter.get('/users/:id', tokenValidatorMW, adminValidatorMW, async (req, res) => {
+UsersRouter.get('/:id', tokenValidatorMW, adminValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const user = await User.findOne({ _id: req.params.id })
             .select('-password');
-        
+
         res.status(200).json(user.providerKey === 'root@pica.com' ? null : user);
     });
 });
 
-AdminRouter.put('/users/:id', tokenValidatorMW,
+UsersRouter.put('/:id', tokenValidatorMW,
     adminValidatorMW, updateUserValidationMWs(), async (req, res) => {
         if (validationResult(req).errors.length > 0)
             return res.status(400).json(validationResult(req).errors)
@@ -75,4 +75,4 @@ function updateUserValidationMWs() {
     ];
 }
 
-export default AdminRouter;
+export default UsersRouter;

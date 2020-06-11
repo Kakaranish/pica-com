@@ -1,50 +1,50 @@
 import express from 'express';
 import { body, param } from 'express-validator';
-import { tokenValidatorMW, ownerValidatorMW } from '../auth/validators';
-import { validationExaminator } from '../common/middlewares';
-import Restaurant from '../db/models/Restaurant';
-import Extra from '../db/models/Extra';
-import { withAsyncRequestHandler } from '../common/utils';
+import { validationExaminator } from '../../common/middlewares';
+import { withAsyncRequestHandler } from '../../common/utils';
+import Extra from '../../db/models/Extra';
+import Restaurant from '../../db/models/Restaurant';
+import { ownerValidatorMW, tokenValidatorMW } from '../../auth/validators';
 
-const ExtraIngredientRouter = express.Router();
+const ExtraRouter = express.Router();
 
-ExtraIngredientRouter.post('/', createExtraIngredientValidationMWs(),
+ExtraRouter.post('/', createExtraValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
-            const extraIngredient = new Extra({
+            const extra = new Extra({
                 restaurantId: req.body.restaurantId,
                 name: req.body.name,
                 price: req.body.price
             });
-            await extraIngredient.save();
+            await extra.save();
 
-            req.restaurant.menu.extraIngredients.push(extraIngredient._id);
+            req.restaurant.menu.extras.push(extra._id);
             req.restaurant.save();
             res.sendStatus(200);
         });
     }
 );
 
-ExtraIngredientRouter.put('/:id', updateExtraIngredientValidationMWs(),
+ExtraRouter.put('/:id', updateExtraValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
-            req.extraIngredient.name = req.body.name;
-            req.extraIngredient.price = req.body.price;
-            await req.extraIngredient.save();
+            req.extra.name = req.body.name;
+            req.extra.price = req.body.price;
+            await req.extra.save();
 
             res.sendStatus(200);
         });
     }
 );
 
-ExtraIngredientRouter.delete('/:id', deleteExtraIngredientValidationMWs(),
+ExtraRouter.delete('/:id', deleteExtraValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
-            req.extraIngredient.isDeleted = true;
-            await req.extraIngredient.save();
+            req.extra.isDeleted = true;
+            await req.extra.save();
 
-            await Restaurant.findByIdAndUpdate(req.extraIngredient.restaurantId, {
-                $pull: { 'menu.extraIngredients': req.params.id }
+            await Restaurant.findByIdAndUpdate(req.extra.restaurantId, {
+                $pull: { 'menu.extras': req.params.id }
             });
 
             res.sendStatus(200);
@@ -52,7 +52,7 @@ ExtraIngredientRouter.delete('/:id', deleteExtraIngredientValidationMWs(),
     }
 );
 
-function createExtraIngredientValidationMWs() {
+function createExtraValidationMWs() {
     return [
         tokenValidatorMW,
         ownerValidatorMW,
@@ -69,16 +69,16 @@ function createExtraIngredientValidationMWs() {
     ];
 }
 
-function updateExtraIngredientValidationMWs() {
+function updateExtraValidationMWs() {
     return [
         tokenValidatorMW,
         ownerValidatorMW,
         param('id').custom(async (value, { req }) => {
-            const extraIngredient = (await Extra.findById(value)
+            const extra = (await Extra.findById(value)
                 .populate('restaurant', 'ownerId'));
-            if (extraIngredient.toObject().restaurant.ownerId != req.identity.id)
-                return Promise.reject('no such extra ingredient');
-            req.extraIngredient = extraIngredient;
+            if (extra.toObject().restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such extra');
+            req.extra = extra;
         }),
         body('name').notEmpty().withMessage('cannot be empty'),
         body('price').isFloat({ gt: 0 }).withMessage('must be float greater than 0').bail()
@@ -87,19 +87,19 @@ function updateExtraIngredientValidationMWs() {
     ];
 }
 
-function deleteExtraIngredientValidationMWs() {
+function deleteExtraValidationMWs() {
     return [
         tokenValidatorMW,
         ownerValidatorMW,
         param('id').custom(async (value, { req }) => {
-            const extraIngredient = await Extra.findById(value)
+            const extra = await Extra.findById(value)
                 .populate('restaurant', 'ownerId')
-            if (extraIngredient.toObject().restaurant.ownerId != req.identity.id)
-                return Promise.reject('no such extra ingredient');
-            req.extraIngredient = extraIngredient;
+            if (extra.toObject().restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such extra');
+            req.extra = extra;
         }),
         validationExaminator
     ];
 }
 
-export default ExtraIngredientRouter;
+export default ExtraRouter;

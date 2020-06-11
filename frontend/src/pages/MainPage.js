@@ -41,14 +41,21 @@ const MainPage = (props) => {
                 <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
                     <p>Admin-only actions:</p>
 
-                    <Link to={'/admin/manage/users'}>
-                        Manage Users
-                    </Link>
+                    <p>
+                        <Link to={'/admin/manage/users'}>
+                            Manage Users
+                        </Link>
+                    </p>
 
+                    <p>
+                        <Link to={'/admin/manage/restaurants'}>
+                            Manage Restaurants
+                        </Link>
+                    </p>
                 </div>
             </>
         }
-        
+
         {
             props.identity?.role === 'OWNER' &&
             <>

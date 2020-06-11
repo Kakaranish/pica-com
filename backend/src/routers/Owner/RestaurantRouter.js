@@ -1,10 +1,10 @@
 import express from 'express';
 import azure from 'azure-storage';
 import { body, validationResult, param } from 'express-validator';
-import { tokenValidatorMW, ownerValidatorMW } from '../auth/validators';
-import Restaurant from '../db/models/Restaurant';
-import { withAsyncRequestHandler } from '../common/utils';
-import { validationExaminator, uploadImageMW } from '../common/middlewares';
+import { tokenValidatorMW, ownerValidatorMW } from '../../auth/validators';
+import Restaurant from '../../db/models/Restaurant';
+import { withAsyncRequestHandler } from '../../common/utils';
+import { validationExaminator, uploadImageMW } from '../../common/middlewares';
 
 const RestaurantRouter = express.Router();
 

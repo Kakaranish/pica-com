@@ -1,10 +1,10 @@
 import express from 'express';
 import { body, param } from 'express-validator';
-import { tokenValidatorMW, ownerValidatorMW } from '../auth/validators';
-import { validationExaminator } from '../common/middlewares';
-import { withAsyncRequestHandler } from '../common/utils';
-import Pizza from '../db/models/Pizza';
-import Restaurant from '../db/models/Restaurant';
+import { tokenValidatorMW, ownerValidatorMW } from '../../auth/validators';
+import { validationExaminator } from '../../common/middlewares';
+import { withAsyncRequestHandler } from '../../common/utils';
+import Pizza from '../../db/models/Pizza';
+import Restaurant from '../../db/models/Restaurant';
 
 const PizzaRouter = express.Router();
 
@@ -47,7 +47,7 @@ PizzaRouter.delete('/:id', deletePizzaValidationMWs(), async (req, res) => {
 
         await Restaurant.findByIdAndUpdate(req.pizza.restaurantId, {
             $pull: { 'menu.pizzas': req.params.id }
-        })
+        });
         res.sendStatus(200);
     });
 });
