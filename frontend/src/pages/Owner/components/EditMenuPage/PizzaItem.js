@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import PizzaForm from '../PizzaForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../../../common/utils';
-import axios from 'axios';
 
 const PizzaItem = ({ pizza }) => {
+
+    const history = useHistory();
 
     const [inEditMode, setInEditMode] = useState(false);
     const [pizzaState, setPizzaState] = useState(Object.assign({}, pizza));
@@ -13,7 +16,6 @@ const PizzaItem = ({ pizza }) => {
         let formData = getFormDataJsonFromEvent(event);
         formData.price = parseFloat(formData.price);
         formData.diameter = parseInt(formData.diameter);
-        formData.pizzaId = pizzaState._id;
 
         const action = async () => axios.put(`/pizza/${pizzaState._id}`, formData,
             { validateStatus: false });
@@ -22,6 +24,15 @@ const PizzaItem = ({ pizza }) => {
         setPizzaState(pizzaState => Object.assign(formData, { _id: pizzaState._id }));
         setInEditMode(false);
     }
+
+    const onDelete = async () => {
+        if (window.confirm("Are you sure to remove pernamently this pizza?")) {
+            const action = async () => axios.delete(`/pizza/${pizzaState._id}`,
+                { validateStatus: false });
+            await requestHandler(action);
+            history.go();
+        }
+    };
 
     if (!inEditMode) return <>
         <p>
@@ -33,7 +44,7 @@ const PizzaItem = ({ pizza }) => {
         </p>
 
         <p>
-            <b>Diameter: </b> {pizzaState.diameter}
+            <b>Diameter: </b> {pizzaState.diameter} cm
         </p>
 
         <p>
@@ -42,6 +53,10 @@ const PizzaItem = ({ pizza }) => {
 
         <button className="btn btn-primary" onClick={() => setInEditMode(true)}>
             Edit
+        </button>
+
+        <button className="btn btn-danger" onClick={onDelete}>
+            Delete
         </button>
     </>
 

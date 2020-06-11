@@ -15,7 +15,7 @@ const PizzaForm = ({ pizza, onSubmitCb = () => { }, children }) => <>
 		</div>
 
 		<div className="form-group">
-			<label>Diameter</label>
+			<label>Diameter (cm)</label>
 			<input name="diameter" type="number" className="form-control"
 				min={0} step={1} placeholder="Diameter..."
 				defaultValue={pizza?.diameter} required />

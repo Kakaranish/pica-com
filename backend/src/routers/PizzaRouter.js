@@ -1,5 +1,5 @@
 import express from 'express';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { tokenValidatorMW, ownerValidatorMW } from '../auth/validators';
 import { validationExaminator } from '../common/middlewares';
 import { withAsyncRequestHandler } from '../common/utils';
@@ -40,6 +40,18 @@ PizzaRouter.put('/:id', updatePizzaValidationMWs(), async (req, res) => {
     });
 });
 
+PizzaRouter.delete('/:id', deletePizzaValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        req.pizza.isDeleted = true;
+        await req.pizza.save();
+
+        await Restaurant.findByIdAndUpdate(req.pizza.restaurantId, {
+            $pull: { 'menu.pizzas': req.params.id }
+        })
+        res.sendStatus(200);
+    });
+});
+
 function createPizzaValidationMWs() {
     return [
         tokenValidatorMW,
@@ -63,10 +75,10 @@ function updatePizzaValidationMWs() {
     return [
         tokenValidatorMW,
         ownerValidatorMW,
-        body('pizzaId').custom(async (value, { req }) => {
-            const pizza = (await Pizza.findById(value)
-                .populate('restaurant', 'ownerId')).toObject();
-            if (pizza.restaurant.ownerId != req.identity.id)
+        param('id').custom(async (value, { req }) => {
+            const pizza = await Pizza.findById(value)
+                .populate('restaurant', 'ownerId');
+            if (pizza.toObject().restaurant.ownerId != req.identity.id)
                 return Promise.reject('no such pizza');
             req.pizza = pizza;
         }),
@@ -75,6 +87,21 @@ function updatePizzaValidationMWs() {
         body('price').isFloat({ gt: 0 }).withMessage('must be float greater than 0').bail()
             .customSanitizer(value => parseFloat(value.toFixed(2))),
         body('diameter').isInt({ gt: 0 }).withMessage('must be int greater than 0'),
+        validationExaminator
+    ];
+}
+
+function deletePizzaValidationMWs() {
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('id').custom(async (value, { req }) => {
+            const pizza = await Pizza.findById(value)
+                .populate('restaurant', 'ownerId')
+            if (pizza.toObject().restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such pizza');
+            req.pizza = pizza;
+        }),
         validationExaminator
     ];
 }

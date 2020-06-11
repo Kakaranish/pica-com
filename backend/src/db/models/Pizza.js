@@ -22,6 +22,12 @@ const pizzaSchema = new Schema({
         type: Number,
         set: v => v.toFixed(0),
         required: true
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+        required: true,
+        select: false
     }
 });
 
