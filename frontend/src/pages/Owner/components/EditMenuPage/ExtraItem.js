@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import ExtraForm from '../ExtraForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../../../common/utils';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const ExtraItem = ({ extra }) => {
 
+    const history = useHistory();
+    
     const [inEditMode, setInEditMode] = useState(false);
     const [extraState, setExtraState] = useState(Object.assign({}, extra));
 
@@ -21,6 +24,15 @@ const ExtraItem = ({ extra }) => {
         setInEditMode(false);
     };
 
+    const onDelete = async () => {
+        if (window.confirm("Are you sure to remove pernamently this extra ingredient?")) {
+            const action = async () => axios.delete(`/extra/${extraState._id}`,
+                { validateStatus: false });
+            await requestHandler(action);
+            history.go();
+        }
+    };
+
     if (!inEditMode) return <>
         <p>
             <b>Name: </b> {extraState.name}
@@ -30,8 +42,12 @@ const ExtraItem = ({ extra }) => {
             <b>Price: </b> {extraState.price.toFixed(2)} PLN
         </p>
 
-        <button className="btn btn-primary" onClick={() => setInEditMode(true)}>
+        <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
             Edit
+        </button>
+
+        <button className="btn btn-danger" onClick={onDelete}>
+            Delete
         </button>
     </>
 

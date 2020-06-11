@@ -14,6 +14,7 @@ import AccountRouter from "./routers/AccountRouter";
 import RestaurantRouter from "./routers/RestaurantRouter";
 import PizzaRouter from "./routers/PizzaRouter";
 import ExtraIngredientRouter from "./routers/ExtraIngredientRouter";
+import ExtraRouter from "./routers/ExtraRouter";
 
 require('dotenv').config();
 
@@ -35,6 +36,7 @@ app.use('/account', AccountRouter);
 app.use('/restaurants', RestaurantRouter);
 app.use('/pizza', PizzaRouter);
 app.use('/extra-ingredient', ExtraIngredientRouter);
+app.use('/extra', ExtraRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {

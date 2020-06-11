@@ -37,6 +37,21 @@ ExtraRouter.put('/:id', updateExtraValidationMWs(),
     }
 );
 
+ExtraRouter.delete('/:id', deleteExtraValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.extra.isDeleted = true;
+            await req.extra.save();
+
+            await Restaurant.findByIdAndUpdate(req.extra.restaurantId, {
+                $pull: { 'menu.extras': req.params.id }
+            });
+
+            res.sendStatus(200);
+        });
+    }
+);
+
 function createExtraValidationMWs() {
     return [
         tokenValidatorMW,
@@ -68,6 +83,21 @@ function updateExtraValidationMWs() {
         body('name').notEmpty().withMessage('cannot be empty'),
         body('price').isFloat({ gt: 0 }).withMessage('must be float greater than 0').bail()
             .customSanitizer(value => parseFloat(value.toFixed(2))),
+        validationExaminator
+    ];
+}
+
+function deleteExtraValidationMWs() {
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('id').custom(async (value, { req }) => {
+            const extra = await Extra.findById(value)
+                .populate('restaurant', 'ownerId')
+            if (extra.toObject().restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such extra');
+            req.extra = extra;
+        }),
         validationExaminator
     ];
 }

@@ -37,6 +37,21 @@ ExtraIngredientRouter.put('/:id', updateExtraIngredientValidationMWs(),
     }
 );
 
+ExtraIngredientRouter.delete('/:id', deleteExtraIngredientValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.extraIngredient.isDeleted = true;
+            await req.extraIngredient.save();
+
+            await Restaurant.findByIdAndUpdate(req.extraIngredient.restaurantId, {
+                $pull: { 'menu.extraIngredients': req.params.id }
+            });
+
+            res.sendStatus(200);
+        });
+    }
+);
+
 function createExtraIngredientValidationMWs() {
     return [
         tokenValidatorMW,
@@ -68,6 +83,21 @@ function updateExtraIngredientValidationMWs() {
         body('name').notEmpty().withMessage('cannot be empty'),
         body('price').isFloat({ gt: 0 }).withMessage('must be float greater than 0').bail()
             .customSanitizer(value => parseFloat(value.toFixed(2))),
+        validationExaminator
+    ];
+}
+
+function deleteExtraIngredientValidationMWs() {
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('id').custom(async (value, { req }) => {
+            const extraIngredient = await Extra.findById(value)
+                .populate('restaurant', 'ownerId')
+            if (extraIngredient.toObject().restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such extra ingredient');
+            req.extraIngredient = extraIngredient;
+        }),
         validationExaminator
     ];
 }
