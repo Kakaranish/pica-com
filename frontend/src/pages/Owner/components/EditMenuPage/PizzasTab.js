@@ -4,11 +4,11 @@ import PizzaItem from './PizzaItem';
 
 const PizzasTab = ({ restaurantId, pizzas }) => {
 
+    const createUri = `/owner/restaurants/${restaurantId}/create/pizza`;
     if (!pizzas?.length) return <>
         <h3>No pizzas yet</h3>
 
-        <Link to={`/owner/restaurants/${restaurantId}/create/pizza`}
-            className="btn btn-success">
+        <Link to={createUri} className="btn btn-success">
             Create Pizza
         </Link>
     </>
@@ -22,8 +22,7 @@ const PizzasTab = ({ restaurantId, pizzas }) => {
             )
         }
 
-        <Link to={`/owner/restaurants/${restaurantId}/create/pizza`}
-            className="btn btn-success">
+        <Link to={createUri} className="btn btn-success">
             Create Pizza
         </Link>
     </>

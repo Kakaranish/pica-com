@@ -5,14 +5,15 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import axios from 'axios';
 import { connectDb, initRootUser } from './db/utils';
-import AuthRouter from './routers/AuthRouter';
 import { createInterserviceToken } from './auth/utils';
 import { tokenValidatorMW } from './auth/validators';
+import AuthRouter from './routers/AuthRouter';
 import NotificationRouter from "./routers/NotificationRouter";
 import AdminRouter from "./routers/AdminRouter";
 import AccountRouter from "./routers/AccountRouter";
 import RestaurantRouter from "./routers/RestaurantRouter";
 import PizzaRouter from "./routers/PizzaRouter";
+import ExtraIngredientRouter from "./routers/ExtraIngredientRouter";
 
 require('dotenv').config();
 
@@ -33,6 +34,7 @@ app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
 app.use('/restaurants', RestaurantRouter);
 app.use('/pizza', PizzaRouter);
+app.use('/extra-ingredient', ExtraIngredientRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {

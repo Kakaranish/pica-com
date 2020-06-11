@@ -1,10 +1,10 @@
 import React from 'react';
-import PizzaForm from './components/PizzaForm';
+import ExtraForm from './components/ExtraForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
-const CreatePizzaPage = ({ match }) => {
+const CreateExtraIngredientPage = ({ match }) => {
 
     const restaurantId = match.params.id;
     const history = useHistory();
@@ -12,27 +12,26 @@ const CreatePizzaPage = ({ match }) => {
     const onSubmitCb = async event => {
         event.preventDefault();
         let formData = getFormDataJsonFromEvent(event);
-        formData.restaurantId = restaurantId;
         formData.price = parseFloat(formData.price);
-        formData.diameter = parseInt(formData.diameter);
+        formData.restaurantId = restaurantId;
 
-        const action = async () => axios.post('/pizza', formData,
+        const action = async () => axios.post('/extra-ingredient/', formData,
             { validateStatus: false });
+
         await requestHandler(action);
-        
-        alert('Pizza created');
-        history.goBack();
-    }
+        alert('Extra ingredient created');
+            history.goBack();
+    };
 
     return <>
-        <h3>Create Pizza</h3>
+        <h3>Create Pizza Extra Ingredient</h3>
 
-        <PizzaForm onSubmitCb={onSubmitCb}>
+        <ExtraForm onSubmitCb={onSubmitCb}>
             <button type="submit" className="btn btn-success btn-block">
                 Create
             </button>
-        </PizzaForm>
+        </ExtraForm>
     </>
 };
 
-export default CreatePizzaPage;
+export default CreateExtraIngredientPage;

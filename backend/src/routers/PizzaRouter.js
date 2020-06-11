@@ -20,9 +20,7 @@ PizzaRouter.post('/', createPizzaValidationMWs(), async (req, res) => {
         await pizza.save();
 
         req.restaurant.menu.pizzas.push(pizza._id);
-        await Restaurant.findByIdAndUpdate(req.restaurant.id, {
-            $set: { 'menu.pizzas': req.restaurant.menu.pizzas }
-        });
+        req.restaurant.save();
 
         res.status(200).json(pizza._id);
     });
