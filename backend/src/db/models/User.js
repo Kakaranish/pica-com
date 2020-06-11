@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import moment from 'moment';
-import AddressSchema from './AddressSchema';
+import AddressSchema from './schemas/AddressSchema';
 
 const userSchema = new Schema({
     provider: {

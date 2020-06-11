@@ -18,7 +18,18 @@ const EditRestaurantPage = ({ match }) => {
             </Link>
         </p>
 
-        <br />
+        <p>
+            <Link to={`/owner/restaurants/${restaurantId}/edit/menu`}>
+                Edit menu
+            </Link>
+        </p>
+
+
+        <p>
+            <Link to={`/owner/restaurants/${restaurantId}/create/pizza`}>
+                Create pizza (TEMP)
+            </Link>
+        </p>
     </>
 };
 

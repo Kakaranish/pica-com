@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import LocationSchema from './LocationSchema';
-import menuSchema from './MenuSchema';
-import ImageSchema from './ImageSchema';
+import LocationSchema from './schemas/LocationSchema';
+import menuSchema from './schemas/MenuSchema';
+import ImageSchema from './schemas/ImageSchema';
 
 const restaurantSchema = new Schema({
     ownerId: {
@@ -51,7 +51,7 @@ const restaurantSchema = new Schema({
     menu: {
         type: menuSchema,
         required: true,
-        default: { }
+        default: {}
     }
 }, {
     timestamps: {

@@ -6,6 +6,8 @@ import CreateRestaurantPage from './CreateRestaurantPage';
 import EditRestaurantPage from './EditRestaurantPage';
 import EditGalleryPage from './EditGalleryPage';
 import EditRestaurantBasicInfoPage from './EditRestaurantBasicInfoPage';
+import EditMenuPage from './EditMenuPage';
+import CreatePizzaPage from './CreatePizzaPage';
 
 const Routes = () => <>
     <Switch>
@@ -20,6 +22,13 @@ const Routes = () => <>
             component={EditRestaurantBasicInfoPage} />
         <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/edit/gallery'
             component={EditGalleryPage} />
+        <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/edit/menu'
+            component={EditMenuPage} />
+        
+        <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/create/pizza'
+            component={CreatePizzaPage} />
+
+        
     </Switch>
 </>
 

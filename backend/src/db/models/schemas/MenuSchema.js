@@ -1,26 +1,31 @@
 import { Schema } from 'mongoose';
+import '../Extra';
 
-const menuSchema = new Schema({
-    products: {
-        type: [Schema.Types.ObjectId],
+const MenuSchema = new Schema({
+    pizzas: [{
+        type: Schema.Types.ObjectId,
+        ref: 'pizza',
         required: true,
         default: []
-    },
-    extraIngredients: {
+    }],
+    extraIngredients: [{
         type: [Schema.Types.ObjectId],
+        ref: 'extra',
         required: true,
         default: []
-    },
-    extras: {
+    }],
+    extras: [{
         type: [Schema.Types.ObjectId],
+        ref: 'extra',
         required: true,
         default: []
-    },
-    recommended: {
+    }],
+    recommended: [{
         type: [Schema.Types.ObjectId],
+        ref: 'pizza',
         required: true,
         default: []
-    },
+    }],
 });
 
-export default menuSchema;
+export default MenuSchema;

@@ -124,8 +124,16 @@ RestaurantRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
     }
 );
 
+RestaurantRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const menu = await Restaurant.findById(req.params.id)
+            .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended -_id')
+            .select('menu');
+        res.status(200).json(menu.menu);
+    });
+});
 
-function updateBasicInfoValidationMWs() {
+function getMenuValidationMWs() {
     return [
         tokenValidatorMW,
         ownerValidatorMW,
@@ -135,6 +143,15 @@ function updateBasicInfoValidationMWs() {
                 return Promise.reject('no such restaurant');
             req.restaurant = restaurant;
         }),
+        validationExaminator
+    ];
+}
+
+function updateBasicInfoValidationMWs() {
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('id').notEmpty().withMessage('cannot be empty'),
         body('name').notEmpty().withMessage('cannot be empty'),
         body('description').notEmpty().withMessage('cannot be empty'),
         body('city').notEmpty().withMessage('cannot be empty'),
