@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { requestHandler } from '../../common/utils';
 import { Redirect, useHistory } from 'react-router-dom';
-import RestaurantOverview from '../../common/components/RestaurantOverview';
-import { changeStatus } from './common';
+import axios from 'axios';
+import { changeStatus } from './common/utils';
+import { requestHandler } from '../../../common/utils';
+import RestaurantOverview from '../../../common/components/RestaurantOverview';
 
 const RestaurantOverviewPage = ({ match }) => {
 

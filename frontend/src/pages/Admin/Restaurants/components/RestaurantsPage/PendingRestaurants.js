@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import RestaurantBasicInfo from './RestaurantBasicInfo';
 import Restaurants from './Restaurants';
-import { changeStatus } from '../../common';
+import { changeStatus } from '../../common/utils';
 
 const PendingRestaurants = ({ currentTab }) => {
 

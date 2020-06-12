@@ -1,5 +1,5 @@
 import axios from "axios";
-import { requestHandler } from "../../common/utils";
+import { requestHandler } from "../../../../common/utils";
 
 export const changeStatus = async (restaurantId, status) => {
     const uri = `/admin/restaurants/${restaurantId}/status/${status}`

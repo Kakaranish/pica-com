@@ -1,16 +1,16 @@
 import React from 'react';
-import RestaurantBasicInfo from './RestaurantBasicInfo';
 import { Link, useHistory } from 'react-router-dom';
 import Restaurants from './Restaurants';
-import { changeStatus } from '../../common';
+import RestaurantBasicInfo from './RestaurantBasicInfo';
+import { changeStatus } from '../../common/utils';
 
-const AcceptedRestaurants = ({ currentTab }) => {
+const RejectedRestaurants = ({ currentTab }) => {
 
     const history = useHistory();
 
     return <>
         <Restaurants currentTab={currentTab}
-            status="accepted"
+            status="rejected"
             showRestaurants={restaurants => restaurants.map((restaurant, i) =>
                 <div className="p-3" style={{ border: '1px solid green' }}
                     key={`r-${i}`}>
@@ -30,17 +30,17 @@ const AcceptedRestaurants = ({ currentTab }) => {
                         Make Pending
                     </button>
 
-                    <button className="btn btn-danger mr-2"
+                    <button className="btn btn-success mr-2"
                         onClick={async () => {
-                            await changeStatus(restaurant._id, 'rejected');
+                            await changeStatus(restaurant._id, 'accepted');
                             history.go();
                         }}>
-                        Reject
+                        Accept
                     </button>
                 </div>
             )}
         />
     </>
-}
+};
 
-export default AcceptedRestaurants;
+export default RejectedRestaurants;

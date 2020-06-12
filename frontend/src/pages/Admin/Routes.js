@@ -1,10 +1,10 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
 import AuthroizedRouteOnly from '../../route-types/AuthorizedOnlyRoute';
-import UsersPage from './manage/UsersPage';
-import EditUserPage from './manage/EditUserPage';
-import RestaurantsPage from './manage/RestaurantsPage';
-import RestaurantOverviewPage from './RestaurantOverviewPage';
+import UsersPage from './Users/UsersPage';
+import EditUserPage from './Users/EditUserPage';
+import RestaurantsPage from './Restaurants/RestaurantsPage';
+import RestaurantOverviewPage from './Restaurants/RestaurantOverviewPage';
 
 const Routes = () => <>
     <Switch>

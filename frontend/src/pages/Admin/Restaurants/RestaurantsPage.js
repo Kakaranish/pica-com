@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import TabHeader from './RestaurantsPage/TabHeader';
-import PendingRestaurants from './RestaurantsPage/PendingRestaurants';
-import AcceptedRestaurants from './RestaurantsPage/AcceptedRestaurants';
-import RejectedRestaurants from './RestaurantsPage/RejectedRestaurants';
-import CancelledRestaurants from './RestaurantsPage/CancelledRestaurants';
+import TabHeader from './components/RestaurantsPage/TabHeader';
+import PendingRestaurants from './components/RestaurantsPage/PendingRestaurants';
+import AcceptedRestaurants from './components/RestaurantsPage/AcceptedRestaurants';
+import RejectedRestaurants from './components/RestaurantsPage/RejectedRestaurants';
+import CancelledRestaurants from './components/RestaurantsPage/CancelledRestaurants';
 
 const RestaurantsPage = () => {
 

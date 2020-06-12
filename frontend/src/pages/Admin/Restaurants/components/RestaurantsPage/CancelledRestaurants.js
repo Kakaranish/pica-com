@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Restaurants from './Restaurants';
 import RestaurantBasicInfo from './RestaurantBasicInfo';
-import { Link } from 'react-router-dom';
 
 const CancelledRestaurants = ({ currentTab }) => <>
     <Restaurants currentTab={currentTab}

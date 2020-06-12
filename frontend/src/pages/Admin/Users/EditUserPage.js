@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 import { getFormDataJsonFromEvent, requestHandler } from '../../../common/utils';
-import { useHistory } from 'react-router-dom';
 
 const EditUserPage = (props) => {
 

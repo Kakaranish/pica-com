@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TabContent from './TabContent';
 import axios from 'axios';
-import { requestHandler } from '../../../../common/utils';
+import { requestHandler } from '../../../../../common/utils';
 
 const Restaurants = ({ currentTab, status, showRestaurants }) => {
 
