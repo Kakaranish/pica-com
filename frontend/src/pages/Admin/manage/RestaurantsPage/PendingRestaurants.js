@@ -10,11 +10,11 @@ const PendingRestaurants = ({ currentTab }) => {
 	const history = useHistory();
 
 	const changeStatus = async (restaurantId, status) => {
-		const uri = `/admin/restaurants/${restaurantId}/status/${status}`
-		const action = async () => axios.put(uri, {}, { validateStatus: false });
-		await requestHandler(action);
-		history.go();
-	};
+        const uri = `/admin/restaurants/${restaurantId}/status/${status}`
+        const action = async () => axios.put(uri, {}, { validateStatus: false });
+        await requestHandler(action);
+        history.go();
+    };
 
 	return <>
 		<Restaurants currentTab={currentTab}
@@ -27,16 +27,22 @@ const PendingRestaurants = ({ currentTab }) => {
 
 					<Link to={`/admin/manage/restaurants/${restaurant._id}`}
 						className="btn btn-primary mr-2">
-						Show full info
+						Overview
 					</Link>
 
 					<button className="btn btn-success mr-2"
-						onClick={() => changeStatus(restaurant._id, 'accepted')}>
+						onClick={() => {
+							changeStatus(restaurant._id, 'accepted');
+							history.go();
+						}}>
 						Accept
 					</button>
 
 					<button className="btn btn-danger mr-2"
-						onClick={() => changeStatus(restaurant._id, 'rejected')}>
+						onClick={() => {
+							changeStatus(restaurant._id, 'rejected');
+							history.go();
+						}}>
 						Reject
 					</button>
 				</div>

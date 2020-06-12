@@ -1,9 +1,9 @@
 import React from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { changeStatus } from '../../common';
 import RestaurantInfo from '../RestaurantInfo';
+import { Link, useHistory } from 'react-router-dom';
+import { changeStatus } from '../../common';
 
-const CancelledRestaurans = ({ restaurants }) => {
+const DraftRestaurants = ({ restaurants }) => {
 
     const history = useHistory();
 
@@ -19,18 +19,18 @@ const CancelledRestaurans = ({ restaurants }) => {
 
                     <button className="btn btn-primary mr-3"
                         onClick={() => {
-                            changeStatus(restaurant._id, 'draft');
+                            changeStatus(restaurant._id, "pending");
                             history.go();
                         }}>
-                        Make Draft
+                        Make Pending
                     </button>
 
                     <button className="btn btn-primary mr-3"
                         onClick={() => {
-                            changeStatus(restaurant._id, 'pending');
+                            changeStatus(restaurant._id, "cancelled");
                             history.go();
                         }}>
-                        Make Pending
+                        Make Cancelled
                     </button>
                 </RestaurantInfo>
             )
@@ -38,4 +38,4 @@ const CancelledRestaurans = ({ restaurants }) => {
     </>
 };
 
-export default CancelledRestaurans;
+export default DraftRestaurants;

@@ -13,7 +13,9 @@ const TabHeader = ({ title, uniqueInitial, setCurrentTab, currentTab }) => {
             aria-selected={selected}
             onClick={() => setCurrentTab(uniqueInitial)}>
 
-            {title}
+            <span className="text-capitalize">
+                {title.toLowerCase()}
+            </span>
 
         </a>
     </>

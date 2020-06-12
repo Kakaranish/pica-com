@@ -1,25 +1,40 @@
 import React from 'react';
-import RestaurantsTabContent from './RestaurantsTabContent';
 import RestaurantInfo from '../RestaurantInfo';
+import { useHistory, Link } from 'react-router-dom';
+import { changeStatus } from '../../common';
 
-const AcceptedRestaurants = ({ restaurants, isActive }) => {
+const AcceptedRestaurants = ({ restaurants }) => {
 
-    if (!restaurants?.length) return <>
-        <RestaurantsTabContent isActive={isActive} status='ACCEPTED'>
-            <h3>No restaurants</h3>
-        </RestaurantsTabContent>
-    </>
+    const history = useHistory();
 
+    if (!restaurants?.length) return <h3>No restaurants</h3>
     return <>
-        <RestaurantsTabContent isActive={isActive} status='ACCEPTED'>
-            {
-                restaurants.map((restaurant, i) => <>
-                    <RestaurantInfo>
-                        
-                    </RestaurantInfo>
-                </>)
-            }
-        </RestaurantsTabContent>
+        {
+            restaurants.map((restaurant, i) =>
+                <RestaurantInfo restaurant={restaurant} key={`p-${i}`}>
+                    <Link to={`/owner/restaurants/${restaurant._id}`}
+                        className="btn btn-primary mr-3">
+                        Overview
+                    </Link>
+
+                    <button className="btn btn-primary mr-3"
+                        onClick={() => {
+                            changeStatus(restaurant._id, 'draft');
+                            history.go();
+                        }}>
+                        Make draft
+                    </button>
+
+                    <button className="btn btn-primary mr-3"
+                        onClick={() => {
+                            changeStatus(restaurant._id, 'cancelled');
+                            history.go();
+                        }}>
+                        Make cancelled
+                    </button>
+                </RestaurantInfo>
+            )
+        }
     </>
 };
 

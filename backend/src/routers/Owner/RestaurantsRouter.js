@@ -17,6 +17,16 @@ RestaurantsRouter.get('/', tokenValidatorMW, ownerValidatorMW, async (req, res) 
     });
 });
 
+RestaurantsRouter.get('/preview', tokenValidatorMW, ownerValidatorMW,
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            const restaurants = await Restaurant.find({ ownerId: req.identity.id })
+                .select('name status description location categoryCodes createdAt');
+            res.status(200).json(restaurants);
+        });
+    }
+);
+
 RestaurantsRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
@@ -24,12 +34,12 @@ RestaurantsRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
                 ownerId: req.identity.id,
                 status: 'DRAFT'
             });
-            res.status(200).json(draftRestaurant);
+            res.status(200).json(draftRestaurant._id);
         });
     }
 );
 
-RestaurantsRouter.post('/:id/status/:status', updateStatusValidationMWs(),
+RestaurantsRouter.put('/:id/status/:status', updateStatusValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
             req.restaurant.status = req.params.status;
@@ -41,7 +51,8 @@ RestaurantsRouter.post('/:id/status/:status', updateStatusValidationMWs(),
 
 RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
-        const restaurant = await Restaurant.findById(req.params.id);
+        const restaurant = await Restaurant.findById(req.params.id)
+            .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended');
         res.status(200).json(restaurant);
     });
 });
@@ -221,7 +232,7 @@ function deletePicUrlValidationMWs() {
 }
 
 function updateStatusValidationMWs() {
-    const legalStatuses = ['pending', 'cancelled'];
+    const legalStatuses = ['draft', 'pending', 'cancelled'];
     return [
         tokenValidatorMW,
         ownerValidatorMW,

@@ -2,21 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { requestHandler } from '../../common/utils';
 import axios from 'axios';
-import RestaurantInfo from './components/RestaurantInfo';
-import RestaurantsTab from './components/RestaurantsPage/RestaurantsTab';
+import TabHeader from './components/TabHeader';
 import AcceptedRestaurants from './components/RestaurantsPage/AcceptedRestaurants';
 import PendingRestaurants from './components/RestaurantsPage/PendingRestaurants';
 import RejectedRestaurants from './components/RestaurantsPage/RejectedRestaurants';
 import CancelledRestaurants from './components/RestaurantsPage/CancelledRestaurants';
+import TabContent from './components/TabContent';
+import DraftRestaurants from './components/RestaurantsPage/DraftRestaurants';
 
 const RestaurantsPage = () => {
-
-    const history = useHistory();
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
-            const action = async () => axios.get('/owner/restaurants');
+            const action = async () => axios.get('/owner/restaurants/preview');
             const result = await requestHandler(action);
             setState({ loading: false, restaurants: result });
         };
@@ -26,71 +25,51 @@ const RestaurantsPage = () => {
 
     if (state.loading) return <></>
 
-    const draftRestaurant = state.restaurants.find(r => r.status === 'DRAFT');
+    const draftRestaurants = state.restaurants.filter(r => r.status === 'DRAFT');
     const pendingRestaurants = state.restaurants.filter(r => r.status === 'PENDING');
     const acceptedRestaurants = state.restaurants.filter(r => r.status === 'ACCEPTED');
     const rejectedRestaurants = state.restaurants.filter(r => r.status === 'REJECTED');
     const cancelledRestaurants = state.restaurants.filter(r => r.status === 'CANCELLED');
 
-    const onFinalize = async () => {
-        if (window.confirm("Do you want to finalize restaurant?")) {
-            const uri = `/owner/restaurants/${draftRestaurant._id}/status/pending`;
-            const action = async () => axios.post(uri, {}, {validateStatus: false})
-            await requestHandler(action);
-            history.go();
-        }
-    };
-
     return <>
-
-        {
-            draftRestaurant &&
-            <>
-                <h3>In draft</h3>
-                <RestaurantInfo restaurant={draftRestaurant} >
-
-                    <button className="btn btn-primary mr-2" onClick={onFinalize}>
-                        Finalize
-                    </button>
-
-                    <Link to={`/owner/restaurants/${draftRestaurant._id}/edit`}
-                        className="btn btn-secondary">
-                        Edit
-                    </Link>
-
-                </RestaurantInfo>
-            </>
-        }
+        <p>
+            <Link to='/owner/restaurants/create' className="btn btn-primary" >
+                Create Restaurant
+            </Link>
+        </p>
 
         <nav>
             <div className="nav nav-tabs" id="nav-tab" role="tablist">
-
-                <RestaurantsTab title='Accepted' status={'ACCEPTED'}
-                    isSelected={true} />
-
-                <RestaurantsTab title='Pending' status={'PENDING'} />
-
-                <RestaurantsTab title='Rejected' status={'REJECTED'} />
-
-                <RestaurantsTab title='Cancelled' status={'CANCELLED'} />
-
+                <TabHeader title='Draft' uniqueInitial='nav-draft' isActive={true} />
+                <TabHeader title='Pending' uniqueInitial='nav-pending' />
+                <TabHeader title='Accepted' uniqueInitial='nav-accepted' />
+                <TabHeader title='Rejected' uniqueInitial='nav-rejected' />
+                <TabHeader title='Cancelled' uniqueInitial='nav-cancelled' />
             </div>
         </nav>
+
         <div className="tab-content">
 
-            <AcceptedRestaurants restaurants={acceptedRestaurants} isActive={true} />
+            <TabContent uniqueInitial='nav-draft' isActive={true}>
+                <DraftRestaurants restaurants={draftRestaurants} />
+            </TabContent>
 
-            <PendingRestaurants restaurants={pendingRestaurants} />
+            <TabContent uniqueInitial='nav-pending'>
+                <PendingRestaurants restaurants={pendingRestaurants} />
+            </TabContent>
 
-            <RejectedRestaurants restaurants={rejectedRestaurants} />
+            <TabContent uniqueInitial='nav-accepted'>
+                <AcceptedRestaurants restaurants={acceptedRestaurants} />
+            </TabContent>
 
-            <CancelledRestaurants restaurants={cancelledRestaurants} />
+            <TabContent uniqueInitial='nav-rejected'>
+                <RejectedRestaurants restaurants={rejectedRestaurants} />
+            </TabContent>
 
+            <TabContent uniqueInitial='nav-cancelled'>
+                <CancelledRestaurants restaurants={cancelledRestaurants} />
+            </TabContent>
         </div>
-
-        <Link to='/owner/restaurants/create' className="btn btn-primary" >
-            Create Restaurant
-        </Link>
     </>
 };
 

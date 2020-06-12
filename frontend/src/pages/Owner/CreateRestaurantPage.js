@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -7,34 +7,17 @@ const CreateRestaurantPage = () => {
 
     const history = useHistory();
 
-    const [state, setState] = useState({ loading: true });
-    useEffect(() => {
-        const fetch = async () => {
-            const action = async () => axios.get('/owner/restaurants/draft',
-                { validateStatus: false });
-            const result = await requestHandler(action);
-            if (result !== true) {
-                alert('You have already restaurant in draft.\nDelete it or finalize.');
-                history.goBack();
-                return;
-            }
-            setState({ loading: false });
-        };
-        fetch();
-    }, []);
-
     const onSubmit = async event => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
         const action = async () => axios.post('/owner/restaurants', formData,
             { validateStatus: false });
-        await requestHandler(action);
+        const result = await requestHandler(action);
+        history.push(`/owner/restaurants/${result}/edit`);
     }
 
-    if (state.loading) return <></>
     return <>
-
         <h3>Provide basic restaurant info</h3>
         <form onSubmit={onSubmit}>
             <div className="form-group">
@@ -76,7 +59,7 @@ const CreateRestaurantPage = () => {
             </div>
 
             <button type="submit" className="btn btn-success btn-block">
-                Go to next step
+                Create Restaurant Draft
             </button>
         </form>
     </>

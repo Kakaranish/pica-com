@@ -27,7 +27,7 @@ const AcceptedRestaurants = ({ currentTab }) => {
 
                     <Link to={`/admin/manage/restaurants/${restaurant._id}`}
                         className="btn btn-primary mr-2">
-                        Show full info
+                        Overview
                     </Link>
 
                     <button className="btn btn-primary mr-2"
