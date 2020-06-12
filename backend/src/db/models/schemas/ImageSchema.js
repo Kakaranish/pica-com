@@ -9,6 +9,14 @@ const ImageSchema = new Schema({
         type: String,
         required: true
     },
+    thumbnailUri: {
+        type: String,
+        required: true
+    },
+    thumbnailBlobName: {
+        type: String,
+        required: true
+    },
     blobContainer: {
         type: String,
         required: true

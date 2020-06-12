@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import path from "path";
 import azure from 'azure-storage';
+import sharp from 'sharp';
 import { validationResult } from 'express-validator';
 
 require('dotenv').config();
@@ -10,9 +11,6 @@ export const uploadImageMW = async (req, res, next) => {
 
     const file = req.files.file;
     const fileExt = path.extname(file.name);
-    const generatedFilename = uuid() + fileExt;
-
-    const blobService = azure.createBlobService();
 
     let blobOptions;
     if (fileExt === '.jpg' || fileExt === '.jpeg')
@@ -21,14 +19,27 @@ export const uploadImageMW = async (req, res, next) => {
         blobOptions = { contentSettings: { contentType: 'image/png' } };
     else return res.json({ errors: ['must be image type'] });
 
+    const blobService = azure.createBlobService();
+    const img = await sharp(file.data)
+        .resize({ width: 200 })
+        .toBuffer();
+
+    const commonUuid = uuid();
+    const generatedFilename = commonUuid + fileExt;
+    const thumbnailGeneratedFilename = commonUuid + '-thumbnail' + fileExt;
+
     const container = 'images';
-    blobService.createBlockBlobFromText(container, generatedFilename, file.data,
+    await blobService.createBlockBlobFromText(container, generatedFilename, file.data,
+        blobOptions, err => { if (err) throw err; });
+    await blobService.createBlockBlobFromText(container, thumbnailGeneratedFilename, img,
         blobOptions, err => { if (err) throw err; });
 
     req.image = {
         uri: blobService.getUrl('images', generatedFilename),
         blobName: generatedFilename,
-        blobContainer: container
+        thumbnailUri: blobService.getUrl('images', thumbnailGeneratedFilename),
+        thumbnailBlobName: thumbnailGeneratedFilename,
+        blobContainer: container,
     };
     next();
 };

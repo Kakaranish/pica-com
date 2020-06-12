@@ -1,6 +1,6 @@
 import express from 'express';
 import azure from 'azure-storage';
-import { body, validationResult, param } from 'express-validator';
+import { body, param } from 'express-validator';
 import { tokenValidatorMW, ownerValidatorMW } from '../../auth/validators';
 import Restaurant from '../../db/models/Restaurant';
 import { withAsyncRequestHandler } from '../../common/utils';
@@ -29,6 +29,16 @@ RestaurantsRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
     }
 );
 
+RestaurantsRouter.post('/:id/status/:status', updateStatusValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.restaurant.status = req.params.status;
+            req.restaurant.save();
+            res.sendStatus(200);
+        });
+    }
+);
+
 RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const restaurant = await Restaurant.findById(req.params.id);
@@ -36,55 +46,42 @@ RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, re
     });
 });
 
-RestaurantsRouter.get('/:id/images', miscPicUrlsValidationMWs(), async (req, res) => {
-    if (validationResult(req).errors.length > 0)
-        return res.status(400).json(validationResult(req).errors);
-    withAsyncRequestHandler(res, async () => {
-        res.status(200).json({
-            name: req.restaurant.name,
-            location: req.restaurant.location,
-            images: req.restaurant.images
-        });
-    })
-});
-
 RestaurantsRouter.post('/:id/image', miscPicUrlsValidationMWs(),
     uploadImageMW, async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            if (!req.image) return res.status(400).json({
+                errors: ['failed to upload image']
+            });
 
-        if (!req.image) return res.status(400).json({
-            errors: ['failed to upload image']
+            req.restaurant.images.push(req.image);
+            await Restaurant.findByIdAndUpdate(req.params.id, {
+                $set: { images: req.restaurant.images }
+            });
+
+            res.status(200).json(req.image);
         });
-
-        req.restaurant.images.push(req.image);
-        await Restaurant.findByIdAndUpdate(req.params.id, {
-            $set: { images: req.restaurant.images }
-        });
-
-        res.status(200).json(req.image);
     }
 );
 
 RestaurantsRouter.delete('/:id/image', deletePicUrlValidationMWs(),
     async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.restaurant.images = req.restaurant.images.filter(
+                image => image.id !== req.body.imageId);
+            await req.restaurant.save();
 
-        req.restaurant.images = req.restaurant.images.filter(
-            image => image.id !== req.body.imageId);
+            const blobService = azure.createBlobService();
+            blobService.deleteBlobIfExists(req.image.blobContainer,
+                req.image.blobName, err => console.log(err));
+            blobService.deleteBlobIfExists(req.image.blobContainer,
+                req.image.thumbnailBlobName, err => console.log(err));
 
-        await Restaurant.findByIdAndUpdate(req.params.id, {
-            $set: { images: req.restaurant.images }
+            res.sendStatus(200);
         });
-
-        const blobService = azure.createBlobService();
-        blobService.deleteBlobIfExists(req.image.blobContainer,
-            req.image.blobName, err => console.log(err));
-
-        res.sendStatus(200);
     }
 );
 
 RestaurantsRouter.post('/', createDraftValidationMWs(), async (req, res) => {
-    if (validationResult(req).errors.length > 0)
-        return res.status(400).json(validationResult(req).errors);
     withAsyncRequestHandler(res, async () => {
         const restaurant = new Restaurant({
             ownerId: req.identity.id,
@@ -172,7 +169,8 @@ function createDraftValidationMWs() {
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
-        body('contactNumber').notEmpty().withMessage('cannot be empty')
+        body('contactNumber').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
     ];
 }
 
@@ -218,6 +216,23 @@ function deletePicUrlValidationMWs() {
 
                 return true;
             }),
+        validationExaminator
+    ];
+}
+
+function updateStatusValidationMWs() {
+    const legalStatuses = ['pending', 'cancelled'];
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('status').isIn(legalStatuses).withMessage('illegal status')
+            .customSanitizer(value => value.toUpperCase()),
+        param('id').custom(async (value, { req }) => {
+            const restaurant = await Restaurant.findById(value);
+            if (restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such restaurant');
+            req.restaurant = restaurant;
+        }),
         validationExaminator
     ];
 }

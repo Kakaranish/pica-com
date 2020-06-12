@@ -14,7 +14,7 @@ const EditGalleryPage = ({ match }) => {
 
     useEffect(() => {
         const fetch = async () => {
-            const uri = `/owner/restaurants/${restaurantId}/images`;
+            const uri = `/owner/restaurants/${restaurantId}`;
             const action = async () => axios.get(uri, { validateStatus: false });
             const result = await requestHandler(action);
 

@@ -115,14 +115,10 @@ const MainPage = (props) => {
                 </>
         }
 
-        <button className="btn btn-primary" onClick={verifyOnClick}>
-            Verify
-        </button>
-
         <p>
-            <Link to={'/upload-image'} >
-                Upload Image
-            </Link>
+            <button className="btn btn-primary" onClick={verifyOnClick}>
+                Verify
+            </button>
         </p>
 
         <p>

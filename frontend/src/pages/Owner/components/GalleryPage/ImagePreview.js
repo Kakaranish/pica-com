@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Lightbox from 'react-image-lightbox';
+import { requestHandler } from '../../../../common/utils';
 import 'react-image-lightbox/style.css';
 import "./style.css";
-import { requestHandler } from '../../../../common/utils';
 
 const ImagePreview = ({ image, restaurantId }) => {
 
@@ -24,7 +24,7 @@ const ImagePreview = ({ image, restaurantId }) => {
 
     return <>
         <div className="card mb-2">
-            <img src={image.uri} className="card-img-top thumb-img img-fluid"
+            <img src={image.thumbnailUri} className="card-img-top thumb-img img-fluid"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setIsOpen(true)} />
             <div className="card-body">
@@ -36,7 +36,8 @@ const ImagePreview = ({ image, restaurantId }) => {
 
         {
             isOpen &&
-            <Lightbox mainSrc={image.uri}
+            <Lightbox
+                mainSrc={image.uri}
                 onCloseRequest={() => setIsOpen(false)}
             />
         }
