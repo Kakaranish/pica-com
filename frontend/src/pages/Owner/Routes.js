@@ -16,7 +16,7 @@ const Routes = () => <>
     <Switch>
         <AuthorizedOnlyRoute roles={['OWNER']} exact path='/owner/restaurants'
             component={RestaurantsPage} />
-        <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id'
+        <AuthorizedOnlyRoute roles={['OWNER']} exact path='/owner/restaurants/:id'
             component={RestaurantOverviewPage} />
         <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/create'
             component={CreateRestaurantPage} />

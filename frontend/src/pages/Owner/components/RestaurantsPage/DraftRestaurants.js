@@ -7,6 +7,9 @@ const DraftRestaurants = ({ restaurants }) => {
 
     const history = useHistory();
 
+    const onEdit = restaurantId =>
+        history.push(`/owner/restaurants/${restaurantId}/edit`);
+
     if (!restaurants?.length) return <h3>No restaurants</h3>
     return <>
         {
@@ -16,6 +19,11 @@ const DraftRestaurants = ({ restaurants }) => {
                         className="btn btn-primary mr-3">
                         Overview
                     </Link>
+
+                    <button className="btn btn-primary mr-3"
+                        onClick={async () => onEdit(restaurant._id)}>
+                        Edit
+                    </button>
 
                     <button className="btn btn-primary mr-3"
                         onClick={async () => {

@@ -1,11 +1,16 @@
 import React from 'react';
 import RestaurantInfo from '../RestaurantInfo';
 import { useHistory, Link } from 'react-router-dom';
-import { changeStatus } from '../../common/utils';
+import { changeStatus, editPrompt } from '../../common/utils';
 
 const AcceptedRestaurants = ({ restaurants }) => {
 
     const history = useHistory();
+
+    const onEdit = async restaurantId => {
+        const result = await editPrompt(restaurantId);
+        if (result) history.push(`/owner/restaurants/${restaurantId}/edit`);
+    }
 
     if (!restaurants?.length) return <h3>No restaurants</h3>
     return <>
@@ -16,6 +21,11 @@ const AcceptedRestaurants = ({ restaurants }) => {
                         className="btn btn-primary mr-3">
                         Overview
                     </Link>
+
+                    <button className="btn btn-primary mr-3"
+                        onClick={async () => onEdit(restaurant._id)}>
+                        Edit
+                    </button>
 
                     <button className="btn btn-primary mr-3"
                         onClick={async () => {
