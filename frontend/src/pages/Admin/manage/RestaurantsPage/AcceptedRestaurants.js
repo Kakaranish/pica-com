@@ -2,19 +2,11 @@ import React from 'react';
 import RestaurantBasicInfo from './RestaurantBasicInfo';
 import { Link, useHistory } from 'react-router-dom';
 import Restaurants from './Restaurants';
-import { requestHandler } from '../../../../common/utils';
-import axios from 'axios';
+import { changeStatus } from '../../common';
 
 const AcceptedRestaurants = ({ currentTab }) => {
 
     const history = useHistory();
-
-    const changeStatus = async (restaurantId, status) => {
-        const uri = `/admin/restaurants/${restaurantId}/status/${status}`
-        const action = async () => axios.put(uri, {}, { validateStatus: false });
-        await requestHandler(action);
-        history.go();
-    };
 
     return <>
         <Restaurants currentTab={currentTab}
@@ -31,12 +23,18 @@ const AcceptedRestaurants = ({ currentTab }) => {
                     </Link>
 
                     <button className="btn btn-primary mr-2"
-                        onClick={() => changeStatus(restaurant._id, 'pending')}>
+                        onClick={() => {
+                            changeStatus(restaurant._id, 'pending');
+                            history.go();
+                        }}>
                         Make Pending
                     </button>
 
                     <button className="btn btn-danger mr-2"
-                        onClick={() => changeStatus(restaurant._id, 'rejected')}>
+                        onClick={() => {
+                            changeStatus(restaurant._id, 'rejected');
+                            history.go();
+                        }}>
                         Reject
                     </button>
                 </div>

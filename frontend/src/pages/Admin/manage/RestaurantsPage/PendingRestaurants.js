@@ -2,19 +2,11 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import RestaurantBasicInfo from './RestaurantBasicInfo';
 import Restaurants from './Restaurants';
-import axios from 'axios';
-import { requestHandler } from '../../../../common/utils';
+import { changeStatus } from '../../common';
 
 const PendingRestaurants = ({ currentTab }) => {
 
 	const history = useHistory();
-
-	const changeStatus = async (restaurantId, status) => {
-        const uri = `/admin/restaurants/${restaurantId}/status/${status}`
-        const action = async () => axios.put(uri, {}, { validateStatus: false });
-        await requestHandler(action);
-        history.go();
-    };
 
 	return <>
 		<Restaurants currentTab={currentTab}
