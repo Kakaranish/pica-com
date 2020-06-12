@@ -32,6 +32,15 @@ const RestaurantsPage = () => {
     const rejectedRestaurants = state.restaurants.filter(r => r.status === 'REJECTED');
     const cancelledRestaurants = state.restaurants.filter(r => r.status === 'CANCELLED');
 
+    const onFinalize = async () => {
+        if (window.confirm("Do you want to finalize restaurant?")) {
+            const uri = `/owner/restaurants/${draftRestaurant._id}/status/pending`;
+            const action = async () => axios.post(uri, {}, {validateStatus: false})
+            await requestHandler(action);
+            history.go();
+        }
+    };
+
     return <>
 
         {
@@ -39,6 +48,11 @@ const RestaurantsPage = () => {
             <>
                 <h3>In draft</h3>
                 <RestaurantInfo restaurant={draftRestaurant} >
+
+                    <button className="btn btn-primary mr-2" onClick={onFinalize}>
+                        Finalize
+                    </button>
+
                     <Link to={`/owner/restaurants/${draftRestaurant._id}/edit`}
                         className="btn btn-secondary">
                         Edit

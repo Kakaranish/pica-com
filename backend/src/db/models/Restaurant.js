@@ -60,7 +60,7 @@ const restaurantSchema = new Schema({
     }
 });
 
-const legalStatuses = ['DRAFT', 'PENDING', 'REJECTED', 'PUBLIC', 'PRIVATE'];
+const legalStatuses = ['DRAFT', 'PENDING', "ACCEPTED", "REJECTED", "CANCELLED"];
 restaurantSchema.path('status').validate(status => legalStatuses.some(
     legalStatus => legalStatus === status), 'invalid status');
 
