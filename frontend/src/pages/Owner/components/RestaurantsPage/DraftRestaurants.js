@@ -1,7 +1,7 @@
 import React from 'react';
 import RestaurantInfo from '../RestaurantInfo';
 import { Link, useHistory } from 'react-router-dom';
-import { changeStatus } from '../../common';
+import { changeStatus } from '../../common/utils';
 
 const DraftRestaurants = ({ restaurants }) => {
 

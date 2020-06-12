@@ -1,8 +1,8 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 import PizzaForm from './components/PizzaForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
 
 const CreatePizzaPage = ({ match }) => {
 

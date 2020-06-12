@@ -1,7 +1,7 @@
 import React from 'react';
-import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
+import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 
 const CreateRestaurantPage = () => {
 

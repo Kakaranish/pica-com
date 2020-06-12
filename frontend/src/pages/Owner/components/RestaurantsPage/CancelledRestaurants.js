@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { changeStatus } from '../../common';
+import { changeStatus } from '../../common/utils';
 import RestaurantInfo from '../RestaurantInfo';
 
 const CancelledRestaurans = ({ restaurants }) => {

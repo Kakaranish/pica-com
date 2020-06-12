@@ -3,7 +3,7 @@ import { Redirect, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 import RestaurantOverview from '../../common/components/RestaurantOverview';
-import { changeStatus } from './common';
+import { changeStatus } from './common/utils';
 
 const RestaurantOverviewPage = ({ match }) => {
 
