@@ -3,6 +3,7 @@ import { Redirect, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 import RestaurantOverview from '../../common/components/RestaurantOverview';
+import { changeStatus } from './common';
 
 const RestaurantOverviewPage = ({ match }) => {
 
@@ -21,13 +22,6 @@ const RestaurantOverviewPage = ({ match }) => {
         fetch();
     }, []);
 
-    const changeStatus = async (restaurantId, status) => {
-        const uri = `/admin/restaurants/${restaurantId}/status/${status}`
-        const action = async () => axios.put(uri, {}, { validateStatus: false });
-        await requestHandler(action);
-        history.go();
-    };
-
     if (state.loading) return <></>
     else if (!state.restaurant) return <Redirect to={'/error/404'} />
     return <>
@@ -36,8 +30,8 @@ const RestaurantOverviewPage = ({ match }) => {
                 ["PENDING", "ACCEPTED", "CANCELLED"].includes(
                     state.restaurant.status) &&
                 <button className="btn btn-primary mr-3"
-                    onClick={() => {
-                        changeStatus(state.restaurant._id, 'draft');
+                    onClick={async () => {
+                        await changeStatus(state.restaurant._id, 'draft');
                         history.goBack();
                     }}>
                     Make draft
@@ -48,8 +42,8 @@ const RestaurantOverviewPage = ({ match }) => {
                 ["DRAFT", "ACCEPTED", "CANCELLED"].includes(
                     state.restaurant.status) &&
                 <button className="btn btn-primary mr-3"
-                    onClick={() => {
-                        changeStatus(state.restaurant._id, 'pending');
+                    onClick={async () => {
+                        await changeStatus(state.restaurant._id, 'pending');
                         history.goBack();
                     }}>
                     Make pending
@@ -60,8 +54,8 @@ const RestaurantOverviewPage = ({ match }) => {
                 ["DRAFT", "PENDING", "ACCEPTED"].includes(
                     state.restaurant.status) &&
                 <button className="btn btn-primary mr-3"
-                    onClick={() => {
-                        changeStatus(state.restaurant._id, 'cancelled');
+                    onClick={async () => {
+                        await changeStatus(state.restaurant._id, 'cancelled');
                         history.goBack();
                     }}>
                     Make cancelled

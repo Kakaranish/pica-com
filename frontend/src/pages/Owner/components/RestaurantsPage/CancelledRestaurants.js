@@ -18,16 +18,16 @@ const CancelledRestaurans = ({ restaurants }) => {
                     </Link>
 
                     <button className="btn btn-primary mr-3"
-                        onClick={() => {
-                            changeStatus(restaurant._id, 'draft');
+                        onClick={async () => {
+                            await changeStatus(restaurant._id, 'draft');
                             history.go();
                         }}>
                         Make Draft
                     </button>
 
                     <button className="btn btn-primary mr-3"
-                        onClick={() => {
-                            changeStatus(restaurant._id, 'pending');
+                        onClick={async () => {
+                            await changeStatus(restaurant._id, 'pending');
                             history.go();
                         }}>
                         Make Pending

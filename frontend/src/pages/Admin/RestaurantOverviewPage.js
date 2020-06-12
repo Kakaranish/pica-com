@@ -3,6 +3,7 @@ import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 import { Redirect, useHistory } from 'react-router-dom';
 import RestaurantOverview from '../../common/components/RestaurantOverview';
+import { changeStatus } from './common';
 
 const RestaurantOverviewPage = ({ match }) => {
 
@@ -20,13 +21,6 @@ const RestaurantOverviewPage = ({ match }) => {
 		fetch();
 	}, []);
 
-	const changeStatus = async (restaurantId, status) => {
-        const uri = `/admin/restaurants/${restaurantId}/status/${status}`
-        const action = async () => axios.put(uri, {}, { validateStatus: false });
-        await requestHandler(action);
-        history.goBack();
-    };
-
 	if (state.loading) return <></>
 	else if (!state.restaurant) return <Redirect to={'/error/404'} />
 
@@ -34,8 +28,8 @@ const RestaurantOverviewPage = ({ match }) => {
 		{
 			state.restaurant.status !== 'CANCELLED' &&
 			<button className="btn btn-primary mr-3"
-				onClick={() => {
-					changeStatus(state.restaurant._id, 'pending');
+				onClick={async () => {
+					await changeStatus(state.restaurant._id, 'pending');
 					history.goBack();
 				}}>
 				Make pending
@@ -45,8 +39,8 @@ const RestaurantOverviewPage = ({ match }) => {
 		{
 			state.restaurant.status !== 'CANCELLED' &&
 			<button className="btn btn-primary mr-3"
-				onClick={() => {
-					changeStatus(state.restaurant._id, 'accepted');
+				onClick={async () => {
+					await changeStatus(state.restaurant._id, 'accepted');
 					history.goBack();
 				}}>
 				Make accepted
@@ -56,8 +50,8 @@ const RestaurantOverviewPage = ({ match }) => {
 		{
 			state.restaurant.status !== 'CANCELLED' &&
 			<button className="btn btn-primary mr-3"
-				onClick={() => {
-					changeStatus(state.restaurant._id, 'rejected');
+				onClick={async () => {
+					await changeStatus(state.restaurant._id, 'rejected');
 					history.goBack();
 				}}>
 				Make rejected

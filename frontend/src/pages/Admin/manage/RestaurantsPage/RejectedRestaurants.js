@@ -23,16 +23,16 @@ const RejectedRestaurants = ({ currentTab }) => {
                     </Link>
 
                     <button className="btn btn-primary mr-2"
-                        onClick={() => {
-                            changeStatus(restaurant._id, 'pending');
+                        onClick={async () => {
+                            await changeStatus(restaurant._id, 'pending');
                             history.go();
                         }}>
                         Make Pending
                     </button>
 
                     <button className="btn btn-success mr-2"
-                        onClick={() => {
-                            changeStatus(restaurant._id, 'accepted');
+                        onClick={async () => {
+                            await changeStatus(restaurant._id, 'accepted');
                             history.go();
                         }}>
                         Accept
