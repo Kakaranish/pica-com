@@ -30,7 +30,7 @@ app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
-app.use('/', OwnerRouter);
+app.use('/owner', OwnerRouter);
 
 app.post('/notify', tokenValidatorMW, async (req, res) => {
     const payload = {

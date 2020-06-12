@@ -1,9 +1,9 @@
 import React from 'react';
 
 const RestaurantsTab = ({ title, status, isSelected }) => {
-    
+
     const initial = `nav-${status?.toLowerCase()}`
-    
+
     return <>
         <a className={`nav-item nav-link ${!!isSelected ? 'active' : null}`}
             id={`${initial}-tab`}

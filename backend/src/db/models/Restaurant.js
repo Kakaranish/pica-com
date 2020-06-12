@@ -66,4 +66,11 @@ restaurantSchema.path('status').validate(status => legalStatuses.some(
 
 const Restaurant = mongoose.model('restaurant', restaurantSchema);
 
+restaurantSchema.virtual('owner', {
+    ref: 'user',
+    localField: 'ownerId',
+    foreignField: '_id',
+    justOne: true
+});
+
 export default Restaurant;

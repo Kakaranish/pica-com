@@ -4,7 +4,7 @@ import ExtraIngredientItem from './ExtraIngredientItem';
 
 const ExtraIngredientsTab = ({ restaurantId, extraIngredients }) => {
 
-    const createUri = `/owner/restaurants/${restaurantId}/create/owner/extra-ingredient`;
+    const createUri = `/owner/restaurants/${restaurantId}/create/extra-ingredient`;
     if (!extraIngredients?.length) return <>
         <h3>No extra ingredients to pizza yet</h3>
 
