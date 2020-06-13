@@ -14,7 +14,7 @@ const RestaurantOverviewPage = ({ match }) => {
 
     useEffect(() => {
         const fetch = async () => {
-            const uri = `/owner/restaurants/${restaurantId}`;
+            const uri = `/owner/restaurants/${restaurantId}/populated`;
             const action = async () => axios.get(uri, { validateStatus: false });
             const result = await requestHandler(action);
             setState({ loading: false, restaurant: result });

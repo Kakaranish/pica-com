@@ -27,33 +27,63 @@ RestaurantsRouter.get('/preview', tokenValidatorMW, ownerValidatorMW,
     }
 );
 
-RestaurantsRouter.get('/draft', tokenValidatorMW, ownerValidatorMW,
-    async (req, res) => {
-        withAsyncRequestHandler(res, async () => {
-            const draftRestaurant = await Restaurant.findOne({
-                ownerId: req.identity.id,
-                status: 'DRAFT'
-            });
-            res.status(200).json(draftRestaurant._id);
-        });
-    }
-);
+RestaurantsRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const menu = await Restaurant.findById(req.params.id)
+            .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended -_id')
+            .select('menu');
+        res.status(200).json(menu.menu);
+    });
+});
 
-RestaurantsRouter.put('/:id/status/:status', updateStatusValidationMWs(),
-    async (req, res) => {
-        withAsyncRequestHandler(res, async () => {
-            req.restaurant.status = req.params.status;
-            req.restaurant.save();
-            res.sendStatus(200);
-        });
-    }
-);
+RestaurantsRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const menu = await Restaurant.findById(req.params.id)
+            .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended -_id')
+            .select('menu');
+        res.status(200).json(menu.menu);
+    });
+});
 
-RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
+RestaurantsRouter.get('/:id/delivery-info', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const restaurant = await Restaurant.findById(req.params.id)
+            .select('deliveryPrice minFreeDeliveryPrice');
+        res.status(200).json(restaurant);
+    });
+});
+
+RestaurantsRouter.get('/:id/populated', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const restaurant = await Restaurant.findById(req.params.id)
             .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended');
         res.status(200).json(restaurant);
+    });
+});
+
+RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const restaurant = await Restaurant.findById(req.params.id);
+        res.status(200).json(restaurant);
+    });
+});
+
+RestaurantsRouter.post('/', createDraftValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const restaurant = new Restaurant({
+            ownerId: req.identity.id,
+            name: req.body.name,
+            description: req.body.description,
+            contactNumber: req.body.contactNumber,
+            location: {
+                city: req.body.city,
+                postcode: req.body.postcode,
+                address: req.body.address
+            }
+        });
+        await restaurant.save();
+
+        res.status(200).json({ id: restaurant._id });
     });
 });
 
@@ -74,42 +104,15 @@ RestaurantsRouter.post('/:id/image', miscPicUrlsValidationMWs(),
     }
 );
 
-RestaurantsRouter.delete('/:id/image', deletePicUrlValidationMWs(),
+RestaurantsRouter.put('/:id/status/:status', updateStatusValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
-            req.restaurant.images = req.restaurant.images.filter(
-                image => image.id !== req.body.imageId);
-            await req.restaurant.save();
-
-            const blobService = azure.createBlobService();
-            blobService.deleteBlobIfExists(req.image.blobContainer,
-                req.image.blobName, err => console.log(err));
-            blobService.deleteBlobIfExists(req.image.blobContainer,
-                req.image.thumbnailBlobName, err => console.log(err));
-
+            req.restaurant.status = req.params.status;
+            req.restaurant.save();
             res.sendStatus(200);
         });
     }
 );
-
-RestaurantsRouter.post('/', createDraftValidationMWs(), async (req, res) => {
-    withAsyncRequestHandler(res, async () => {
-        const restaurant = new Restaurant({
-            ownerId: req.identity.id,
-            name: req.body.name,
-            description: req.body.description,
-            contactNumber: req.body.contactNumber,
-            location: {
-                city: req.body.city,
-                postcode: req.body.postcode,
-                address: req.body.address
-            }
-        });
-        await restaurant.save();
-
-        res.status(200).json({ id: restaurant._id });
-    });
-});
 
 RestaurantsRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
     async (req, res) => {
@@ -132,14 +135,53 @@ RestaurantsRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
     }
 );
 
-RestaurantsRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
-    withAsyncRequestHandler(res, async () => {
-        const menu = await Restaurant.findById(req.params.id)
-            .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended -_id')
-            .select('menu');
-        res.status(200).json(menu.menu);
-    });
-});
+RestaurantsRouter.put('/:id/delivery-info', updateDeliveryInfoValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.restaurant.deliveryPrice = req.body.deliveryPrice;
+            req.restaurant.minFreeDeliveryPrice = req.body.minFreeDeliveryPrice;
+            await req.restaurant.save();
+            res.sendStatus(200);
+        });
+    }
+);
+
+RestaurantsRouter.delete('/:id/image', deletePicUrlValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.restaurant.images = req.restaurant.images.filter(
+                image => image.id !== req.body.imageId);
+            await req.restaurant.save();
+
+            const blobService = azure.createBlobService();
+            blobService.deleteBlobIfExists(req.image.blobContainer,
+                req.image.blobName, err => console.log(err));
+            blobService.deleteBlobIfExists(req.image.blobContainer,
+                req.image.thumbnailBlobName, err => console.log(err));
+
+            res.sendStatus(200);
+        });
+    }
+);
+
+function updateDeliveryInfoValidationMWs() {
+    return [
+        tokenValidatorMW,
+        ownerValidatorMW,
+        param('id').custom(async (value, { req }) => {
+            const restaurant = await Restaurant.findById(value);
+            if (restaurant.ownerId != req.identity.id)
+                return Promise.reject('no such restaurant');
+            req.restaurant = restaurant;
+        }),
+        body('deliveryPrice').isFloat({ gt: 0 }).withMessage('must be float greater than 0')
+            .customSanitizer(value => parseFloat(value.toFixed(2))),
+        body('minFreeDeliveryPrice').optional()
+            .isFloat({ gt: 0 }).withMessage('must be float greater than 0')
+            .customSanitizer(value => parseFloat(value.toFixed(2))),
+        validationExaminator
+    ];
+}
 
 function getMenuValidationMWs() {
     return [

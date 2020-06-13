@@ -43,6 +43,25 @@ const RestaurantOverview = ({ restaurant, children }) => {
             </p>
         </div>
 
+        <h3 className="mb-4">Delivery info</h3>
+        <div className="p-3 mb-2" style={{ border: '1px solid gray' }}>
+            <p>
+                <b>Delivery price: </b> {restaurant.deliveryPrice.toFixed(2)} PLN
+            </p>
+
+            <p>
+                {
+                    !restaurant.minFreeDeliveryPrice
+                        ? <b>No min free delivery price</b>
+                        : <>
+                            <b>Min free delivery price: </b>
+                            {restaurant.minFreeDeliveryPrice.toFixed(2)} PLN
+                        </>
+                }
+
+            </p>
+        </div>
+
         <h3 className="my-4">Gallery</h3>
         {
             !restaurant.images.length

@@ -30,7 +30,7 @@ const AcceptedRestaurants = ({ currentTab }) => {
                         Make Pending
                     </button>
 
-                    <button className="btn btn-danger mr-2"
+                    <button className="btn btn-primary mr-2"
                         onClick={async () => {
                             await changeStatus(restaurant._id, 'rejected');
                             history.go();

@@ -11,6 +11,7 @@ import CreatePizzaPage from './CreatePizzaPage';
 import CreateExtraIngredientPage from './CreateExtraIngredientPage';
 import CreateExtraPage from './CreateExtraPage';
 import RestaurantOverviewPage from './RestaurantOverviewPage';
+import EditDeliveryPage from './EditDeliveryPage';
 
 const Routes = () => <>
     <Switch>
@@ -29,6 +30,8 @@ const Routes = () => <>
             component={EditGalleryPage} />
         <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/edit/menu'
             component={EditMenuPage} />
+        <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/edit/delivery'
+            component={EditDeliveryPage} />
 
         <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/create/pizza'
             component={CreatePizzaPage} />

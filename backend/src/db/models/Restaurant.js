@@ -32,11 +32,12 @@ const restaurantSchema = new Schema({
     deliveryPrice: {
         type: Number,
         set: v => v.toFixed(2),
-        required: false
+        required: true,
+        default: 0
     },
     minFreeDeliveryPrice: {
         type: Number,
-        set: v => v.toFixed(2),
+        set: v => v ? v.toFixed(2) : undefined,
         required: false
     },
     categoryCodes: {
