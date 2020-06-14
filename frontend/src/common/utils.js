@@ -22,18 +22,22 @@ export const getFormDataJsonFromEvent = event => {
  * );
  */
 export const requestHandler = async (action, ...handlers) => {
-    const result = await action();
-    if (result.status === 200) return result.data ?? true;
-    
+
     handlers = handlers ?? [];
     let handlersDict = Object.assign({}, ...handlers.map(h => ({ [h.status]: h.callback })));
-    
+
+    const result = await action();
+    if (result.status === 200) {
+        if (handlersDict[200]) return await handlersDict[200](result.data);
+        else return result.data ?? true;
+    }
+
     const anyStatus = -1;
     const callbackForAnyStatus = handlersDict[anyStatus];
-    if(callbackForAnyStatus) return callbackForAnyStatus(result.data);
-        
+    if (callbackForAnyStatus) return callbackForAnyStatus(result.data);
+
     const callback = handlersDict[result.status];
     if (callback) return await callback(result.data);
-    
+
     document.location = `/error/${result.status}`;
 };

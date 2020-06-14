@@ -12,6 +12,7 @@ import NotificationRouter from "./routers/NotificationRouter";
 import AdminRouter from "./routers/Admin/AdminRouter";
 import AccountRouter from "./routers/AccountRouter";
 import OwnerRouter from './routers/Owner/OwnerRouter';
+import MiscRouter from "./routers/MiscRouter";
 
 require('dotenv').config();
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(fileUpload());
 app.use(cors());
 
+app.use('/', MiscRouter);
 app.use('/auth', AuthRouter);
 app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
