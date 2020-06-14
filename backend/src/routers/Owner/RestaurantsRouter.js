@@ -3,7 +3,7 @@ import azure from 'azure-storage';
 import { body, param } from 'express-validator';
 import { tokenValidatorMW, ownerValidatorMW } from '../../auth/validators';
 import Restaurant from '../../db/models/Restaurant';
-import { withAsyncRequestHandler } from '../../common/utils';
+import { withAsyncRequestHandler, parseObjectId } from '../../common/utils';
 import { validationExaminator, uploadImageMW } from '../../common/middlewares';
 
 const RestaurantsRouter = express.Router();
@@ -55,15 +55,18 @@ RestaurantsRouter.get('/:id/delivery-info', tokenValidatorMW, ownerValidatorMW, 
 
 RestaurantsRouter.get('/:id/populated', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
+        const toPopulate = 'menu.pizzas menu.extraIngredients menu.extras ' +
+            'menu.recommended categories';
         const restaurant = await Restaurant.findById(req.params.id)
-            .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended');
+            .populate(toPopulate);
         res.status(200).json(restaurant);
     });
 });
 
 RestaurantsRouter.get('/:id', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
-        const restaurant = await Restaurant.findById(req.params.id);
+        const restaurant = await Restaurant.findById(req.params.id)
+            .populate('categories');
         res.status(200).json(restaurant);
     });
 });
@@ -126,7 +129,8 @@ RestaurantsRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
                         city: req.body.city,
                         postcode: req.body.postcode,
                         address: req.body.address
-                    }
+                    },
+                    categories: req.body.categories
                 }
             });
 
@@ -208,6 +212,15 @@ function updateBasicInfoValidationMWs() {
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
         body('contactNumber').notEmpty().withMessage('cannot be empty'),
+        body('categories').isLength({ min: 1 })
+            .withMessage('must have at least 1 element').bail()
+            .customSanitizer(categories =>
+                categories.map(cat => parseObjectId(cat)))
+            .custom(categories => {
+                if (categories.some(cat => cat === null))
+                    throw new Error('at least 1 invalid category')
+                return true;
+            }),
         validationExaminator
     ];
 }

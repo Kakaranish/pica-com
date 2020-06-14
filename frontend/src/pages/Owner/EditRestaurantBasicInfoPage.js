@@ -24,15 +24,19 @@ const EditRestaurantBasicInfoPage = ({ match }) => {
 
     const onSubmit = async event => {
         event.preventDefault();
-        const formData = getFormDataJsonFromEvent(event);
-
+        let formData = getFormDataJsonFromEvent(event);
+        formData.categories = JSON.parse(formData.categories);
+        
         const uri = `/owner/restaurants/${restaurantId}/basic`;
         const action = async () => axios.put(uri, formData, { validateStatus: false });
-        const result = await requestHandler(action);
-        if(result) {
-            alert('Updated');
-            history.go();
-        }
+        await requestHandler(action,
+            {
+                status: 200,
+                callback: async () => {
+                    alert('Updated');
+                    history.go();
+                }
+            });
     };
 
     if (state.loading) return <></>

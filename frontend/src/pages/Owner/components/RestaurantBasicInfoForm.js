@@ -1,8 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
+import axios from 'axios';
+import { requestHandler } from '../../../common/utils';
 
 const RestaurantBasicInfoForm = ({ restaurant, onSubmit = () => { }, children }) => {
+
+    const [state, setState] = useState({ loading: true });
+    const [selected, setSelected] = useState([]);
+    const [validationErrors, setValidationErrors] = useState(null);
+
+    useEffect(() => {
+        const fetch = async () => {
+            const action = async () => axios.get('/categories',
+                { validateStatus: false });
+            const availableCategories = await requestHandler(action);
+            const categoryOptions = availableCategories.map(cat =>
+                ({ value: cat._id, label: cat.name }));
+            setState({ loading: false, categoryOptions: categoryOptions });
+
+            const selectedCategories = restaurant.categories.map(cat => ({
+                value: cat._id, label: cat.name
+            }));
+            setSelected(selectedCategories);
+        };
+        fetch();
+    }, []);
+
+    const categoriesOnChange = selectedOptions => setSelected(selectedOptions);
+
+    const handleOnSubmit = async event => {
+        if (!selected?.length) {
+            event.preventDefault();
+            setValidationErrors(["choose at least 1 category"]);
+        }
+        else await onSubmit(event);
+    }
+
+    if (state.loading) return <></>
+
     return <>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleOnSubmit}>
             <div className="form-group">
                 <label>Name</label>
                 <input name="name" type="text" className="form-control"
@@ -46,9 +83,37 @@ const RestaurantBasicInfoForm = ({ restaurant, onSubmit = () => { }, children })
                     placeholder="Contact number..." required />
             </div>
 
+            <div className="form-group">
+                <label>Categories:</label>
+                <input name="categories" value={JSON.stringify(selected?.map(s => s.value)) ?? []} readOnly hidden />
+                <Select multi={true} isMulti
+                    onChange={categoriesOnChange}
+                    options={state.categoryOptions}
+                    value={selected}
+                />
+            </div>
+
             {children}
 
         </form>
+
+        {
+            validationErrors &&
+            <div className="col-12 mt-2">
+                <p className="text-danger font-weight-bold" style={{ marginBottom: '0px' }}>
+                    Validation errors
+                    </p>
+                <ul style={{ paddingTop: "0", marginTop: "0px" }}>
+                    {
+                        validationErrors.map((error, i) => {
+                            return <li key={`val-err-${i}`} className="text-danger">
+                                {error}
+                            </li>
+                        })
+                    }
+                </ul>
+            </div>
+        }
     </>
 };
 

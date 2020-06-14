@@ -40,10 +40,12 @@ const restaurantSchema = new Schema({
         set: v => v ? v.toFixed(2) : undefined,
         required: false
     },
-    categoryCodes: {
-        type: [String],
-        required: true
-    },
+    categories: [{
+        type: [Schema.Types.ObjectId],
+        ref: 'category',
+        required: true,
+        default: []
+    }],
     status: {
         type: String,
         required: true,

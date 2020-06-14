@@ -20,8 +20,10 @@ RestaurantsRouter.get('/status/:status', getWithStatusValidationMWs(),
 RestaurantsRouter.get('/:id/', getRestaurantValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
+            const toPopulate = 'menu.pizzas menu.extraIngredients menu.extras '
+                + 'menu.recommended categories';
             const restaurant = await Restaurant.findById(req.params.id)
-                .populate('menu.pizzas menu.extraIngredients menu.extras menu.recommended');
+                .populate(toPopulate);
             res.status(200).json(restaurant);
         });
     }

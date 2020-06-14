@@ -41,6 +41,15 @@ const RestaurantOverview = ({ restaurant, children }) => {
             <p>
                 <b>Contact number: </b> {restaurant.contactNumber}
             </p>
+
+            <p>
+                <b>Categories: </b>
+                {
+                    restaurant.categories.map((cat, i) => <span key={`cat-${i}`}>
+                        {cat.name}{i != restaurant.categories.length - 1 && ", "}
+                    </span>)
+                }
+            </p>
         </div>
 
         <h3 className="mb-4">Delivery info</h3>
