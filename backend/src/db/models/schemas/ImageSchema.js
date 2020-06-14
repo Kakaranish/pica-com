@@ -16,10 +16,6 @@ const ImageSchema = new Schema({
     thumbnailBlobName: {
         type: String,
         required: true
-    },
-    blobContainer: {
-        type: String,
-        required: true
     }
 });
 

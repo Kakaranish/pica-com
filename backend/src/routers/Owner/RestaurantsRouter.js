@@ -158,11 +158,10 @@ RestaurantsRouter.delete('/:id/image', deletePicUrlValidationMWs(),
             await req.restaurant.save();
 
             const blobService = azure.createBlobService();
-            blobService.deleteBlobIfExists(req.image.blobContainer,
+            blobService.deleteBlobIfExists(process.env.BLOB_CONTAINER,
                 req.image.blobName, err => console.log(err));
-            blobService.deleteBlobIfExists(req.image.blobContainer,
+            blobService.deleteBlobIfExists(process.env.BLOB_CONTAINER,
                 req.image.thumbnailBlobName, err => console.log(err));
-
             res.sendStatus(200);
         });
     }

@@ -29,14 +29,13 @@ export const uploadImageMW = async (req, res, next) => {
     const thumbnailGeneratedFilename = commonUuid + '-thumbnail' + fileExt;
 
     const container = 'images';
-    await blobService.createBlockBlobFromText(container, generatedFilename, file.data,
-        blobOptions, err => { if (err) throw err; });
-    await blobService.createBlockBlobFromText(container, thumbnailGeneratedFilename, img,
-        blobOptions, err => { if (err) throw err; });
+    await blobService.createBlockBlobFromText(process.env.BLOB_CONTAINER,
+        generatedFilename, file.data, blobOptions, err => { if (err) throw err; });
+    await blobService.createBlockBlobFromText(process.env.BLOB_CONTAINER,
+        thumbnailGeneratedFilename, img, blobOptions, err => { if (err) throw err; });
 
     req.image = {
         uri: blobService.getUrl('images', generatedFilename),
-        blobName: generatedFilename,
         thumbnailUri: blobService.getUrl('images', thumbnailGeneratedFilename),
         thumbnailBlobName: thumbnailGeneratedFilename,
         blobContainer: container,
