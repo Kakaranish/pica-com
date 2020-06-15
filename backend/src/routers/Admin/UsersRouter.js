@@ -10,7 +10,7 @@ const UsersRouter = express.Router();
 UsersRouter.get('/', tokenValidatorMW, adminValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const users = await User.find({ providerKey: { $ne: 'root@pica.com' } })
-            .select('_id provider providerKey firstName lastName');
+            .select('_id role provider providerKey firstName lastName');
         res.status(200).json(users);
     });
 });

@@ -17,20 +17,29 @@ const SocketComponent = (props) => {
 
             socket = io('http://localhost:8000');
 
-            socket.on('notif', ({ content, createdAt, _id }) => {
-                props.addNotif({content, createdAt});
+            socket.on('notif', ({ content, createdAt }) => {
+                props.addNotif({ content, createdAt });
+
+                toast('You have new notification', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: false
+                });
+            });
+
+            socket.on('toastOnlyNotif',  content => {
                 toast(content, {
                     position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
+                    autoClose: 3000,
                     closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    pauseOnHover: false
                 });
             });
 
             socket.on('clearNotifs', () => props.clearNotifs());
+
+            socket.on('removeNotif', ({ notifId }) => props.removeNotif(notifId));
         }
         initSocket();
 

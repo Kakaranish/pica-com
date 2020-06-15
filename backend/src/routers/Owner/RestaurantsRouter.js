@@ -1,10 +1,12 @@
 import express from 'express';
 import azure from 'azure-storage';
+import mongoose from 'mongoose';
 import { body, param } from 'express-validator';
 import { tokenValidatorMW, ownerValidatorMW } from '../../auth/validators';
 import Restaurant from '../../db/models/Restaurant';
 import { withAsyncRequestHandler, parseObjectId } from '../../common/utils';
 import { validationExaminator, uploadImageMW } from '../../common/middlewares';
+import { clearNotifsForEvent, notifyAdmins, notifyToastOnly } from '../../common/notif-utils';
 
 const RestaurantsRouter = express.Router();
 
@@ -110,8 +112,25 @@ RestaurantsRouter.post('/:id/image', miscPicUrlsValidationMWs(),
 RestaurantsRouter.put('/:id/status/:status', updateStatusValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
+            const prevEventId = req.restaurant.statusEventId;
+            const eventId = req.params.status !== 'PENDING'
+                ? undefined
+                : mongoose.Types.ObjectId();
+
             req.restaurant.status = req.params.status;
+            req.restaurant.statusEventId = eventId;
             req.restaurant.save();
+
+            if (prevEventId) await clearNotifsForEvent(prevEventId);
+            if (eventId) notifyAdmins({
+                eventId: eventId,
+                notification: {
+                    header: 'New pending restaurant',
+                    content: `'${req.restaurant.name}' is waiting for approval`
+                }
+            });
+            notifyToastOnly(req.identity, `You've changed restaurant status`);
+
             res.sendStatus(200);
         });
     }

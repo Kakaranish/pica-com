@@ -10,6 +10,16 @@ const DraftRestaurants = ({ restaurants }) => {
     const onEdit = restaurantId =>
         history.push(`/owner/restaurants/${restaurantId}/edit`);
 
+    const onMakePending = async restaurant => {
+        await changeStatus(restaurant._id, "pending");
+        history.push('/refresh');
+    };
+
+    const onMakeCancelled = async restaurant => {
+        await changeStatus(restaurant._id, "cancelled");
+        history.push('/refresh');
+    };
+
     if (!restaurants?.length) return <h3>No restaurants</h3>
     return <>
         {
@@ -26,18 +36,12 @@ const DraftRestaurants = ({ restaurants }) => {
                     </button>
 
                     <button className="btn btn-primary mr-3"
-                        onClick={async () => {
-                            await changeStatus(restaurant._id, "pending");
-                            history.go();
-                        }}>
+                        onClick={() => onMakePending(restaurant)}>
                         Make Pending
                     </button>
 
                     <button className="btn btn-primary mr-3"
-                        onClick={async () => {
-                            await changeStatus(restaurant._id, "cancelled");
-                            history.go();
-                        }}>
+                        onClick={() => onMakeCancelled(restaurant)}>
                         Make Cancelled
                     </button>
                 </RestaurantInfo>

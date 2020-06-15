@@ -10,6 +10,7 @@ import AdminRoutes from './pages/Admin/Routes';
 import AccountRoutes from './pages/Account/Routes';
 import ErrorPage from './pages/ErrorPage';
 import OwnerRoutes from './pages/Owner/Routes';
+import RefreshPage from './pages/RefreshPage';
 
 const App = () => <>
   <MainLayout>
@@ -23,6 +24,7 @@ const App = () => <>
         <Route path='/owner' component={OwnerRoutes} />
 
         <Route path='/error/:code' component={ErrorPage} />
+        <Route path='/refresh' component={RefreshPage} />
         <Redirect to='/error/404' />
       </Switch>
     </Router>

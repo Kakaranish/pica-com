@@ -8,6 +8,16 @@ const PendingRestaurants = ({ currentTab }) => {
 
 	const history = useHistory();
 
+	const onAccept = async restaurant => {
+		await changeStatus(restaurant._id, 'accepted');
+		history.push('/refresh');
+	};
+
+	const onReject = async restaurant => {
+		await changeStatus(restaurant._id, 'rejected');
+		history.push('/refresh');
+	};
+
 	return <>
 		<Restaurants currentTab={currentTab}
 			status="pending"
@@ -23,18 +33,12 @@ const PendingRestaurants = ({ currentTab }) => {
 					</Link>
 
 					<button className="btn btn-primary mr-2"
-						onClick={async () => {
-							await changeStatus(restaurant._id, 'accepted');
-							history.go();
-						}}>
+						onClick={() => onAccept(restaurant)}>
 						Accept
 					</button>
 
 					<button className="btn btn-primary mr-2"
-						onClick={async () => {
-							await changeStatus(restaurant._id, 'rejected');
-							history.go();
-						}}>
+						onClick={() => onReject(restaurant)}>
 						Reject
 					</button>
 				</div>

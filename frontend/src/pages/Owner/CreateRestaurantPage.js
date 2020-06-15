@@ -59,7 +59,7 @@ const CreateRestaurantPage = () => {
             </div>
 
             <button type="submit" className="btn btn-success btn-block">
-                Create Restaurant Draft
+                Create Draft
             </button>
         </form>
     </>

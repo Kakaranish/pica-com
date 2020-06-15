@@ -1,3 +1,4 @@
+// TODO:Test
 /**
  * @classdesc In memory socket connection collection
  */
@@ -23,7 +24,7 @@ class SocketRepository {
      */
     getUserSocketIds(userId) {
         return Object.keys(this.socketConnections)
-            .filter(u => this.socketConnections[u] === userId);
+            .filter(u => this.socketConnections[u] == userId);
     }
 
     /**

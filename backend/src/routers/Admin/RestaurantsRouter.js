@@ -1,9 +1,11 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { param } from 'express-validator';
 import { tokenValidatorMW, adminValidatorMW } from '../../auth/validators';
 import { validationExaminator } from '../../common/middlewares';
 import { withAsyncRequestHandler } from '../../common/utils';
 import Restaurant from '../../db/models/Restaurant';
+import { clearNotifsForEvent, notifyAdmins, notify } from '../../common/notif-utils';
 
 const RestaurantsRouter = express.Router();
 
@@ -32,12 +34,35 @@ RestaurantsRouter.get('/:id/', getRestaurantValidationMWs(),
 RestaurantsRouter.put('/:id/status/:status', updateStatusValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
+            const prevEventId = req.restaurant.statusEventId;
+            const eventId = req.params.status !== 'PENDING'
+                ? undefined
+                : mongoose.Types.ObjectId();
+
             req.restaurant.status = req.params.status;
+            req.restaurant.statusEventId = eventId;
             await req.restaurant.save();
+
+            if (prevEventId) await clearNotifsForEvent(prevEventId);
+            if (eventId) notifyAdmins({
+                eventId: eventId,
+                notification: {
+                    header: 'New pending restaurant',
+                    content: `'${req.restaurant.name}' is waiting for approval`
+                }
+            });
+            notify({
+                identity: { id: req.restaurant.ownerId },
+                notification: {
+                    header: 'Restaurant Status',
+                    content: `'${req.restaurant.name}' changed status to ${req.params.status}`
+                }
+            });
+
             res.sendStatus(200);
         });
     }
-)
+);
 
 function getWithStatusValidationMWs() {
     const legalStatuses = ['pending', 'accepted', 'rejected', 'cancelled'];

@@ -31,12 +31,19 @@ const ManageUsersPage = () => {
                             {user._id}
                         </Link>
                     </p>
+
+                    <p>
+                        <b>Role: </b>{user.role}
+                    </p>
+
                     <p>
                         <b>Provider: </b>{user.provider}
                     </p>
+
                     <p>
                         <b>Provider key: </b>{user.providerKey}
                     </p>
+
                     <p>
                         <b>Name: </b>{user.firstName} {user.lastName}
                     </p>

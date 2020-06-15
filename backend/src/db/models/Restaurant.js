@@ -51,6 +51,10 @@ const restaurantSchema = new Schema({
         required: true,
         default: 'DRAFT'
     },
+    statusEventId: {
+        type: Schema.Types.ObjectId,
+        required: false
+    },
     menu: {
         type: menuSchema,
         required: true,

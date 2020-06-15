@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { requestHandler } from '../../common/utils';
 import axios from 'axios';
 import TabHeader from './components/TabHeader';
@@ -49,7 +49,6 @@ const RestaurantsPage = () => {
         </nav>
 
         <div className="tab-content">
-
             <TabContent uniqueInitial='nav-draft' isActive={true}>
                 <DraftRestaurants restaurants={draftRestaurants} />
             </TabContent>
