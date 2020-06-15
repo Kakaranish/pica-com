@@ -31,7 +31,6 @@ const LoginPage = (props) => {
         });
         if (!loginResult) return;
 
-
         const fetchNotifsAction = async () => axios.get('/notifications',
             { validateStatus: false });
         const fetchNotifsResult = await requestHandler(fetchNotifsAction);

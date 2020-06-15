@@ -5,7 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle';
 import MainPage from './pages/MainPage';
 import MainLayout from './skeleton/MainLayout';
 import AuthRoutes from './pages/Auth/Routes';
-import SocketComponent from './skeleton/SocketComponent';
+import NotificationHandler from './skeleton/NotificationHandler';
 import AdminRoutes from './pages/Admin/Routes';
 import AccountRoutes from './pages/Account/Routes';
 import ErrorPage from './pages/ErrorPage';
@@ -14,7 +14,7 @@ import RefreshPage from './pages/RefreshPage';
 
 const App = () => <>
   <MainLayout>
-    <SocketComponent />
+    <NotificationHandler />
     <Router>
       <Switch>
         <Route exact path='/' component={MainPage} />

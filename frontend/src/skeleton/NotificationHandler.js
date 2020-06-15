@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 let socket;
 
-const SocketComponent = (props) => {
+const NotificationHandler = (props) => {
 
     useEffect(() => {
         const initSocket = async () => {
@@ -17,25 +17,12 @@ const SocketComponent = (props) => {
 
             socket = io('http://localhost:8000');
 
-            socket.on('notif', ({ content, createdAt }) => {
-                props.addNotif({ content, createdAt });
-
-                toast('You have new notification', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: false
-                });
+            socket.on('notif', ({ id, content, header, createdAt }) => {
+                props.addNotif({ id, content, header, createdAt });
+                toast('You have new notification', toastOptions);
             });
 
-            socket.on('toastOnlyNotif',  content => {
-                toast(content, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: false
-                });
-            });
+            socket.on('toastOnlyNotif', content => toast(content, toastOptions));
 
             socket.on('clearNotifs', () => props.clearNotifs());
 
@@ -45,12 +32,17 @@ const SocketComponent = (props) => {
 
     }, [props.identity]);
 
-    return <>
-        <ToastContainer />
-    </>
+    return <ToastContainer />;
+};
+
+const toastOptions = {
+    position: "top-right",
+    autoClose: 3000,
+    closeOnClick: true,
+    pauseOnHover: false
 };
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()
     .withNotifsAwareness()
-    .build(SocketComponent);
+    .build(NotificationHandler);

@@ -42,14 +42,8 @@ const MainPage = (props) => {
                     <p>Admin-only actions:</p>
 
                     <p>
-                        <Link to={'/admin/manage/users'}>
-                            Manage Users
-                        </Link>
-                    </p>
-
-                    <p>
-                        <Link to={'/admin/manage/restaurants'}>
-                            Manage Restaurants
+                        <Link to={'/admin/manage'}>
+                            Manage
                         </Link>
                     </p>
                 </div>

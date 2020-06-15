@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const schema = new Schema({
+const notificationSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         required: true
@@ -21,6 +21,15 @@ const schema = new Schema({
     timestamps: { createdAt: 'createdAt' }
 });
 
-const Notification = mongoose.model('notification', schema);
+notificationSchema.methods.toNotifJson = function () {
+    return {
+        id: this._id,
+        createdAt: this.createdAt,
+        header: this.header,
+        content: this.content
+    };
+};
+
+const Notification = mongoose.model('notification', notificationSchema);
 
 export default Notification;

@@ -3,9 +3,8 @@ import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
-import axios from 'axios';
 import { connectDb, initRootUser } from './db/utils';
-import { createInterserviceToken } from './auth/utils';
+import { notify } from "./common/notif-utils";
 import { tokenValidatorMW } from './auth/validators';
 import AuthRouter from './routers/AuthRouter';
 import NotificationRouter from "./routers/NotificationRouter";
@@ -34,13 +33,15 @@ app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
 app.use('/owner', OwnerRouter);
 
+// TODO: It's temp. To remove in the future
 app.post('/notify', tokenValidatorMW, async (req, res) => {
-    const payload = {
+    notify({
         identity: req.identity,
-        content: req.body.content
-    }
-    const interserviceToken = createInterserviceToken(payload);
-    axios.post('http://localhost:8000/notify', { interserviceToken });
+        notification: {
+            header: 'backend /notify',
+            content: req.body.content
+        }
+    });
     res.sendStatus(200);
 });
 

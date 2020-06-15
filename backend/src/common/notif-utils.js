@@ -23,7 +23,7 @@ export const notifyToastOnly = async (identity, content) => {
  */
 export const notify = async payload => {
     const interserviceToken = createInterserviceToken(payload);
-    axios.post('http://localhost:8000/notify', { interserviceToken });
+    axios.post('http://localhost:8000/notify/user', { interserviceToken });
 };
 
 /**

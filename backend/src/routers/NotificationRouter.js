@@ -12,8 +12,7 @@ NotificationRouter.get('/', tokenValidatorMW, async (req, res) => {
         const interserviceToken = createInterserviceToken(payload);
         
         const uri = 'http://localhost:8000/notifications/user';
-        const result = await axios.post(uri, { interserviceToken },
-            { validateStatus: false });
+        const result = await axios.post(uri, { interserviceToken });
         res.status(200).json(result.data);
     });
 });
