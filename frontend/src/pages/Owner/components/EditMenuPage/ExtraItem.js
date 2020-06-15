@@ -28,8 +28,10 @@ const ExtraItem = ({ extra }) => {
         if (window.confirm("Are you sure to remove pernamently this extra ingredient?")) {
             const action = async () => axios.delete(`/owner/extra/${extraState._id}`,
                 { validateStatus: false });
-            await requestHandler(action);
-            history.go();
+            await requestHandler(action, {
+                status: 200,
+                callback: async () => history.go()
+            });
         }
     };
 

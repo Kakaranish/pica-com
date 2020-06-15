@@ -15,15 +15,13 @@ const CreateCategoryPage = () => {
 
         const action = async () => axios.post('/admin/categories', formData,
             { validateStatus: false });
-        await requestHandler(action,
-            {
-                status: 400,
-                callback: async res => setValidationErrors(res.map(e => e.msg))
-            },
-            {
-                status: 200,
-                callback: async () => history.goBack()
-            });
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => history.goBack()
+        }, {
+            status: 400,
+            callback: async res => setValidationErrors(res.map(e => e.msg))
+        });
     };
 
     return <>

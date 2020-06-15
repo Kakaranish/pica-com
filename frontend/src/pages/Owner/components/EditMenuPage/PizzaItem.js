@@ -29,8 +29,10 @@ const PizzaItem = ({ pizza }) => {
         if (window.confirm("Are you sure to remove pernamently this pizza?")) {
             const action = async () => axios.delete(`/owner/pizza/${pizzaState._id}`,
                 { validateStatus: false });
-            await requestHandler(action);
-            history.go();
+            await requestHandler(action, {
+                status: 200,
+                callback: async () => history.go()
+            });
         }
     };
 

@@ -18,9 +18,13 @@ const CreateExtraPage = ({ match }) => {
         const action = async () => axios.post('/owner/extra/', formData,
             { validateStatus: false });
 
-        await requestHandler(action);
-        alert('Extra created');
-        history.goBack();
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => {
+                alert('Extra created');
+                history.goBack();
+            }
+        });
     };
 
     return <>

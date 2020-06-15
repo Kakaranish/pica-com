@@ -8,7 +8,7 @@ const EditProfilePage = () => {
     const history = useHistory();
 
     const [validationErrors, setValidationErrors] = useState(null);
-    
+
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
         const fetch = async () => {
@@ -27,12 +27,14 @@ const EditProfilePage = () => {
 
         const action = async () => axios.put('/account/profile', formData,
             { validateStatus: false });
-        const result = await requestHandler(action, {
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => history.go()
+        }, {
             status: 400,
             callback: async result =>
                 setValidationErrors(result.map(e => e.msg))
         });
-        if (result) history.go();
     }
 
     if (state.loading) return <></>;

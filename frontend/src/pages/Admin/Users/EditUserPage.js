@@ -27,8 +27,10 @@ const EditUserPage = (props) => {
 
         const action = async () => axios.put(`/admin/users/${userId}`, formData,
             { validateStatus: false });
-        const result = await requestHandler(action);
-        if(result) history.go();
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => history.go()
+        });
     }
 
     if (state.loading) return <></>;

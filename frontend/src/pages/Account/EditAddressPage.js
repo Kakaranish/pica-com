@@ -29,10 +29,13 @@ const EditAddressPage = (props) => {
 
         const action = async () => axios.put(`/account/address/${addressId}`,
             formData, { validateStatus: false });
-        await requestHandler(action);
-
-        alert('Address updated');
-        history.goBack();
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => {
+                alert('Address updated');
+                history.goBack();
+            }
+        });
     };
 
     if (state.loading) return <></>;

@@ -17,7 +17,6 @@ const EditDeliveryPage = ({ match }) => {
             let deliveryInfo = Object.assign(result,
                 { hasMinFreeDeliveryPrice: !!result.minFreeDeliveryPrice });
             setState({ loading: false, deliveryInfo });
-            console.log(deliveryInfo);
         };
         fetch();
     }, []);
@@ -31,9 +30,10 @@ const EditDeliveryPage = ({ match }) => {
 
         const uri = `/owner/restaurants/${restaurantId}/delivery-info`;
         const action = async () => axios.put(uri, formData, { validateStatus: false });
-        await requestHandler(action);
-
-        alert('OK - updated');
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => alert('OK - updated')
+        });
     };
 
     if (state.loading) return <></>
