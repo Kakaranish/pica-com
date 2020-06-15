@@ -18,9 +18,13 @@ const CreateExtraIngredientPage = ({ match }) => {
         const action = async () => axios.post('/owner/extra-ingredient/', formData,
             { validateStatus: false });
 
-        await requestHandler(action);
-        alert('Extra ingredient created');
-            history.goBack();
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => {
+                alert('Extra ingredient created');
+                history.goBack();
+            }
+        });
     };
 
     return <>

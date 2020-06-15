@@ -30,7 +30,7 @@ export const requestHandler = async (action, ...handlers) => {
     const result = await action();
     if (result.status === 200) {
         if (handlersDict[200]) return await handlersDict[200](result.data);
-        else return result.data ?? true;
+        else return result.data;
     }
 
     const anyStatus = -1;

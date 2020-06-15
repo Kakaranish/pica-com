@@ -27,11 +27,10 @@ const CategoryItem = ({ category }) => {
         if (window.confirm("Do you really want to delete this category?")) {
             const uri = `/admin/categories/${categoryState._id}`;
             const action = async () => axios.delete(uri, { validateStatus: false });
-            await requestHandler(action,
-                {
-                    status: 200,
-                    callback: async () => history.go()
-                });
+            await requestHandler(action, {
+                status: 200,
+                callback: async () => history.go()
+            });
         }
     };
 

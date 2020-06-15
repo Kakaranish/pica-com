@@ -16,9 +16,10 @@ const CreateAddressPage = () => {
 
         const action = async () => axios.post('/account/address', formData,
             { validateStatus: false });
-        await requestHandler(action);
-        
-        history.goBack();
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => history.goBack()
+        });
     };
 
     return <>

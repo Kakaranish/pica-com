@@ -13,8 +13,10 @@ const CreateRestaurantPage = () => {
 
         const action = async () => axios.post('/owner/restaurants', formData,
             { validateStatus: false });
-        const result = await requestHandler(action);
-        history.push(`/owner/restaurants/${result}/edit`);
+        await requestHandler(action, {
+            status: 200,
+            callback: async result => history.push(`/owner/restaurants/${result}/edit`)
+        });
     }
 
     return <>

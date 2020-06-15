@@ -62,6 +62,7 @@ userSchema.methods.toIdentityJson = function ()  {
 
 userSchema.methods.toProfileInfoJson = function () {
     return {
+        provider: this.provider,
         email: this.email,
         firstName: this.firstName,
         lastName: this.lastName,

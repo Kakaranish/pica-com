@@ -22,16 +22,18 @@ const RegisterPage = (props) => {
 
         const action = async () => axios.post('/auth/register', formData,
             { validateStatus: false });
-        const result = await requestHandler(action, {
+        await requestHandler(action, {
+            status: 200,
+            callback: async result => {
+                props.setIdentity(result);
+                setValidationErrors(null);
+                history.push('/');
+            }
+        }, {
             status: 400,
             callback: async result =>
                 setValidationErrors(result.errors.map(e => e.msg ?? e))
-        })
-
-        props.setIdentity(result);
-        
-        setValidationErrors(null);
-        history.push('/');
+        });
     }
 
     return <>

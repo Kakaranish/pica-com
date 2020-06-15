@@ -20,15 +20,16 @@ const ChangePasswordPage = () => {
 
         const action = async () => axios.put('/account/password', formData,
             { validateStatus: false });
-        const result = await requestHandler(action,
-            {
-                status: 400,
-                callback: async result => setValidationErrors(result.map(e => e.msg))
-            });
-        if (!result) return;
-
-        alert('Password has been updated');
-        history.goBack();
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => {
+                alert('Password has been updated');
+                history.goBack();
+            }
+        }, {
+            status: 400,
+            callback: async result => setValidationErrors(result.map(e => e.msg))
+        });
     }
 
     return <>
