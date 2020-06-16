@@ -34,7 +34,7 @@ const LoginPage = (props) => {
         const fetchNotifsAction = async () => axios.get('/notifications',
             { validateStatus: false });
         const fetchNotifsResult = await requestHandler(fetchNotifsAction);
-        if(!fetchNotifsResult) return;
+        if (!fetchNotifsResult) return;
 
         props.setIdentity(loginResult);
         props.setNotifs(fetchNotifsResult);

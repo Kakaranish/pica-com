@@ -11,6 +11,7 @@ import AccountRoutes from './pages/Account/Routes';
 import ErrorPage from './pages/ErrorPage';
 import OwnerRoutes from './pages/Owner/Routes';
 import RefreshPage from './pages/RefreshPage';
+import RestaurantPage from './pages/RestaurantPage';
 
 const App = () => <>
   <MainLayout>
@@ -22,6 +23,9 @@ const App = () => <>
         <Route path='/admin' component={AdminRoutes} />
         <Route path='/account' component={AccountRoutes} />
         <Route path='/owner' component={OwnerRoutes} />
+
+        {/* temp here */}
+        <Route path='/restaurants/:id' component={RestaurantPage} />
 
         <Route path='/error/:code' component={ErrorPage} />
         <Route path='/refresh' component={RefreshPage} />
