@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import * as IdentityActions from './reducers/profileReducer/actions';
 import * as NotifsActions from './reducers/notifReducer/actions';
+import * as CartActions from './reducers/cartReducer/actions';
 
 class AwareComponentBuilder {
     constructor() {
@@ -34,6 +35,36 @@ class AwareComponentBuilder {
 
         const partialMapState = state => ({
             notifs: state.notifs
+        });
+        this.partialMapStateToPropsList.push(partialMapState);
+
+        return this;
+    }
+
+    withCartsAwareness() {
+        const partialMapDispatch = dispatch => ({
+            addPizzaToCart: (restaurantId, pizzaCartItem) => dispatch(
+                CartActions.addPizzaToCart(restaurantId, pizzaCartItem)),
+            updatePizzaQuantityInCart: (restaurantId, pizzaCartItemId, quantity) =>
+                dispatch(CartActions.updatePizzaQuantityInCart(
+                    restaurantId, pizzaCartItemId, quantity)),
+            removePizzaFromCart: (restaurantId, pizzaCartItemId) => dispatch(
+                CartActions.removePizzaFromCart(restaurantId, pizzaCartItemId)),
+            addExtraToCart: (restaurantId, extraCartItem) => dispatch(
+                CartActions.addExtraToCart(restaurantId, extraCartItem)),
+            updateExtraQuantityInCart: (restaurantId, extraCartItemId, quantity) =>
+                dispatch(CartActions.updateExtraQuantityInCart(
+                    restaurantId, extraCartItemId, quantity)),
+            removeExtraFromCart: (restaurantId, extraCartItemId) => dispatch(
+                CartActions.removeExtraFromCart(restaurantId, extraCartItemId)),
+            clearCart: restaurantId => dispatch(
+                CartActions.clearCart(restaurantId)),
+            clearAllCarts: () => dispatch(CartActions.clearAllCarts())
+        });
+        this.partialDispatchToPropsList.push(partialMapDispatch);
+
+        const partialMapState = state => ({
+            carts: state.carts
         });
         this.partialMapStateToPropsList.push(partialMapState);
 

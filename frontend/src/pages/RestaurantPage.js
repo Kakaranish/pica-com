@@ -5,13 +5,16 @@ import PizzaItem from './RestaurantPage/PizzaItem';
 import ExtraItem from './RestaurantPage/ExtraItem';
 import RestaurantInfoHeader from './RestaurantPage/RestaurantInfoHeader';
 import BottomBar from './RestaurantPage/BottomBar';
+import AwareComponentBuilder from '../common/AwareComponentBuilder';
+import CartIndicator from '../skeleton/CartIndicator';
 
-const RestaurantPage = ({ match }) => {
+const RestaurantPage = (props) => {
 
-    const restaurantId = match.params.id;
+    const restaurantId = props.match.params.id;
 
     const [state, setState] = useState({ loading: true });
     const [empty, setEmpty] = useState(true);
+    
     useEffect(() => {
         const fetch = async () => {
             const uri = `/restaurants/${restaurantId}/populated`;
@@ -23,22 +26,23 @@ const RestaurantPage = ({ match }) => {
     }, []);
 
     const onPizzaAddToCart = pizzaCartItem => {
-        console.log(pizzaCartItem);
-
+        props.addPizzaToCart(restaurantId, pizzaCartItem);
     };
 
     const onExtraAddToCart = extraCartItem => {
-        console.log(extraCartItem);
+        props.addExtraToCart(restaurantId, extraCartItem);
         setEmpty(false);
     };
 
-    useEffect(() => {window.scrollBy(0, 80)}, [empty]);
+    useEffect(() => { window.scrollBy(0, 80) }, [empty]);
 
     if (state.loading) return <></>
     else if (!state?.restaurant) return <h3>No such restaurant</h3>
     return <>
 
         <RestaurantInfoHeader restaurant={state.restaurant} />
+
+        <CartIndicator restaurantId={restaurantId} />
 
         <h3>Pizza</h3>
         {
@@ -66,4 +70,6 @@ const RestaurantPage = ({ match }) => {
     </>
 };
 
-export default RestaurantPage;
+export default new AwareComponentBuilder()
+    .withCartsAwareness()
+    .build(RestaurantPage);

@@ -90,11 +90,9 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
             </div>
         }
 
-        <QuantityInput
-            minValue={1}
-            onQuantityChange={onQuantityChange} />
+        <QuantityInput minValue={1} onQuantityChange={onQuantityChange}/>
 
-        <button className="btn btn-primary btn-block mt-2"
+        <button className="btn btn-primary btn-block"
             onClick={addToCartOnClick}>
             Add to cart ({calculateCost().toFixed(2)} PLN)
         </button>
