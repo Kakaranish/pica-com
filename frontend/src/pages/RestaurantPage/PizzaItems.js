@@ -1,6 +1,6 @@
 import React from 'react';
-import QuantityInput from '../pages/RestaurantPage/QuantityInput';
-import AwareComponentBuilder from '../common/AwareComponentBuilder';
+import QuantityInput from './QuantityInput';
+import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
 const PizzaItems = (props) => {
 

@@ -6,7 +6,7 @@ import ExtraItem from './RestaurantPage/ExtraItem';
 import RestaurantInfoHeader from './RestaurantPage/RestaurantInfoHeader';
 import BottomBar from './RestaurantPage/BottomBar';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
-import CartIndicator from '../skeleton/CartIndicator';
+import CartIndicator from './RestaurantPage/CartIndicator';
 
 const RestaurantPage = (props) => {
 

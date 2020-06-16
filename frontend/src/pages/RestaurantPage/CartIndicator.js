@@ -1,6 +1,6 @@
 import React from 'react';
 import HyperModal from 'react-hyper-modal';
-import AwareComponentBuilder from '../common/AwareComponentBuilder';
+import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 import PizzaItems from './PizzaItems';
 import ExtraItems from './ExtraItems';
 
