@@ -3,6 +3,8 @@ import HyperModal from 'react-hyper-modal';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 import PizzaItems from './PizzaItems';
 import ExtraItems from './ExtraItems';
+import axios from 'axios';
+import { requestHandler } from '../../common/utils';
 
 const CartIndicator = (props) => {
 
@@ -18,7 +20,31 @@ const CartIndicator = (props) => {
 		const confirmText = 'Do you want to clear cart?';
 		if (window.confirm(confirmText))
 			props.clearCart(restaurantId)
-	}
+	};
+
+	const onFinalize = async () => {
+
+		let cart = props.carts[restaurantId];
+
+		let formData = { restaurantId };
+		formData.pizzas = cart.pizzas.map(pizzaCartItem => ({
+			quantity: pizzaCartItem.quantity,
+			pizzaId: pizzaCartItem.pizza._id,
+			extraIngredients: pizzaCartItem.extraIngredients.map(extraIngr =>
+				extraIngr._id)
+		}));
+		formData.extras = cart.extras.map(extraCartItem => ({
+			quantity: extraCartItem.quantity,
+			extraId: extraCartItem.extra._id,
+		}));
+
+		const action = async () => axios.post('/orders', formData,
+			{ validateStatus: false });
+		await requestHandler(action, {
+			status: 400,
+			callback: async res => console.log(res)
+		});
+	};
 
 	const renderOpenButton = requestOpen => <>
 		<button className="btn btn-primary" onClick={requestOpen}>
@@ -28,7 +54,7 @@ const CartIndicator = (props) => {
 
 	if (getNumberOfItemsInCart() === 0) return <></>
 	return <>
-		
+
 		<p>
 			Cart items count: {getNumberOfItemsInCart()}
 		</p>
@@ -39,18 +65,19 @@ const CartIndicator = (props) => {
 				<h3>Items in your shopping cart</h3>
 
 				{
-					cart?.pizzas?.length &&
+					cart?.pizzas?.length > 0 &&
 					<PizzaItems cart={cart} restaurantId={restaurantId} />
 				}
 
 				{
-					cart?.pizzas?.length &&
+					cart?.extras?.length > 0 &&
 					<ExtraItems cart={cart} restaurantId={restaurantId} />
 				}
 
 				<div className="row">
 					<div className="col-6">
-						<button className='btn btn-success btn-block'>
+						<button className='btn btn-success btn-block'
+							onClick={onFinalize}>
 							Finalize
 						</button>
 					</div>

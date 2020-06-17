@@ -70,9 +70,17 @@ const MainPage = (props) => {
                 <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
                     <p>Authorized only actions:</p>
 
-                    <Link to={'/account'}>
-                        Manage Account
-                    </Link>
+                    <p>
+                        <Link to={'/account'}>
+                            Manage Account
+                        </Link>
+                    </p>
+
+                    <p>
+                        <Link to={'/user/orders'}>
+                            Manage Orders
+                        </Link>
+                    </p>
 
                 </div>
             </>

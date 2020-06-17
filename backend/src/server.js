@@ -13,6 +13,7 @@ import AccountRouter from "./routers/AccountRouter";
 import OwnerRouter from './routers/Owner/OwnerRouter';
 import MiscRouter from "./routers/MiscRouter";
 import RestaurantsRouter from "./routers/RestaurantsRouter";
+import OrderRouter from "./routers/OrderRouter";
 
 require('dotenv').config();
 
@@ -29,12 +30,13 @@ app.use(cors());
 
 app.use('/', MiscRouter);
 app.use('/auth', AuthRouter);
-app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
 app.use('/owner', OwnerRouter);
+app.use('/notifications', NotificationRouter);
 
 app.use('/restaurants', RestaurantsRouter);
+app.use('/orders', OrderRouter);
 
 // TODO: It's temp. To remove in the future
 app.post('/notify', tokenValidatorMW, async (req, res) => {
