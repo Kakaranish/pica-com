@@ -34,9 +34,12 @@ const OrdersPage = () => {
 					</p>
 
 					<p>
-						Total Price: [PLACEHOLDER]
+						Status: {order.status}
 					</p>
 
+					<p>
+						Total Price: {order.totalPrice.toFixed(2)}PLN
+					</p>
 
 					<Link to={`/user/orders/${order._id}`} className="btn btn-primary">
 						Show

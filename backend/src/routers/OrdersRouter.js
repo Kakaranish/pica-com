@@ -8,19 +8,26 @@ import Pizza from '../db/models/Pizza';
 import Extra from '../db/models/Extra';
 import Order from '../db/models/Order';
 
-const OrderRouter = express.Router();
+const OrdersRouter = express.Router();
 
-OrderRouter.get('/', tokenValidatorMW, async (req, res) => {
+OrdersRouter.get('/', tokenValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
+        const toSelect = 'createdAt pizzas extras deliveryPrice ' +
+            'restaurant restaurantId status'
         const orders = await Order.find({ userId: req.identity.id })
             .populate('restaurant', 'name location')
-            .select('createdAt restaurant restaurantId');
+            .select(toSelect);
+        let ordersJson = orders.map(order => {
+            const totalPrice = calculateItemsTotalPrice(order.pizzas,
+                order.extras) + order.deliveryPrice;
+            return Object.assign(order.toObject(), { totalPrice });
+        })
 
-        res.status(200).json(orders);
+        res.status(200).json(ordersJson);
     });
 });
 
-OrderRouter.get('/:id', tokenValidatorMW, async (req, res) => {
+OrdersRouter.get('/:id', tokenValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         let order = await Order.findOne({
             _id: req.params.id,
@@ -28,23 +35,15 @@ OrderRouter.get('/:id', tokenValidatorMW, async (req, res) => {
         }).populate('pizzas.pizza pizzas.extraIngredients.extraIngredient extras.extra')
             .populate('restaurant', 'name location');
 
-        let totalPrice = 0;
-        order.pizzas.forEach(pizzaItem => {
-            const extraIngrsPrice = pizzaItem.extraIngredients.map(extraIngr =>
-                extraIngr.pricePerExtra).reduce((l, r) => l + r, 0);
-            totalPrice += pizzaItem.quantity * (pizzaItem.pricePerPizza +
-                extraIngrsPrice);
-        });
-        order.extras.forEach(extraItem => totalPrice += extraItem.pricePerExtra);
-        totalPrice += order.deliveryPrice;
-
+        let totalPrice = calculateItemsTotalPrice(order.pizzas, order.extras)
+            + order.deliveryPrice;
         const orderJson = Object.assign(order.toObject(), { totalPrice });
 
         res.status(200).json(orderJson);
     });
-})
+});
 
-OrderRouter.post('/', createOrderValidationMWs(), async (req, res) => {
+OrdersRouter.post('/', createOrderValidationMWs(), async (req, res) => {
     withAsyncRequestHandler(res, async () => {
 
         let pizzasPrices = {};
@@ -74,17 +73,9 @@ OrderRouter.post('/', createOrderValidationMWs(), async (req, res) => {
 
         let deliveryPrice;
         if (req.restaurant.minFreeDeliveryPrice !== undefined) {
-            let totalPrice = 0;
-            req.body.pizzas.forEach(pizzaItem => {
-                const extraIngrsPrice = pizzaItem.extraIngredients.map(extraIngr =>
-                    extraIngr.pricePerExtra).reduce((l, r) => l + r, 0);
-                totalPrice += pizzaItem.quantity * (pizzaItem.pricePerPizza +
-                    extraIngrsPrice);
-            });
-            req.body.extras.forEach(extraItem =>
-                totalPrice += extraItem.pricePerExtra);
-
-            deliveryPrice = totalPrice >= req.restaurant.minFreeDeliveryPrice
+            const itemsTotalPrice = calculateItemsTotalPrice(req.body.pizas,
+                req.body.extras);
+            deliveryPrice = itemsTotalPrice >= req.restaurant.minFreeDeliveryPrice
                 ? 0
                 : req.restaurant.deliveryPrice;
         }
@@ -103,7 +94,7 @@ OrderRouter.post('/', createOrderValidationMWs(), async (req, res) => {
     });
 });
 
-OrderRouter.put('/:id/delivery-address', updateDeliveryAddressValidationMWs(),
+OrdersRouter.put('/:id/delivery-address', updateDeliveryAddressValidationMWs(),
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
             req.order.deliveryAddress = {
@@ -191,4 +182,16 @@ function updateDeliveryAddressValidationMWs() {
     ];
 }
 
-export default OrderRouter;
+function calculateItemsTotalPrice(pizzaItems, extraItems) {
+    let totalPrice = 0;
+    pizzaItems.forEach(pizzaItem => {
+        const extraIngrsPrice = pizzaItem.extraIngredients.map(extraIngr =>
+            extraIngr.pricePerExtra).reduce((l, r) => l + r, 0);
+        totalPrice += pizzaItem.quantity * (pizzaItem.pricePerPizza +
+            extraIngrsPrice);
+    });
+    extraItems.forEach(extraItem => totalPrice += extraItem.pricePerExtra);
+    return totalPrice;
+}
+
+export default OrdersRouter;
