@@ -17,7 +17,7 @@ const ExtraOrderSchema = new Schema({
         type: Number,
         set: v => v.toFixed(2),
         required: true
-    },
+    }
 });
 
 export default ExtraOrderSchema;

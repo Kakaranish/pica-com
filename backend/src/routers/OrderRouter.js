@@ -36,6 +36,7 @@ OrderRouter.get('/:id', tokenValidatorMW, async (req, res) => {
                 extraIngrsPrice);
         });
         order.extras.forEach(extraItem => totalPrice += extraItem.pricePerExtra);
+        totalPrice += order.deliveryPrice;
 
         const orderJson = Object.assign(order.toObject(), { totalPrice });
 
@@ -71,11 +72,30 @@ OrderRouter.post('/', createOrderValidationMWs(), async (req, res) => {
             extraItem.extra = [extraItem.extraId]
         });
 
+        let deliveryPrice;
+        if (req.restaurant.minFreeDeliveryPrice !== undefined) {
+            let totalPrice = 0;
+            req.body.pizzas.forEach(pizzaItem => {
+                const extraIngrsPrice = pizzaItem.extraIngredients.map(extraIngr =>
+                    extraIngr.pricePerExtra).reduce((l, r) => l + r, 0);
+                totalPrice += pizzaItem.quantity * (pizzaItem.pricePerPizza +
+                    extraIngrsPrice);
+            });
+            req.body.extras.forEach(extraItem =>
+                totalPrice += extraItem.pricePerExtra);
+
+            deliveryPrice = totalPrice >= req.restaurant.minFreeDeliveryPrice
+                ? 0
+                : req.restaurant.deliveryPrice;
+        }
+        else deliveryPrice = req.restaurant.deliveryPrice;
+
         const order = new Order({
             userId: req.identity.id,
             restaurantId: req.body.restaurantId,
             pizzas: req.body.pizzas,
-            extras: req.body.extras
+            extras: req.body.extras,
+            deliveryPrice: deliveryPrice
         });
         await order.save();
 
@@ -102,12 +122,13 @@ function createOrderValidationMWs() {
     return [
         tokenValidatorMW,
         body('restaurantId').notEmpty().withMessage('cannot be empty').bail()
-            .custom(async value => {
-                const exists = await Restaurant.exists({
+            .custom(async (value, { req }) => {
+                const restaurant = await Restaurant.findOne({
                     _id: value,
                     status: 'ACCEPTED'
                 });
-                if (!exists) return Promise.reject('no such restaurant');
+                if (!restaurant) return Promise.reject('no such restaurant');
+                req.restaurant = restaurant;
             }),
         body('pizzas').isArray().withMessage('must be array').bail()
             .custom(async (pizzas, { req }) => {

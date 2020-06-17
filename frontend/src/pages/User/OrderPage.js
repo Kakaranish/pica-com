@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 
@@ -31,27 +32,30 @@ const OrderPage = ({ match }) => {
 
 	return <>
 		<p>
-			Order: {orderId}
+			<b>Order: </b> {orderId}
 		</p>
 
 		<p>
-			Created At: {state.order.createdAt}
+			<b>Created At:</b> {state.order.createdAt}
 		</p>
 
 		<p>
-			Restaurant: {state.order.restaurant.name} <br />
-            Location: {state.order.restaurant.location.city},&nbsp;
-            {state.order.restaurant.location.postcode},&nbsp;
-            {state.order.restaurant.location.address} */}
-        </p>
-
-		<p>
-			Status: {state.order.status}
+			<b>Restaurant: </b>&nbsp;
+			<Link to={`/restaurants/${state.order.restaurant._id}`}>
+				{state.order.restaurant.name}
+			</Link>
 		</p>
 
 		<p>
-			Delivery: FREE
-        </p>
+			<b>Status: </b> {state.order.status}
+		</p>
+
+		{/* Placeholder */}
+		<p>
+			<Link to={'/'} className='btn btn-primary'>
+				Watch order progress
+			</Link>
+		</p>
 
 		<h3>Ordered Items</h3>
 
@@ -106,8 +110,12 @@ const OrderPage = ({ match }) => {
 			)
 		}
 
+		<h4 className="mb-4">
+			Delivery Price: {state.order.deliveryPrice.toFixed(2)}PLN
+		</h4>
+
 		<h3>
-			Total Price:
+			Total Price:&nbsp;
 			<span style={{ color: 'green' }}>
 				{state.order.totalPrice.toFixed(2)} PLN
 			</span>

@@ -22,6 +22,11 @@ const orderSchema = new Schema({
         required: true,
         default: []
     },
+    deliveryPrice: {
+        type: Number,
+        set: v => v.toFixed(2),
+        required: true
+    },
     deliveryAddress: {
         type: AddressSchema,
         required: false
