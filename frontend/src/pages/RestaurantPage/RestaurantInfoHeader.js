@@ -17,6 +17,22 @@ const RestaurantInfoHeader = ({ restaurant }) => {
         }
 
         <p>
+            Average delivery time: {restaurant.avgDeliveryTime}m
+        </p>
+
+        <p>
+            Delivery price: {restaurant.deliveryPrice.toFixed(2)} PLN
+        </p>
+
+        {
+            restaurant.minFreeDeliveryPrice &&
+            <p>
+                Min free delivery price:&nbsp;
+                {restaurant.minFreeDeliveryPrice.toFixed(2)} PLN
+            </p>
+        }
+
+        <p>
             <b>Location: </b>
             {restaurant.location.city}, {restaurant.location.postcode},
             {restaurant.location.address}

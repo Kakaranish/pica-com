@@ -50,7 +50,7 @@ RestaurantsRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
 RestaurantsRouter.get('/:id/delivery-info', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const restaurant = await Restaurant.findById(req.params.id)
-            .select('deliveryPrice minFreeDeliveryPrice');
+            .select('deliveryPrice minFreeDeliveryPrice avgDeliveryTime');
         res.status(200).json(restaurant);
     });
 });
@@ -163,6 +163,7 @@ RestaurantsRouter.put('/:id/delivery-info', updateDeliveryInfoValidationMWs(),
         withAsyncRequestHandler(res, async () => {
             req.restaurant.deliveryPrice = req.body.deliveryPrice;
             req.restaurant.minFreeDeliveryPrice = req.body.minFreeDeliveryPrice;
+            req.restaurant.avgDeliveryTime = req.body.avgDeliveryTime;
             await req.restaurant.save();
             res.sendStatus(200);
         });
@@ -196,11 +197,13 @@ function updateDeliveryInfoValidationMWs() {
                 return Promise.reject('no such restaurant');
             req.restaurant = restaurant;
         }),
-        body('deliveryPrice').isFloat({ gt: 0 }).withMessage('must be float greater than 0')
+        body('deliveryPrice').isFloat({ min: 0 }).withMessage('must be float greater than 0')
             .customSanitizer(value => parseFloat(value.toFixed(2))),
         body('minFreeDeliveryPrice').optional()
             .isFloat({ gt: 0 }).withMessage('must be float greater than 0')
             .customSanitizer(value => parseFloat(value.toFixed(2))),
+        body('avgDeliveryTime').isInt({ gt: 0 })
+            .withMessage('must be int greater than 0'),
         validationExaminator
     ];
 }
