@@ -3,8 +3,8 @@ import ImagePreview from '../../common/components/ImagePreview';
 
 const RestaurantInfoHeader = ({ restaurant }) => {
     return <>
+        
         <h3>{restaurant.name}</h3>
-
         {
             restaurant.images?.length &&
             <div className="row">

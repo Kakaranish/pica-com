@@ -6,7 +6,6 @@ import ExtraItem from './RestaurantPage/ExtraItem';
 import RestaurantInfoHeader from './RestaurantPage/RestaurantInfoHeader';
 import BottomBar from './RestaurantPage/BottomBar';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
-import CartIndicator from './RestaurantPage/CartIndicator';
 
 const RestaurantPage = (props) => {
 
@@ -14,7 +13,7 @@ const RestaurantPage = (props) => {
 
     const [state, setState] = useState({ loading: true });
     const [empty, setEmpty] = useState(true);
-    
+
     useEffect(() => {
         const fetch = async () => {
             const uri = `/restaurants/${restaurantId}/populated`;
@@ -42,8 +41,6 @@ const RestaurantPage = (props) => {
 
         <RestaurantInfoHeader restaurant={state.restaurant} />
 
-        <CartIndicator restaurantId={restaurantId} />
-
         <h3>Pizza</h3>
         {
             state.restaurant.menu.pizzas.map((pizza, i) =>
@@ -66,7 +63,7 @@ const RestaurantPage = (props) => {
             )
         }
 
-        <BottomBar empty={empty} />
+        <BottomBar restaurantId={restaurantId} />
     </>
 };
 

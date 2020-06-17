@@ -1,12 +1,13 @@
 import React from 'react';
+import axios from 'axios';
 import HyperModal from 'react-hyper-modal';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 import PizzaItems from './PizzaItems';
 import ExtraItems from './ExtraItems';
-import axios from 'axios';
 import { requestHandler } from '../../common/utils';
+import cartIcon from '../../assets/img/cart.svg';
 
-const CartIndicator = (props) => {
+const CartModal = (props) => {
 
 	const restaurantId = props.restaurantId;
 	const cart = props.carts[restaurantId];
@@ -47,18 +48,16 @@ const CartIndicator = (props) => {
 	};
 
 	const renderOpenButton = requestOpen => <>
-		<button className="btn btn-primary" onClick={requestOpen}>
-			Show cart
-		</button>
+		<div className="d-flex" style={{ cursor: 'pointer' }} onClick={requestOpen}>
+			<img src={cartIcon} className="pb-2 mr-2" style={{ width: '25px' }} />
+			<h4 className="text-white">
+				Go to cart
+			</h4>
+		</div>
 	</>
 
 	if (getNumberOfItemsInCart() === 0) return <></>
 	return <>
-
-		<p>
-			Cart items count: {getNumberOfItemsInCart()}
-		</p>
-
 		<HyperModal renderOpenButton={requestOpen => renderOpenButton(requestOpen)}>
 
 			<div className="mt-2 p-4">
@@ -95,4 +94,4 @@ const CartIndicator = (props) => {
 
 export default new AwareComponentBuilder()
 	.withCartsAwareness()
-	.build(CartIndicator);
+	.build(CartModal);
