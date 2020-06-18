@@ -26,10 +26,8 @@ const RestaurantPage = (props) => {
     const onPizzaAddToCart = pizzaCartItem =>
         props.addPizzaToCart(restaurantId, pizzaCartItem);
 
-    const onExtraAddToCart = extraCartItem => {
+    const onExtraAddToCart = extraCartItem =>
         props.addExtraToCart(restaurantId, extraCartItem);
-        
-    };
 
     if (state.loading) return <></>
     else if (!state?.restaurant) return <h3>No such restaurant</h3>
@@ -59,7 +57,9 @@ const RestaurantPage = (props) => {
             )
         }
 
-        <BottomBar restaurantId={restaurantId} />
+        <BottomBar restaurantId={restaurantId}
+            minFreeDeliveryPrice={state.restaurant.minFreeDeliveryPrice}
+            deliveryPrice={state.restaurant.deliveryPrice} />
     </>
 };
 

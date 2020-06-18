@@ -1,12 +1,15 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import HyperModal from 'react-hyper-modal';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 import PizzaItems from './PizzaItems';
 import ExtraItems from './ExtraItems';
 import { requestHandler } from '../../common/utils';
+import { sumCartItemsPrices } from './common';
 import cartIcon from '../../assets/img/cart.svg';
-import { useHistory } from 'react-router-dom';
+import deliveryWhiteIcon from '../../assets/img/delivery-white.svg';
+import CartPrices from './CartPrices';
 
 const CartModal = (props) => {
 
@@ -55,12 +58,30 @@ const CartModal = (props) => {
 		});
 	};
 
+	const minFreeDeliveryPrice = props.minFreeDeliveryPrice;
+	const cartItemsPrice = sumCartItemsPrices(cart);
+	const deliveryPrice = cartItemsPrice >= minFreeDeliveryPrice
+		? 0
+		: props.deliveryPrice;
+	const toFreeDelivery = minFreeDeliveryPrice - cartItemsPrice;
+
 	const renderOpenButton = requestOpen => <>
-		<div className="d-flex" style={{ cursor: 'pointer' }} onClick={requestOpen}>
+		<div className="d-flex align-items-center" style={{ cursor: 'pointer' }} onClick={requestOpen}>
 			<img src={cartIcon} className="pb-2 mr-2" style={{ width: '25px' }} />
-			<h4 className="text-white">
-				Go to cart
+			<h4 className="text-white align-self-center">
+				Go to cart&nbsp;
 			</h4>
+			<b className="text-white align-self-center">
+				({cartItemsPrice.toFixed(2)}PLN
+				&nbsp;+&nbsp;
+				<img src={deliveryWhiteIcon} style={{ width: '25px' }} />
+				{
+					deliveryPrice
+						? <>{deliveryPrice.toFixed(2)}PLN</>
+						: 'FREE'
+				}
+				)
+			</b>
 		</div>
 	</>
 
@@ -81,16 +102,19 @@ const CartModal = (props) => {
 					<ExtraItems cart={cart} restaurantId={restaurantId} />
 				}
 
-				<div className="row">
+				<CartPrices cartItemsPrice={cartItemsPrice}
+					deliveryPrice={deliveryPrice}
+					toFreeDelivery={toFreeDelivery} />
+
+				<div className="row mt-2">
 					<div className="col-6">
-						<button className='btn btn-success btn-block'
-							onClick={onFinalize}>
+						<button className='btn btn-success btn-block' onClick={onFinalize}>
 							Finalize
 						</button>
 					</div>
+					
 					<div className="col-6">
-						<button className='btn btn-danger btn-block'
-							onClick={clearCart}>
+						<button className='btn btn-danger btn-block' onClick={clearCart}>
 							Clear
 						</button>
 					</div>

@@ -29,7 +29,9 @@ const PizzaItems = (props) => {
 			cart.pizzas.map((pizzaCartItem, i) =>
 				<div key={`c-p-${i}`} className='mb-3 p-2' style={{ border: '1px solid red' }}>
 					<div className="my-2">
-						<b>{pizzaCartItem.pizza.name}</b><br />
+						<b>{pizzaCartItem.pizza.name} </b>
+						({pizzaCartItem.pizza.price.toFixed(2)}PLN)
+						<br />
 
 						{pizzaCartItem.pizza.description}<br />
 
@@ -40,7 +42,7 @@ const PizzaItems = (props) => {
                                 {
 										pizzaCartItem.extraIngredients.map((ingr, j) =>
 											<span key={`ingr-${j}`} style={{ color: 'gray' }}>
-												{ingr.name}
+												{ingr.name} ({ingr.price.toFixed(2)}PLN)
 												{
 													(j !== pizzaCartItem.extraIngredients.length - 1)
 														? ', '

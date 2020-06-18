@@ -17,11 +17,13 @@ const BottomBar = (props) => {
 					<div className="container d-flex align-items-center justify-content-center bg-dark rounded-top"
 						style={{ height: '50px' }}>
 
-						<CartModal restaurantId={restaurantId} />
+						<CartModal restaurantId={restaurantId}
+							minFreeDeliveryPrice={props.minFreeDeliveryPrice}
+							deliveryPrice={props.deliveryPrice} />
 
 					</div>
 				</div>
-				
+
 				<div style={{ height: '80px' }}></div>
 			</>
 		}
