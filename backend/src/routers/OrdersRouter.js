@@ -1,4 +1,5 @@
 import express from 'express';
+import { calculateItemsTotalPrice } from '../common/utils';
 import { tokenValidatorMW } from '../auth/validators';
 import { validationExaminator } from '../common/middlewares';
 import { withAsyncRequestHandler, parseObjectId } from '../common/utils';
@@ -21,7 +22,7 @@ OrdersRouter.get('/', tokenValidatorMW, async (req, res) => {
             const totalPrice = calculateItemsTotalPrice(order.pizzas,
                 order.extras) + order.deliveryPrice;
             return Object.assign(order.toObject(), { totalPrice });
-        })
+        });
 
         res.status(200).json(ordersJson);
     });
@@ -45,7 +46,6 @@ OrdersRouter.get('/:id', tokenValidatorMW, async (req, res) => {
 
 OrdersRouter.post('/', createOrderValidationMWs(), async (req, res) => {
     withAsyncRequestHandler(res, async () => {
-
         let pizzasPrices = {};
         req.pizzas.forEach(pizza => pizzasPrices[pizza._id] = pizza.price);
 
@@ -64,7 +64,7 @@ OrdersRouter.post('/', createOrderValidationMWs(), async (req, res) => {
                 pricePerExtra: extraIngrsPrices[extraIngrItem],
                 extraIngredient: extraIngrItem
             }));
-        })
+        });
 
         req.body.extras.forEach(extraItem => {
             extraItem.pricePerExtra = extrasPrices[extraItem.extraId]
@@ -73,7 +73,7 @@ OrdersRouter.post('/', createOrderValidationMWs(), async (req, res) => {
 
         let deliveryPrice;
         if (req.restaurant.minFreeDeliveryPrice !== undefined) {
-            const itemsTotalPrice = calculateItemsTotalPrice(req.body.pizas,
+            const itemsTotalPrice = calculateItemsTotalPrice(req.body.pizzas,
                 req.body.extras);
             deliveryPrice = itemsTotalPrice >= req.restaurant.minFreeDeliveryPrice
                 ? 0
@@ -180,18 +180,6 @@ function updateDeliveryAddressValidationMWs() {
         body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
         validationExaminator
     ];
-}
-
-function calculateItemsTotalPrice(pizzaItems, extraItems) {
-    let totalPrice = 0;
-    pizzaItems.forEach(pizzaItem => {
-        const extraIngrsPrice = pizzaItem.extraIngredients.map(extraIngr =>
-            extraIngr.pricePerExtra).reduce((l, r) => l + r, 0);
-        totalPrice += pizzaItem.quantity * (pizzaItem.pricePerPizza +
-            extraIngrsPrice);
-    });
-    extraItems.forEach(extraItem => totalPrice += extraItem.pricePerExtra);
-    return totalPrice;
 }
 
 export default OrdersRouter;

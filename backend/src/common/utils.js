@@ -37,3 +37,15 @@ export const withAsyncRequestHandler = async (res, action) => {
         res.status(500).json({ errors: ['Internal error'] });
     }
 };
+
+export const calculateItemsTotalPrice = (pizzaItems, extraItems) => {
+    let totalPrice = 0;
+    pizzaItems.forEach(pizzaItem => {
+        const extraIngrsPrice = pizzaItem.extraIngredients.map(extraIngr =>
+            extraIngr.pricePerExtra).reduce((l, r) => l + r, 0);
+        totalPrice += pizzaItem.quantity * (pizzaItem.pricePerPizza +
+            extraIngrsPrice);
+    });
+    extraItems.forEach(extraItem => totalPrice += extraItem.pricePerExtra);
+    return totalPrice;
+};

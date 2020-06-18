@@ -34,7 +34,7 @@ const orderSchema = new Schema({
     status: {
         type: String,
         required: true,
-        default: 'DEFAULT' // TODO
+        default: 'IN_PROGRESS'
     },
     opinionId: {
         type: Schema.Types.ObjectId,

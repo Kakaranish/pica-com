@@ -55,7 +55,7 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
         const ingredients = (selected ?? []).map(s => JSON.parse(s.value));
         const ingredientsPrice = ingredients.map(i => i.price)
             .reduce((l, r) => l + r, 0);
-        return pizza.price + ingredientsPrice;
+        return quantity * (pizza.price + ingredientsPrice);
     }
 
     return <>
