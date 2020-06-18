@@ -1,8 +1,9 @@
 import express from 'express';
 import bcryptjs from 'bcryptjs';
-import { body, validationResult, param } from 'express-validator';
+import { body, param } from 'express-validator';
 import { tokenValidatorMW } from '../auth/validators';
 import { withAsyncRequestHandler } from '../common/utils';
+import { validationExaminator } from '../common/middlewares';
 import User from '../db/models/User';
 
 const AccountRouter = express.Router();
@@ -15,40 +16,30 @@ AccountRouter.get('/profile', tokenValidatorMW, async (req, res) => {
     });
 });
 
-AccountRouter.put('/profile', tokenValidatorMW, updateProfileValidationMWs(),
-    async (req, res) => {
-        if (validationResult(req).errors.length > 0)
-            return res.status(400).json(validationResult(req).errors);
-
-        withAsyncRequestHandler(res, async () => {
-            await User.updateOne({ _id: req.identity.id }, {
-                $set: {
-                    email: req.body.email,
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName
-                }
-            });
-
-            res.sendStatus(200);
+AccountRouter.put('/profile', updateProfileValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        await User.updateOne({ _id: req.identity.id }, {
+            $set: {
+                email: req.body.email,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName
+            }
         });
-    }
-);
 
-AccountRouter.put('/password', tokenValidatorMW, changePasswordValidationMWs(),
-    async (req, res) => {
-        if (validationResult(req).errors.length > 0)
-            return res.status(400).json(validationResult(req).errors);
+        res.sendStatus(200);
+    });
+});
 
-        withAsyncRequestHandler(res, async () => {
-            const encryptedPassword = await bcryptjs.hash(req.body.newPassword, 10);
-            await User.updateOne({ _id: req.identity.id }, {
-                $set: { password: encryptedPassword }
-            });
-
-            res.sendStatus(200);
+AccountRouter.put('/password', changePasswordValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const encryptedPassword = await bcryptjs.hash(req.body.newPassword, 10);
+        await User.updateOne({ _id: req.identity.id }, {
+            $set: { password: encryptedPassword }
         });
-    }
-);
+
+        res.sendStatus(200);
+    });
+});
 
 AccountRouter.get('/addresses', tokenValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
@@ -58,93 +49,79 @@ AccountRouter.get('/addresses', tokenValidatorMW, async (req, res) => {
     });
 });
 
-AccountRouter.get('/address/:id', tokenValidatorMW, getAddressValidationMWs(),
-    async (req, res) => {
-        withAsyncRequestHandler(res, async () => {
-            const user = await User.findById(req.identity.id);
-            if (!user?.addresses) res.status(200).json(null);
+AccountRouter.get('/address/:id', getAddressValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const user = await User.findById(req.identity.id);
+        if (!user?.addresses) res.status(200).json(null);
 
-            const address = user.addresses.find(a => a.id === req.params.id);
-            res.status(200).json(address);
+        const address = user.addresses.find(a => a.id === req.params.id);
+        res.status(200).json(address);
+    });
+});
+
+AccountRouter.post('/address', createAddressValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const user = await User.findById(req.identity.id);
+        if (!user) return res.sendStatus(404);
+
+        if (!user.addresses) user.addresses = [];
+
+        const address = {
+            city: req.body.city,
+            postcode: req.body.postcode,
+            address: req.body.address,
+            flatCode: req.body.flatCode
+        };
+        user.addresses.push(address);
+
+        await User.findByIdAndUpdate(user.id, {
+            $set: {
+                addresses: user.addresses
+            }
         });
-    }
-);
 
-AccountRouter.post('/address', tokenValidatorMW, createAddressValidationMWs(),
-    async (req, res) => {
-        if (validationResult(req).errors.length > 0)
-            return res.status(400).json(validationResult(req).errors);
+        res.sendStatus(200);
+    });
+});
 
-        withAsyncRequestHandler(res, async () => {
-            const user = await User.findById(req.identity.id);
-            if (!user) return res.sendStatus(404);
+AccountRouter.put('/address/:id', updateAddressValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        const user = await User.findById(req.identity.id);
+        if (!user) return res.sendStatus(404);
 
-            if (!user.addresses) user.addresses = [];
-            if (req.body.isDefault) user.addresses.forEach(a => a.isDefault = false);
+        if (!user.addresses) user.addresses = [];
+        const updatedAddress = {
+            _id: req.params._id,
+            city: req.body.city,
+            postcode: req.body.postcode,
+            address: req.body.address,
+            flatCode: req.body.flatCode
+        };
+        const addressToUpdateIndex = user.addresses.findIndex(a =>
+            a.id === req.params.id);
+        user.addresses[addressToUpdateIndex] = updatedAddress;
 
-            const address = {
-                city: req.body.city,
-                postcode: req.body.postcode,
-                address: req.body.address,
-                flatCode: req.body.flatCode,
-                isDefault: req.body.isDefault
-            };
-            user.addresses.push(address);
-
-            await User.findByIdAndUpdate(user.id, {
-                $set: {
-                    addresses: user.addresses
-                }
-            });
-
-            res.sendStatus(200);
+        await User.findByIdAndUpdate(user.id, {
+            $set: { addresses: user.addresses }
         });
-    }
-);
 
-AccountRouter.put('/address/:id', tokenValidatorMW, updateAddressValidationMWs(),
-    async (req, res) => {
-        if (validationResult(req).errors.length > 0)
-            return res.status(400).json(validationResult(req).errors);
-
-        withAsyncRequestHandler(res, async () => {
-            const user = await User.findById(req.identity.id);
-            if (!user) return res.sendStatus(404);
-
-            if (!user.addresses) user.addresses = [];
-            if (req.body.isDefault) user.addresses.forEach(a => a.isDefault = false);
-
-            const updatedAddress = {
-                _id: req.params._id,
-                city: req.body.city,
-                postcode: req.body.postcode,
-                address: req.body.address,
-                flatCode: req.body.flatCode,
-                isDefault: req.body.isDefault
-            };
-            const addressToUpdateIndex = user.addresses.findIndex(a =>
-                a.id === req.params.id);
-            user.addresses[addressToUpdateIndex] = updatedAddress;
-
-            await User.findByIdAndUpdate(user.id, {
-                $set: { addresses: user.addresses }
-            });
-
-            res.sendStatus(200);
-        });
-    }
-);
+        res.sendStatus(200);
+    });
+});
 
 function updateProfileValidationMWs() {
     return [
+        tokenValidatorMW,
         body('email').isEmail().withMessage('is not email'),
         body('firstName').notEmpty().withMessage('cannot be empty'),
-        body('lastName').notEmpty().withMessage('cannot be empty')
+        body('lastName').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
     ];
 }
 
 function changePasswordValidationMWs() {
     return [
+        tokenValidatorMW,
         body('oldPassword').notEmpty().withMessage('cannot be empty').bail()
             .custom(async (value, { req }) => {
                 const user = await User.findById(req.identity.id);
@@ -156,16 +133,18 @@ function changePasswordValidationMWs() {
         body('confirmedNewPassword').isLength(5)
             .withMessage('must have at least 5 characters').bail()
             .custom((value, { req }) => value !== req.body.newPassord)
-            .withMessage('passwords are different')
+            .withMessage('passwords are different'),
+        validationExaminator
     ];
 }
 
 function createAddressValidationMWs() {
     return [
+        tokenValidatorMW,
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
-        body('isDefault').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
     ];
 }
 
@@ -175,13 +154,15 @@ function updateAddressValidationMWs() {
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
-        body('isDefault').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
     ];
 }
 
 function getAddressValidationMWs() {
     return [
-        param('id').notEmpty().withMessage('cannot be empty')
+        tokenValidatorMW,
+        param('id').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
     ];
 }
 

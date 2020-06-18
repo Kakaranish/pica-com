@@ -37,7 +37,6 @@ const AddressesPage = () => {
                     address.flatCode &&
                     <p>Flat code: {address.flatCode}</p>
                 }
-                <p>Is default: {address.isDefault ? 'Yes' : 'No'}</p>
                 <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
                     Edit
                 </Link>

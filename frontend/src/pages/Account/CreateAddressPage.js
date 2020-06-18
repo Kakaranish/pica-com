@@ -11,7 +11,6 @@ const CreateAddressPage = () => {
     const onSubmit = async event => {
         event.preventDefault();
         let formData = getFormDataJsonFromEvent(event);
-        formData.isDefault = formData.isDefault === 'on' ? true : false;
         formData.flatCode = formData.flatCode === '' ? null : formData.flatCode;
 
         const action = async () => axios.post('/account/address', formData,

@@ -16,11 +16,6 @@ const AddressSchema = new Schema({
     flatCode: {
         type: String,
         required: false
-    },
-    isDefault: {
-        type: Boolean,
-        required: true,
-        default: true
     }
 });
 

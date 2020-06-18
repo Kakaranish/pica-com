@@ -31,14 +31,6 @@ const AddressForm = ({ address, onSubmitCb }) => {
                     defaultValue={address?.flatCode} />
             </div>
 
-            <div className="form-check">
-                <input type="checkbox" className="form-check-input"
-                    name="isDefault" defaultChecked={address?.isDefault} />
-                <label className="form-check-label">
-                    Is default address?
-                </label>
-            </div>
-
             <button type="submit" className="btn btn-success w-25">
                 Submit
             </button>
