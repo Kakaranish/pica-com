@@ -19,8 +19,8 @@ ProviderRouter.get('/google/callback',
     async (req, res) => {
         const jwtAccessToken = createAccessToken(req.user.toIdentityJson());
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: req.user._id })).token;
-        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+        res.cookie('accessToken', jwtAccessToken, { httpOnly: true, sameSite: 'lax' });
+        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true, sameSite: 'lax' });
 
         res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(req.user.toProfileInfoJson())}`);
     }
@@ -38,8 +38,8 @@ ProviderRouter.get('/facebook/callback',
     async (req, res) => {
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: req.user._id })).token;
         const jwtAccessToken = createAccessToken(req.user.toIdentityJson());
-        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+        res.cookie('accessToken', jwtAccessToken, { httpOnly: true, sameSite: 'lax' });
+        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true, sameSite: 'lax' });
 
         res.redirect(`http://localhost:3000/auth/success?${queryString.stringify(req.user.toProfileInfoJson())}`);
     }

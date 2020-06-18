@@ -30,8 +30,8 @@ AuthRouter.post('/register', registerValidators(), async (req, res) => {
 
             const jwtRefreshToken = await createRefreshToken(user.toIdentityJson());
             const jwtAccessToken = createAccessToken(user.toIdentityJson());
-            res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-            res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+            res.cookie('accessToken', jwtAccessToken, { httpOnly: true, sameSite: 'lax' });
+            res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true, sameSite: 'lax' });
 
             res.status(200).json(user.toProfileInfoJson());
         }
@@ -52,8 +52,8 @@ AuthRouter.post('/login', loginValidators(), async (req, res, next) => {
 
         const jwtAccessToken = createAccessToken(user.toIdentityJson());
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: user._id })).token;
-        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+        res.cookie('accessToken', jwtAccessToken, { httpOnly: true, sameSite: 'lax' });
+        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true, sameSite: 'lax' });
 
         res.status(200).json(user.toProfileInfoJson());
     })(req, res, next);
@@ -82,7 +82,7 @@ AuthRouter.post('/verify', async (req, res) => {
 
     const newJwtAccessToken = await refreshAccessToken(req.cookies.refreshToken);
     if (!newJwtAccessToken) return res.status(200).json({ identity: null });
-    res.cookie('accessToken', newJwtAccessToken, { httpOnly: true });
+    res.cookie('accessToken', newJwtAccessToken, { httpOnly: true, sameSite: 'lax' });
     res.status(200).json({ identity: decodedRefreshToken });
 });
 
@@ -90,7 +90,7 @@ function registerValidators() {
     return [
         body('email').notEmpty().withMessage('cannot be empty').bail()
             .isEmail().withMessage('must have email format'),
-        body('password').isLength({min: 5}).withMessage('min 5 characters required'),
+        body('password').isLength({ min: 5 }).withMessage('min 5 characters required'),
         body('firstName').notEmpty().withMessage('cannot be empty'),
         body('lastName').notEmpty().withMessage('cannot be empty')
     ];
