@@ -69,6 +69,10 @@ const RestaurantOverview = ({ restaurant, children }) => {
                 }
 
             </p>
+
+            <p>
+                <b>Avg delivery time: </b> {restaurant.avgDeliveryTime}m
+            </p>
         </div>
 
         <h3 className="my-4">Gallery</h3>

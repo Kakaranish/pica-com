@@ -12,7 +12,7 @@ const LocationSchema = new Schema({
     address: {
         type: String,
         required: true
-    },
+    }
 });
 
 export default LocationSchema;

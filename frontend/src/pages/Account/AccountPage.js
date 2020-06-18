@@ -21,7 +21,7 @@ const AccountPage = (props) => {
 
         <p>
             <Link to='/account/addresses'>
-                Shipping addresses
+                Delivery addresses
             </Link>
         </p>
     </>

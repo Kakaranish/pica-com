@@ -13,6 +13,7 @@ import AccountRouter from "./routers/AccountRouter";
 import OwnerRouter from './routers/Owner/OwnerRouter';
 import MiscRouter from "./routers/MiscRouter";
 import RestaurantsRouter from "./routers/RestaurantsRouter";
+import OrdersRouter from "./routers/OrdersRouter";
 
 require('dotenv').config();
 
@@ -29,10 +30,13 @@ app.use(cors());
 
 app.use('/', MiscRouter);
 app.use('/auth', AuthRouter);
-app.use('/notifications', NotificationRouter);
 app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
 app.use('/owner', OwnerRouter);
+app.use('/notifications', NotificationRouter);
+
+app.use('/restaurants', RestaurantsRouter);
+app.use('/orders', OrdersRouter);
 
 app.use('/restaurants', RestaurantsRouter);
 

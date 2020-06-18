@@ -40,7 +40,7 @@ const EditAddressPage = (props) => {
 
     if (state.loading) return <></>;
     return <>
-        <h3>Edit shipping address</h3>
+        <h3>Edit delivery address</h3>
 
         <AddressForm onSubmitCb={onSubmit} address={state.address} />
     </>

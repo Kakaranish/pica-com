@@ -12,6 +12,7 @@ import CreateExtraIngredientPage from './CreateExtraIngredientPage';
 import CreateExtraPage from './CreateExtraPage';
 import RestaurantOverviewPage from './RestaurantOverviewPage';
 import EditDeliveryPage from './EditDeliveryPage';
+import OrdersPage from './OrdersPage';
 
 const Routes = () => <>
     <Switch>
@@ -39,6 +40,9 @@ const Routes = () => <>
             component={CreateExtraIngredientPage} />
         <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/restaurants/:id/create/extra'
             component={CreateExtraPage} />
+
+        <AuthorizedOnlyRoute roles={['OWNER']} exact path='/owner/orders'
+            component={OrdersPage} />
     </Switch>
 </>
 

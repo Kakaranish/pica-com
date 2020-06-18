@@ -3,8 +3,8 @@ import ImagePreview from '../../common/components/ImagePreview';
 
 const RestaurantInfoHeader = ({ restaurant }) => {
     return <>
+        
         <h3>{restaurant.name}</h3>
-
         {
             restaurant.images?.length &&
             <div className="row">
@@ -14,6 +14,22 @@ const RestaurantInfoHeader = ({ restaurant }) => {
                     )
                 }
             </div>
+        }
+
+        <p>
+            Average delivery time: {restaurant.avgDeliveryTime}m
+        </p>
+
+        <p>
+            Delivery price: {restaurant.deliveryPrice.toFixed(2)} PLN
+        </p>
+
+        {
+            restaurant.minFreeDeliveryPrice &&
+            <p>
+                Min free delivery price:&nbsp;
+                {restaurant.minFreeDeliveryPrice.toFixed(2)} PLN
+            </p>
         }
 
         <p>

@@ -25,6 +25,7 @@ const EditDeliveryPage = ({ match }) => {
         event.preventDefault();
         let formData = getFormDataJsonFromEvent(event);
         formData.deliveryPrice = parseFloat(formData.deliveryPrice);
+        formData.avgDeliveryTime = parseInt(formData.avgDeliveryTime);
         if (formData.minFreeDeliveryPrice)
             formData.minFreeDeliveryPrice = parseFloat(formData.minFreeDeliveryPrice);
 
@@ -52,6 +53,18 @@ const EditDeliveryPage = ({ match }) => {
                     min={0}
                     step={0.01}
                     placeholder="Delivery price..."
+                    required />
+            </div>
+
+            <div className="form-group">
+                <label>Average Delivery Time (minutes)</label>
+                <input name="avgDeliveryTime"
+                    defaultValue={state.deliveryInfo.avgDeliveryTime}
+                    type="number"
+                    className="form-control"
+                    min={1}
+                    step={1}
+                    placeholder="Average Delivery Time..."
                     required />
             </div>
 

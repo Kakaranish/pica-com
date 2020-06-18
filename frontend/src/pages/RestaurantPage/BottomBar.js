@@ -1,27 +1,35 @@
 import React from 'react';
+import AwareComponentBuilder from '../../common/AwareComponentBuilder';
+import CartModal from './CartModal';
 
-const BottomBar = ({ empty }) => {
-    return <>
-        <div className="fixed-bottom">
-            {
-                empty ?
-                    <div className="container" style={{ border: '1px solid red' }}>
-                        XD
-                    </div>
-                    :
-                    <>
-                        <div className="container bg-dark" style={{ border: '1px solid red', height: '80px' }}>
-                            XD
-                        </div>
-                    </>
-            }
-        </div>
+const BottomBar = (props) => {
 
-        {
-            !empty &&
-            <div style={{ height: '80px' }}></div>
-        }
-    </>
+	const restaurantId = props.restaurantId;
+	const cart = props.carts[restaurantId];
+
+	const cartHasItems = () => cart?.pizzas?.length || cart?.extras?.length;
+
+	return <>
+		{
+			!!cartHasItems() && <>
+				<div className="fixed-bottom">
+
+					<div className="container d-flex align-items-center justify-content-center bg-dark rounded-top"
+						style={{ height: '50px' }}>
+
+						<CartModal restaurantId={restaurantId}
+							minFreeDeliveryPrice={props.minFreeDeliveryPrice}
+							deliveryPrice={props.deliveryPrice} />
+
+					</div>
+				</div>
+
+				<div style={{ height: '80px' }}></div>
+			</>
+		}
+	</>
 };
 
-export default BottomBar;
+export default new AwareComponentBuilder()
+	.withCartsAwareness()
+	.build(BottomBar);

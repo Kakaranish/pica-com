@@ -40,6 +40,14 @@ const restaurantSchema = new Schema({
         set: v => v ? v.toFixed(2) : undefined,
         required: false
     },
+    avgDeliveryTime: {
+        type: Number,
+        get: v => Math.round(v),
+        set: v => Math.round(v),
+        alias: 'i',
+        required: true,
+        default: 60
+    },
     categories: [{
         type: [Schema.Types.ObjectId],
         ref: 'category',
