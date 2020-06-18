@@ -12,7 +12,6 @@ const RestaurantPage = (props) => {
     const restaurantId = props.match.params.id;
 
     const [state, setState] = useState({ loading: true });
-    const [empty, setEmpty] = useState(true);
 
     useEffect(() => {
         const fetch = async () => {
@@ -24,16 +23,13 @@ const RestaurantPage = (props) => {
         fetch();
     }, []);
 
-    const onPizzaAddToCart = pizzaCartItem => {
+    const onPizzaAddToCart = pizzaCartItem =>
         props.addPizzaToCart(restaurantId, pizzaCartItem);
-    };
 
     const onExtraAddToCart = extraCartItem => {
         props.addExtraToCart(restaurantId, extraCartItem);
-        setEmpty(false);
+        
     };
-
-    useEffect(() => { window.scrollBy(0, 80) }, [empty]);
 
     if (state.loading) return <></>
     else if (!state?.restaurant) return <h3>No such restaurant</h3>

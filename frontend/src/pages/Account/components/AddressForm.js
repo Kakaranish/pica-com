@@ -26,12 +26,6 @@ const AddressForm = ({ address, onSubmitCb }) => {
             </div>
 
             <div className="form-group">
-                <label>House or flat number</label>
-                <input name="houseOrFlatNumber" type="text" className="form-control" placeholder="House or flat number..."
-                    defaultValue={address?.houseOrFlatNumber} required />
-            </div>
-
-            <div className="form-group">
                 <label>Flat Code (optional)</label>
                 <input name="flatCode" type="text" className="form-control" placeholder="Flat Code..."
                     defaultValue={address?.flatCode} />

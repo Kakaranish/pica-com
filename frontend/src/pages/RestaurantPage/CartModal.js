@@ -6,11 +6,13 @@ import PizzaItems from './PizzaItems';
 import ExtraItems from './ExtraItems';
 import { requestHandler } from '../../common/utils';
 import cartIcon from '../../assets/img/cart.svg';
+import { useHistory } from 'react-router-dom';
 
 const CartModal = (props) => {
 
 	const restaurantId = props.restaurantId;
 	const cart = props.carts[restaurantId];
+	const history = useHistory();
 
 	const getNumberOfItemsInCart = () => {
 		if (!cart) return 0;
@@ -24,6 +26,8 @@ const CartModal = (props) => {
 	};
 
 	const onFinalize = async () => {
+		if (!window.confirm("Do you really want to finalize cart?"))
+			return;
 
 		let cart = props.carts[restaurantId];
 
@@ -42,8 +46,11 @@ const CartModal = (props) => {
 		const action = async () => axios.post('/orders', formData,
 			{ validateStatus: false });
 		await requestHandler(action, {
-			status: 400,
-			callback: async res => console.log(res)
+			status: 200,
+			callback: async orderId => {
+				props.clearCart(restaurantId);
+				history.push(`/user/orders/${orderId}`)
+			}
 		});
 	};
 

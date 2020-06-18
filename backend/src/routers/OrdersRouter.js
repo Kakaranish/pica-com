@@ -170,14 +170,13 @@ function updateDeliveryAddressValidationMWs() {
         param('id').notEmpty().withMessage('cannot be empty').bail()
             .custom(async (value, { req }) => {
                 const order = await Order.findById(value);
-                if (order.userId != value)
+                if (order.userId != req.identity.id)
                     return Promise.reject('no such order');
                 req.order = order;
             }),
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
-        body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
         validationExaminator
     ];
 }

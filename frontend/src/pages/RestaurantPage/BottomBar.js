@@ -10,9 +10,8 @@ const BottomBar = (props) => {
 	const cartHasItems = () => cart?.pizzas?.length || cart?.extras?.length;
 
 	return <>
-
 		{
-			cartHasItems() && <>
+			!!cartHasItems() && <>
 				<div className="fixed-bottom">
 
 					<div className="container d-flex align-items-center justify-content-center bg-dark rounded-top"

@@ -25,7 +25,7 @@ const AddressesPage = () => {
         </Link>
     </>
     return <>
-        <h3>Your shipping addresses</h3>
+        <h3>Your delivery addresses</h3>
 
         {
             state.addresses.map((address, i) => <div className="p-3 mb-3"
@@ -33,7 +33,6 @@ const AddressesPage = () => {
                 <p>City: {address.city}</p>
                 <p>Postcode: {address.postcode}</p>
                 <p>Address: {address.address}</p>
-                <p>House or flat number: {address.houseOrFlatNumber}</p>
                 {
                     address.flatCode &&
                     <p>Flat code: {address.flatCode}</p>

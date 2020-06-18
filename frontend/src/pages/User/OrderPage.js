@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { requestHandler } from '../../common/utils';
-import PizzaItem from './OrderPage/PizzaItem';
-import ExtraItem from './OrderPage/ExtraItem';
+import { requestHandler, getFormDataJsonFromEvent } from '../../common/utils';
+import OrderedItems from './OrderPage/OrderedItems';
+import DeliveryAddressForm from './OrderPage/DeliveryAddressForm';
 
 const OrderPage = ({ match }) => {
 
@@ -24,56 +24,45 @@ const OrderPage = ({ match }) => {
 	else if (!state.order) return <h3>There is no such order</h3>
 
 	return <>
-		<p>
-			<b>Order: </b> {orderId}
-		</p>
+		<b>Order: </b> {orderId} <br />
 
-		<p>
-			<b>Created At:</b> {state.order.createdAt}
-		</p>
+		<b>Created At:</b> {state.order.createdAt} <br />
 
-		<p>
-			<b>Restaurant: </b>&nbsp;
-			<Link to={`/restaurants/${state.order.restaurant._id}`}>
-				{state.order.restaurant.name}
+		<b>Restaurant: </b>&nbsp;
+		<Link to={`/restaurants/${state.order.restaurant._id}`}>
+			{state.order.restaurant.name}
+		</Link>
+		<br />
+
+		<b>Status: </b> {state.order.status} <br />
+
+		<div className="py-2">
+			<b>Payment status: </b>
+			<span style={{ color: 'red' }}>Not paid</span><br />
+
+			<Link to={`/user/orders/${orderId}/pay`} className="btn btn-success">
+				Pay
 			</Link>
-		</p>
+		</div>
 
-		<p>
-			<b>Status: </b> {state.order.status}
-		</p>
+		<div className="py-2 mb-2">
+			<b>Delivery address: </b>
+			<span style={{ color: 'red' }}>Not provided</span><br />
 
-		{/* Placeholder */}
-		<p>
-			<Link to={'/'} className='btn btn-primary'>
-				Watch order progress
-			</Link>
-		</p>
+			<br/>
+			<DeliveryAddressForm order={state.order} onSubmit={async event => {
+				event.preventDefault();
+				const formData = getFormDataJsonFromEvent(event);
+				console.log(formData);
+			}}>
+				<button className="btn btn-primary">
+					Submit
+				</button>
+			</DeliveryAddressForm>
+		</div>
 
-		<h3>Ordered Items</h3>
+		<OrderedItems order={state.order} />
 
-		<h4>Pizzas</h4>
-		{
-			state.order.pizzas.map((pizzaItem, i) =>
-				<PizzaItem pizzaItem={pizzaItem} key={`pi-${i}`} />)
-		}
-
-		<h4>Extras</h4>
-		{
-			state.order.extras.map((extraItem, i) =>
-				<ExtraItem extraItem={extraItem} key={`ei-${i}`} />)
-		}
-
-		<h4 className="mb-4">
-			Delivery Price: {state.order.deliveryPrice.toFixed(2)}PLN
-		</h4>
-
-		<h3>
-			Total Price:&nbsp;
-			<span style={{ color: 'green' }}>
-				{state.order.totalPrice.toFixed(2)} PLN
-			</span>
-		</h3>
 	</>
 };
 

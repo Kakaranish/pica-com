@@ -86,7 +86,6 @@ AccountRouter.post('/address', tokenValidatorMW, createAddressValidationMWs(),
                 city: req.body.city,
                 postcode: req.body.postcode,
                 address: req.body.address,
-                houseOrFlatNumber: req.body.houseOrFlatNumber,
                 flatCode: req.body.flatCode,
                 isDefault: req.body.isDefault
             };
@@ -120,7 +119,6 @@ AccountRouter.put('/address/:id', tokenValidatorMW, updateAddressValidationMWs()
                 city: req.body.city,
                 postcode: req.body.postcode,
                 address: req.body.address,
-                houseOrFlatNumber: req.body.houseOrFlatNumber,
                 flatCode: req.body.flatCode,
                 isDefault: req.body.isDefault
             };
@@ -167,7 +165,6 @@ function createAddressValidationMWs() {
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
-        body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
         body('isDefault').notEmpty().withMessage('cannot be empty'),
     ];
 }
@@ -178,7 +175,6 @@ function updateAddressValidationMWs() {
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
-        body('houseOrFlatNumber').notEmpty().withMessage('cannot be empty'),
         body('isDefault').notEmpty().withMessage('cannot be empty'),
     ];
 }
