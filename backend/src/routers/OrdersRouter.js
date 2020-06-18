@@ -103,11 +103,27 @@ OrdersRouter.put('/:id/delivery-address', updateDeliveryAddressValidationMWs(),
                 address: req.body.address,
                 flatCode: req.body.flatCode
             };
+            if (req.order.payment && req.order.status === 'INITIALIZED')
+                req.order.status = 'IN_PROGRESS';
+
             await req.order.save();
             res.sendStatus(200);
         });
     }
 );
+
+OrdersRouter.put('/:id/payment', updatePaymentValidationMWs(), async (req, res) => {
+    withAsyncRequestHandler(res, async () => {
+        req.order.payment = { method: req.body.method };
+        if (req.body.transactionId)
+            req.order.payment.transactionId = req.body.transactionId;
+        if (req.order.deliveryAddress && req.order.status === 'INITIALIZED')
+            req.order.status = 'IN_PROGRESS';
+
+        await req.order.save();
+        res.sendStatus(200);
+    });
+});
 
 function createOrderValidationMWs() {
     return [
@@ -177,6 +193,30 @@ function updateDeliveryAddressValidationMWs() {
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
+    ];
+}
+
+function updatePaymentValidationMWs() {
+    const legalMethods = ['ON_DELIVERY', 'BLIK', 'PAYU'];
+    return [
+        tokenValidatorMW,
+        param('id').notEmpty().withMessage('cannot be empty').bail()
+            .custom(async (value, { req }) => {
+                const order = await Order.findById(value);
+                if (order.userId != req.identity.id)
+                    return Promise.reject('no such order');
+                if (order.payment)
+                    return Promise.reject('order is already paid');
+                req.order = order;
+            }),
+        body('method').notEmpty().withMessage('cannot be empty').bail()
+            .isIn(legalMethods).withMessage('illegal method code'),
+        body('transactionId').custom((value, { req }) => {
+            if (req.body.method !== 'ON_DELIVERY' && !value)
+                throw new Error('cannot be empty');
+            return true;
+        }),
         validationExaminator
     ];
 }

@@ -55,7 +55,7 @@ const OrderDeliveryAddressPage = ({ match }) => {
     return <>
         <DeliveryAddressForm onSubmit={onSubmit}>
             <button className="btn btn-primary">
-                Submit
+                Continue Placing an Order
             </button>
         </DeliveryAddressForm>
     </>

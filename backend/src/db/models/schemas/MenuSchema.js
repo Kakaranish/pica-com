@@ -25,7 +25,7 @@ const MenuSchema = new Schema({
         ref: 'pizza',
         required: true,
         default: []
-    }],
+    }]
 });
 
 export default MenuSchema;

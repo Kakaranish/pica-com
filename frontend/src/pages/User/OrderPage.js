@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { requestHandler, getFormDataJsonFromEvent } from '../../common/utils';
+import { requestHandler } from '../../common/utils';
 import OrderedItems from './OrderPage/OrderedItems';
-import DeliveryAddressForm from './OrderPage/DeliveryAddressForm';
+import DeliveryStatus from './OrderPage/OrderStatus';
 
 const OrderPage = ({ match }) => {
 
@@ -34,35 +34,11 @@ const OrderPage = ({ match }) => {
 		</Link>
 		<br />
 
-		<b>Status: </b> {state.order.status} <br />
+		<DeliveryStatus order={state.order} />
 
-		<div className="py-2">
-			<b>Payment status: </b>
-			<span style={{ color: 'red' }}>Not paid</span><br />
-
-			<Link to={`/user/orders/${orderId}/pay`} className="btn btn-success">
-				Pay
-			</Link>
-		</div>
-
-		<div className="py-2 mb-2">
-			<b>Delivery address: </b>
-			<span style={{ color: 'red' }}>Not provided</span><br />
-
-			<br/>
-			<DeliveryAddressForm order={state.order} onSubmit={async event => {
-				event.preventDefault();
-				const formData = getFormDataJsonFromEvent(event);
-				console.log(formData);
-			}}>
-				<button className="btn btn-primary">
-					Submit
-				</button>
-			</DeliveryAddressForm>
-		</div>
-
+		<div className="mb-3"></div>
+		
 		<OrderedItems order={state.order} />
-
 	</>
 };
 

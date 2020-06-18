@@ -39,12 +39,42 @@ const orderSchema = new Schema({
     opinionId: {
         type: Schema.Types.ObjectId,
         required: false
+    },
+    payment: {
+        type: {
+            method: {
+                type: String,
+                required: true
+            },
+            transactionId: {
+                type: String,
+                required: false
+            }
+        },
+        required: false
     }
 }, {
     timestamps: {
         createdAt: 'createdAt',
         updatedAt: 'updatedAt'
     }
+});
+
+orderSchema.pre('save', function () {
+    const legalPaymentMethods = ['ON_DELIVERY', 'BLIK', 'PAYU'];
+    if (!legalPaymentMethods.includes(this.payment.method))
+        this.invalidate('payment.method', 'illegal value');
+    if (this.payment.method !== 'ON_DELIVERY' && !this.payment.transactionId)
+        this.invalidate('payment.transactionId',
+            'field required when method is blik or payu');
+    next();
+});
+
+orderSchema.pre('save', function () {
+    const legalStatuses = ['INITIALIZED', 'IN_PROGRESS', 'COMPLETED'];
+    if (!legalStatuses.includes(this.status))
+        this.invalidate('status', 'illegal value');
+    next();
 });
 
 const Order = mongoose.model('order', orderSchema);

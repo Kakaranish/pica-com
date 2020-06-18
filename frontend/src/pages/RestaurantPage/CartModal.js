@@ -49,7 +49,8 @@ const CartModal = (props) => {
 			status: 200,
 			callback: async orderId => {
 				props.clearCart(restaurantId);
-				history.push(`/user/orders/${orderId}`)
+				const uri = `/user/orders/${orderId}/step/delivery-address`;
+				history.push(uri);
 			}
 		});
 	};
