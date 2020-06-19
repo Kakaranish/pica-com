@@ -6,18 +6,18 @@ const OrderedItems = ({ order }) => {
 	return <>
 		<div className="accordion" id="orderedAccordion">
 			<div className="card">
-				<div className="card-header" id="headingOne" data-toggle="collapse"
-					data-target="#collapseOne" aria-expanded="true"
-					aria-controls="collapseOne"
+				<div className="card-header" id="orderedHeading" data-toggle="collapse"
+					data-target="#orderedCollapse" aria-expanded="true"
+					aria-controls="orderedCollapse"
 					style={{ cursor: 'pointer' }}>
 
-					<h3 className="align-content-lg-end btn-link">
+					<h4 className="align-content-lg-end btn-link">
 						Ordered Items
-					</h3>
+					</h4>
 				</div>
 
-				<div id="collapseOne" className="collapse" aria-labelledby="headingOne"
-					data-parent="#orderedAccordion">
+				<div id="orderedCollapse" className="collapse"
+					aria-labelledby="orderedHeading" data-parent="#orderedAccordion">
 
 					<div className="card-body">
 						<h4>Pizzas</h4>
@@ -38,17 +38,23 @@ const OrderedItems = ({ order }) => {
 							</>
 						}
 
-						<h4 className="mb-4">
-							Delivery Price: {order.deliveryPrice.toFixed(2)}PLN
-						</h4>
+						<h6 className="mt-4 mb-1">
+							Delivery Price:&nbsp;
+							{
+								order.deliveryPrice > 0
+									? `${order.deliveryPrice.toFixed(2)}PLN`
+									: <span className="text-success">
+											Free
+									</span>
+							}
+						</h6>
 
 						<h3>
 							Total Price:&nbsp;
-							<span style={{ color: 'green' }}>
+							<span>
 								{order.totalPrice.toFixed(2)} PLN
 							</span>
 						</h3>
-
 					</div>
 				</div>
 			</div>

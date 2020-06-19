@@ -37,8 +37,7 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
     if (!isFocused) return <div style={{ cursor: 'pointer' }}
         onClick={() => setIsFocused(focused => !focused)}>
         <div className="pull-right">
-            <FontAwesomeIcon icon={faPlus}
-                size={'1x'} />
+            <FontAwesomeIcon icon={faPlus} size={'1x'} />
         </div>
 
         <p>
@@ -68,6 +67,7 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
 
         <p>
             <b>{pizza.name} </b>
+            ({pizza.price.toFixed(2)} PLN)
         </p>
 
         <p>
@@ -90,7 +90,7 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
             </div>
         }
 
-        <QuantityInput minValue={1} onQuantityChange={onQuantityChange}/>
+        <QuantityInput minValue={1} onQuantityChange={onQuantityChange} />
 
         <button className="btn btn-primary btn-block"
             onClick={addToCartOnClick}>

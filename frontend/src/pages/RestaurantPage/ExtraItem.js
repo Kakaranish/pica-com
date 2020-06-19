@@ -46,8 +46,9 @@ const ExtraItem = ({ extra, addToCartCb }) => {
 
         <p>
             <b>{extra.name} </b>
+            ({extra.price.toFixed(2)} PLN)
         </p>
-
+        
         <QuantityInput minValue={1} onQuantityChange={onQuantityChange} />
 
         <button className="btn btn-primary btn-block mt-2"

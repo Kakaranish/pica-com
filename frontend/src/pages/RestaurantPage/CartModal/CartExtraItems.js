@@ -1,8 +1,8 @@
 import React from 'react';
-import AwareComponentBuilder from '../../common/AwareComponentBuilder';
-import QuantityInput from './QuantityInput';
+import AwareComponentBuilder from '../../../common/AwareComponentBuilder';
+import QuantityInput from '../QuantityInput';
 
-const ExtraItems = (props) => {
+const CartExtraItems = (props) => {
 
 	const { cart, restaurantId } = props;
 
@@ -46,4 +46,4 @@ const ExtraItems = (props) => {
 
 export default new AwareComponentBuilder()
 	.withCartsAwareness()
-	.build(ExtraItems);
+	.build(CartExtraItems);

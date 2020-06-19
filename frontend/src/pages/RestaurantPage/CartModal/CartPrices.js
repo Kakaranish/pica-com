@@ -1,7 +1,7 @@
 import React from 'react';
-import cartBlackIcon from '../../assets/img/cart-black.svg';
-import deliveryIcon from '../../assets/img/delivery.svg';
-import moneyIcon from '../../assets/img/money.svg';
+import cartBlackIcon from '../../../assets/img/cart-black.svg';
+import deliveryIcon from '../../../assets/img/delivery.svg';
+import moneyIcon from '../../../assets/img/money.svg';
 
 const CartPrices = ({ cartItemsPrice, deliveryPrice, toFreeDelivery }) => {
     return <>

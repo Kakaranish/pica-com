@@ -37,7 +37,7 @@ const DeliveryAddressForm = ({ children, onSubmit }) => {
     if (!deliveryFormState) return <></>
     return <>
         <form onSubmit={onSubmit ?? (() => { })}>
-            <select className="form-control" value="default"
+            <select className="form-control mb-4" value="default"
                 onChange={predfinedOnChange}>
 
                 <option disabled value="default">
@@ -48,8 +48,13 @@ const DeliveryAddressForm = ({ children, onSubmit }) => {
                     preDefAddressesState.addresses.map((address, i) =>
                         <option key={`o-${i}`} value={`${JSON.stringify(address)}`}>
                             {address.city}, {address.postcode},&nbsp;
-                        {address.address}
-                        &nbsp;| door code: {address.flatCode}
+                            {address.address}
+                            
+                            {
+                                address.flatCode && 
+                                    ` | flat code: ${address.flatCode}`
+                                
+                            }
                         </option>
                     )
                 }

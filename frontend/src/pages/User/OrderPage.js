@@ -4,6 +4,7 @@ import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 import OrderedItems from './OrderPage/OrderedItems';
 import DeliveryStatus from './OrderPage/OrderStatus';
+import DeliveryAddress from './OrderPage/DeliveryAddress';
 
 const OrderPage = ({ match }) => {
 
@@ -32,12 +33,17 @@ const OrderPage = ({ match }) => {
 		<Link to={`/restaurants/${state.order.restaurant._id}`}>
 			{state.order.restaurant.name}
 		</Link>
+		
 		<br />
 
 		<DeliveryStatus order={state.order} />
 
 		<div className="mb-3"></div>
-		
+
+		<DeliveryAddress address={state.order.deliveryAddress} />
+
+		<div className="mb-3"></div>
+
 		<OrderedItems order={state.order} />
 	</>
 };

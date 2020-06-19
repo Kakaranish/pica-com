@@ -3,13 +3,12 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import HyperModal from 'react-hyper-modal';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
-import PizzaItems from './PizzaItems';
-import ExtraItems from './ExtraItems';
+import CartPizzaItems from './CartModal/CartPizzaItems';
+import CartExtraItems from './CartModal/CartExtraItems';
+import CartPrices from './CartModal/CartPrices';
 import { requestHandler } from '../../common/utils';
-import { sumCartItemsPrices } from './common';
 import cartIcon from '../../assets/img/cart.svg';
 import deliveryWhiteIcon from '../../assets/img/delivery-white.svg';
-import CartPrices from './CartPrices';
 
 const CartModal = (props) => {
 
@@ -87,19 +86,20 @@ const CartModal = (props) => {
 
 	if (getNumberOfItemsInCart() === 0) return <></>
 	return <>
-		<HyperModal renderOpenButton={requestOpen => renderOpenButton(requestOpen)}>
+		<HyperModal renderOpenButton={requestOpen => renderOpenButton(requestOpen)}
+			classes={{ contentClassName: "h-100" }}>
 
 			<div className="mt-2 p-4">
 				<h3>Items in your shopping cart</h3>
 
 				{
 					cart?.pizzas?.length > 0 &&
-					<PizzaItems cart={cart} restaurantId={restaurantId} />
+					<CartPizzaItems cart={cart} restaurantId={restaurantId} />
 				}
 
 				{
 					cart?.extras?.length > 0 &&
-					<ExtraItems cart={cart} restaurantId={restaurantId} />
+					<CartExtraItems cart={cart} restaurantId={restaurantId} />
 				}
 
 				<CartPrices cartItemsPrice={cartItemsPrice}
@@ -112,7 +112,7 @@ const CartModal = (props) => {
 							Finalize
 						</button>
 					</div>
-					
+
 					<div className="col-6">
 						<button className='btn btn-danger btn-block' onClick={clearCart}>
 							Clear
@@ -122,6 +122,21 @@ const CartModal = (props) => {
 			</div>
 		</HyperModal>
 	</>
+};
+
+function sumCartItemsPrices(cart) {
+	let totalPrice = 0;
+	cart.pizzas.forEach(pizzaCartItem => {
+		let extraIngredientsPrice = pizzaCartItem.extraIngredients.map(
+			extraIngrCartItem => extraIngrCartItem.price)
+			.reduce((l, r) => l + r, 0)
+		totalPrice += pizzaCartItem.quantity * (pizzaCartItem.pizza.price +
+			extraIngredientsPrice);
+	});
+
+	cart.extras.forEach(extraCartItem =>
+		totalPrice += extraCartItem.quantity * extraCartItem.extra.price);
+	return totalPrice;
 };
 
 export default new AwareComponentBuilder()

@@ -1,8 +1,8 @@
 import React from 'react';
-import QuantityInput from './QuantityInput';
-import AwareComponentBuilder from '../../common/AwareComponentBuilder';
+import QuantityInput from '../QuantityInput';
+import AwareComponentBuilder from '../../../common/AwareComponentBuilder';
 
-const PizzaItems = (props) => {
+const CartPizzaItems = (props) => {
 
 	const { cart, restaurantId } = props;
 
@@ -39,7 +39,7 @@ const PizzaItems = (props) => {
 							!pizzaCartItem.extraIngredients.length ? ''
 								: <>
 									Extra ingredients:&nbsp;
-                                {
+									{
 										pizzaCartItem.extraIngredients.map((ingr, j) =>
 											<span key={`ingr-${j}`} style={{ color: 'gray' }}>
 												{ingr.name} ({ingr.price.toFixed(2)}PLN)
@@ -75,4 +75,4 @@ const PizzaItems = (props) => {
 
 export default new AwareComponentBuilder()
 	.withCartsAwareness()
-	.build(PizzaItems);
+	.build(CartPizzaItems);

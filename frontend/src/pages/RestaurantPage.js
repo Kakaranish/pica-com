@@ -35,11 +35,10 @@ const RestaurantPage = (props) => {
 
         <RestaurantInfoHeader restaurant={state.restaurant} />
 
-        <h3>Pizza</h3>
+        <h3 className="mt-3">Pizza</h3>
         {
             state.restaurant.menu.pizzas.map((pizza, i) =>
-                <div className="p-3 mb-2" style={{ border: '1px solid green' }}
-                    key={`p-${i}`}>
+                <div className="p-3 mb-2 border border-darken-1" key={`p-${i}`}>
                     <PizzaItem pizza={pizza}
                         addToCartCb={onPizzaAddToCart}
                         extraIngredients={state.restaurant.menu.extraIngredients} />
@@ -50,8 +49,7 @@ const RestaurantPage = (props) => {
         <h3 className="mt-3">Extras</h3>
         {
             state.restaurant.menu.extras.map((extra, i) =>
-                <div className="p-3 mb-2" style={{ border: '1px solid green' }}
-                    key={`e-${i}`}>
+                <div className="p-3 mb-2 border border-darken-1" key={`e-${i}`}>
                     <ExtraItem extra={extra} addToCartCb={onExtraAddToCart} />
                 </div>
             )
