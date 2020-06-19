@@ -17,7 +17,6 @@ const OrdersPage = () => {
                 status: 400,
                 callback: async res => console.log(res)
             });
-            console.log(orders)
             setState({ loading: false, orders });
         };
         fetch();

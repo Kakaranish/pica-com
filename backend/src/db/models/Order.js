@@ -36,10 +36,9 @@ const orderSchema = new Schema({
         required: true,
         default: 'INITIALIZED'
     },
-    statusChangeAt: {
+    estimatedDeliveryTime: {
         type: Date,
-        required: true,
-        default: Date.now()
+        required: false
     },
     opinionId: {
         type: Schema.Types.ObjectId,

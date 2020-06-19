@@ -1,4 +1,5 @@
 import express from 'express';
+import moment from 'moment';
 import { calculateItemsTotalPrice } from '../common/utils';
 import { tokenValidatorMW } from '../auth/validators';
 import { validationExaminator } from '../common/middlewares';
@@ -104,8 +105,13 @@ OrdersRouter.put('/:id/delivery-address', updateDeliveryAddressValidationMWs(),
                 flatCode: req.body.flatCode
             };
             if (req.order.payment && req.order.status === 'INITIALIZED') {
+                const restaurant = await Restaurant.findById(req.order.restaurantId)
+                    .select('avgPreparationTime avgDeliveryTime');
+                const remainingTime = restaurant.avgDeliveryTime
+                    + restaurant.avgPreparationTime;
+
+                req.order.estimatedDeliveryTime = moment().add(remainingTime, 'minutes');
                 req.order.status = 'IN_PREPARATION';
-                req.order.statusChangeAt = Date.now();
             }
 
             await req.order.save();
@@ -119,9 +125,15 @@ OrdersRouter.put('/:id/payment', updatePaymentValidationMWs(), async (req, res) 
         req.order.payment = { method: req.body.method };
         if (req.body.transactionId)
             req.order.payment.transactionId = req.body.transactionId;
+
         if (req.order.deliveryAddress && req.order.status === 'INITIALIZED') {
+            const restaurant = await Restaurant.findById(req.order.restaurantId)
+                .select('avgPreparationTime avgDeliveryTime');
+            const remainingTime = restaurant.avgDeliveryTime
+                + restaurant.avgPreparationTime;
+
+            req.order.estimatedDeliveryTime = moment().add(remainingTime, 'minutes');
             req.order.status = 'IN_PREPARATION';
-            req.order.statusChangeAt = Date.now();
         }
 
         await req.order.save();

@@ -8,7 +8,7 @@ const ExtraItem = ({ extraItem }) => {
     return <>
         <div className="p-3 border border-darken-1">
             <p>
-                <b>{extraItem.extra.name}</b> &nbsp;
+                <b>{extraItem.extra.name}</b>&nbsp;
                 <span style={{ color: 'gray' }}>
                     ({extraItem.extra.price.toFixed(2)}PLN)
 				</span>
