@@ -29,12 +29,13 @@ const RestaurantInfoHeader = ({ restaurant }) => {
             </div>
 
             <div className="card-body">
-                Average delivery time: {restaurant.avgDeliveryTime}m
+                Average delivery time:&nbsp;
+                {restaurant.avgDeliveryTime + restaurant.avgPreparationTime}m
 
                 <br />
 
                 Delivery price: {restaurant.deliveryPrice.toFixed(2)} PLN
-                
+
                 {
                     restaurant.minFreeDeliveryPrice &&
                     <>

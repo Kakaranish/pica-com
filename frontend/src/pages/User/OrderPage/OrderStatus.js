@@ -5,12 +5,14 @@ const DeliveryStatus = ({ order }) => {
 
 	const mapOrderStatus = status => {
 		switch (status) {
-			case 'IN_PROGRESS':
-				return 'In Progress';
+			case 'IN_PREPARATION':
+				return 'In Preparation';
+			case 'IN_DELIVERY':
+				return 'In Delivery';
 			case 'COMPLETED':
 				return 'Completed';
 		}
-	}
+	};
 
 	let continueUri;
 	if (!order.deliveryAddress)
@@ -25,6 +27,7 @@ const DeliveryStatus = ({ order }) => {
 				{mapOrderStatus(order.status)}
 			</span>
 		</b>
+
 		<br />
 	</>
 

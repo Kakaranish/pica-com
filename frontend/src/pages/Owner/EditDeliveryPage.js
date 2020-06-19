@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ReactTooltip from "react-tooltip";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import MinFreeDeliveryInput from './components/EditDeliveryPage/MinFreeDeliveryInput';
 import { requestHandler, getFormDataJsonFromEvent } from '../../common/utils';
 
@@ -26,6 +29,7 @@ const EditDeliveryPage = ({ match }) => {
         let formData = getFormDataJsonFromEvent(event);
         formData.deliveryPrice = parseFloat(formData.deliveryPrice);
         formData.avgDeliveryTime = parseInt(formData.avgDeliveryTime);
+        formData.avgPreparationTime = parseInt(formData.avgPreparationTime);
         if (formData.minFreeDeliveryPrice)
             formData.minFreeDeliveryPrice = parseFloat(formData.minFreeDeliveryPrice);
 
@@ -57,7 +61,35 @@ const EditDeliveryPage = ({ match }) => {
             </div>
 
             <div className="form-group">
-                <label>Average Delivery Time (minutes)</label>
+                <label>
+                    Average Order Preparation Time (minutes)&nbsp;
+                </label>
+
+                <FontAwesomeIcon icon={faQuestionCircle}
+                    style={{ color: 'lightgray' }}
+                    size={'1x'}
+                    data-tip="Time from receiving order to preparing it to the delivery" />
+
+                <input name="avgPreparationTime"
+                    defaultValue={state.deliveryInfo.avgPreparationTime}
+                    type="number"
+                    className="form-control"
+                    min={1}
+                    step={1}
+                    placeholder="Average Preparation Time..."
+                    required />
+            </div>
+
+            <div className="form-group">
+                <label>
+                    Average Delivery Time (minutes)&nbsp;
+                </label>
+
+                <FontAwesomeIcon icon={faQuestionCircle}
+                    style={{ color: 'lightgray' }}
+                    size={'1x'}
+                    data-tip="Time from order preparation to delivery to the customer" />
+
                 <input name="avgDeliveryTime"
                     defaultValue={state.deliveryInfo.avgDeliveryTime}
                     type="number"
@@ -71,6 +103,8 @@ const EditDeliveryPage = ({ match }) => {
             <button type="submit" className="btn btn-primary btn-block">
                 Submit
             </button>
+
+            <ReactTooltip />
         </form>
     </>
 };

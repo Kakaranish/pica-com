@@ -50,7 +50,7 @@ RestaurantsRouter.get('/:id/menu', getMenuValidationMWs(), async (req, res) => {
 RestaurantsRouter.get('/:id/delivery-info', tokenValidatorMW, ownerValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const restaurant = await Restaurant.findById(req.params.id)
-            .select('deliveryPrice minFreeDeliveryPrice avgDeliveryTime');
+            .select('deliveryPrice minFreeDeliveryPrice avgDeliveryTime avgPreparationTime');
         res.status(200).json(restaurant);
     });
 });
@@ -164,6 +164,7 @@ RestaurantsRouter.put('/:id/delivery-info', updateDeliveryInfoValidationMWs(),
             req.restaurant.deliveryPrice = req.body.deliveryPrice;
             req.restaurant.minFreeDeliveryPrice = req.body.minFreeDeliveryPrice;
             req.restaurant.avgDeliveryTime = req.body.avgDeliveryTime;
+            req.restaurant.avgPreparationTime = req.body.avgPreparationTime;
             await req.restaurant.save();
             res.sendStatus(200);
         });
@@ -203,6 +204,8 @@ function updateDeliveryInfoValidationMWs() {
             .isFloat({ gt: 0 }).withMessage('must be float greater than 0')
             .customSanitizer(value => parseFloat(value.toFixed(2))),
         body('avgDeliveryTime').isInt({ gt: 0 })
+            .withMessage('must be int greater than 0'),
+        body('avgPreparationTime').isInt({ gt: 0 })
             .withMessage('must be int greater than 0'),
         validationExaminator
     ];

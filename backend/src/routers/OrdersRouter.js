@@ -103,8 +103,10 @@ OrdersRouter.put('/:id/delivery-address', updateDeliveryAddressValidationMWs(),
                 address: req.body.address,
                 flatCode: req.body.flatCode
             };
-            if (req.order.payment && req.order.status === 'INITIALIZED')
-                req.order.status = 'IN_PROGRESS';
+            if (req.order.payment && req.order.status === 'INITIALIZED') {
+                req.order.status = 'IN_PREPARATION';
+                req.order.statusChangeAt = Date.now();
+            }
 
             await req.order.save();
             res.sendStatus(200);
@@ -117,8 +119,10 @@ OrdersRouter.put('/:id/payment', updatePaymentValidationMWs(), async (req, res) 
         req.order.payment = { method: req.body.method };
         if (req.body.transactionId)
             req.order.payment.transactionId = req.body.transactionId;
-        if (req.order.deliveryAddress && req.order.status === 'INITIALIZED')
-            req.order.status = 'IN_PROGRESS';
+        if (req.order.deliveryAddress && req.order.status === 'INITIALIZED') {
+            req.order.status = 'IN_PREPARATION';
+            req.order.statusChangeAt = Date.now();
+        }
 
         await req.order.save();
         res.sendStatus(200);

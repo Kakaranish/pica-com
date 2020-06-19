@@ -37,8 +37,7 @@ const ExtraItem = (props) => {
         onClick={iconOnClick}>
 
         <div className="pull-right" data-tip="Log in to make order">
-            <FontAwesomeIcon icon={faPlus}
-                size={'1x'} />
+            <FontAwesomeIcon icon={faPlus} size={'1x'} />
         </div>
 
         <p>

@@ -42,11 +42,17 @@ const restaurantSchema = new Schema({
     },
     avgDeliveryTime: {
         type: Number,
-        get: v => Math.round(v),
         set: v => Math.round(v),
         alias: 'i',
         required: true,
-        default: 60
+        default: 30
+    },
+    avgPreparationTime: {
+        type: Number,
+        set: v => Math.round(v),
+        alias: 'i',
+        required: true,
+        default: 30
     },
     categories: [{
         type: [Schema.Types.ObjectId],

@@ -26,7 +26,8 @@ const OrdersPage = () => {
     if (state.loading) return <></>
     else if (!state.orders.length) return <h3>No orders</h3>
 
-    const inProgressOrders = state.orders.filter(o => o.status === 'IN_PROGRESS');
+    const inProgressOrders = state.orders.filter(o =>
+        o.status === 'IN_PREPARATION' || o.status === 'IN_DELIVERY');
     const completedOrders = state.orders.filter(o => o.status === 'COMPLETED');
     return <>
         <div className="nav nav-tabs" id="nav-tab" role="tablist">

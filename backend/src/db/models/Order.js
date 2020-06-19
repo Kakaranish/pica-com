@@ -36,6 +36,11 @@ const orderSchema = new Schema({
         required: true,
         default: 'INITIALIZED'
     },
+    statusChangeAt: {
+        type: Date,
+        required: true,
+        default: Date.now()
+    },
     opinionId: {
         type: Schema.Types.ObjectId,
         required: false
@@ -71,7 +76,7 @@ orderSchema.pre('save', function () {
 });
 
 orderSchema.pre('save', function () {
-    const legalStatuses = ['INITIALIZED', 'IN_PROGRESS', 'COMPLETED'];
+    const legalStatuses = ['INITIALIZED', 'IN_PREPARATION', 'IN_DELIVERY', 'COMPLETED'];
     if (!legalStatuses.includes(this.status))
         this.invalidate('status', 'illegal value');
     next();

@@ -71,7 +71,8 @@ const RestaurantOverview = ({ restaurant, children }) => {
             </p>
 
             <p>
-                <b>Avg delivery time: </b> {restaurant.avgDeliveryTime}m
+                <b>Avg delivery time: </b>
+                {restaurant.avgDeliveryTime + restaurant.avgPreparationTime}m
             </p>
         </div>
 
