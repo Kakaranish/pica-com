@@ -3,9 +3,9 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { requestHandler } from '../../common/utils';
-import OrderedItems from './OrderPage/OrderedItems';
+import OrderedItems from '../../common/components/Order/OrderedItems';
+import DeliveryAddress from '../../common/components/Order/DeliveryAddress';
 import DeliveryStatus from './OrderPage/OrderStatus';
-import DeliveryAddress from './OrderPage/DeliveryAddress';
 import OrderTimer from './OrderPage/OrderTimer';
 
 const OrderPage = ({ match }) => {

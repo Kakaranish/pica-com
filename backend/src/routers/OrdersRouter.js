@@ -9,6 +9,7 @@ import Restaurant from '../db/models/Restaurant';
 import Pizza from '../db/models/Pizza';
 import Extra from '../db/models/Extra';
 import Order from '../db/models/Order';
+import { notify } from '../common/notif-utils';
 
 const OrdersRouter = express.Router();
 
@@ -106,12 +107,20 @@ OrdersRouter.put('/:id/delivery-address', updateDeliveryAddressValidationMWs(),
             };
             if (req.order.payment && req.order.status === 'INITIALIZED') {
                 const restaurant = await Restaurant.findById(req.order.restaurantId)
-                    .select('avgPreparationTime avgDeliveryTime');
+                    .select('ownerId avgPreparationTime avgDeliveryTime');
                 const remainingTime = restaurant.avgDeliveryTime
                     + restaurant.avgPreparationTime;
 
                 req.order.estimatedDeliveryTime = moment().add(remainingTime, 'minutes');
                 req.order.status = 'IN_PREPARATION';
+
+                notify({
+                    identity: { id: restaurant.ownerId },
+                    notification: {
+                        header: 'Notif header',
+                        content: 'New order arrived!'
+                    }
+                });
             }
 
             await req.order.save();
@@ -128,12 +137,20 @@ OrdersRouter.put('/:id/payment', updatePaymentValidationMWs(), async (req, res) 
 
         if (req.order.deliveryAddress && req.order.status === 'INITIALIZED') {
             const restaurant = await Restaurant.findById(req.order.restaurantId)
-                .select('avgPreparationTime avgDeliveryTime');
+                .select('ownerId avgPreparationTime avgDeliveryTime');
             const remainingTime = restaurant.avgDeliveryTime
                 + restaurant.avgPreparationTime;
 
             req.order.estimatedDeliveryTime = moment().add(remainingTime, 'minutes');
             req.order.status = 'IN_PREPARATION';
+
+            notify({
+                identity: { id: restaurant.ownerId },
+                notification: {
+                    header: 'Notif header',
+                    content: 'New order arrived!'
+                }
+            });
         }
 
         await req.order.save();

@@ -25,9 +25,14 @@ const OrdersPage = () => {
     if (state.loading) return <></>
     else if (!state.orders.length) return <h3>No orders</h3>
 
-    const inProgressOrders = state.orders.filter(o =>
-        o.status === 'IN_PREPARATION' || o.status === 'IN_DELIVERY');
-    const completedOrders = state.orders.filter(o => o.status === 'COMPLETED');
+    const inProgress = state.orders.filter(order =>
+        order.status === 'IN_PREPARATION' ||
+        (order.status === 'IN_DELIVERY' && moment().isBefore(
+            moment(order.estimatedDeliveryTime))));
+    const completed = state.orders.filter(order => order.status === 'COMPLETED' ||
+        (order.status === 'IN_DELIVERY' && moment().isAfter(
+            moment(order.estimatedDeliveryTime))));
+
     return <>
         <div className="nav nav-tabs" id="nav-tab" role="tablist">
             <TabHeader title='In Progress' uniqueInitial='nav-in-progress'
@@ -37,14 +42,13 @@ const OrdersPage = () => {
 
         <div className="tab-content">
             <TabContent uniqueInitial='nav-in-progress' isActive={true}>
-                <OrdersList orders={inProgressOrders} />
+                <OrdersList orders={inProgress} />
             </TabContent>
 
             <TabContent uniqueInitial='nav-completed'>
-                <OrdersList orders={completedOrders} />
+                <OrdersList orders={completed} />
             </TabContent>
         </div>
-
     </>
 };
 

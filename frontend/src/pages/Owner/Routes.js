@@ -13,6 +13,7 @@ import CreateExtraPage from './CreateExtraPage';
 import RestaurantOverviewPage from './RestaurantOverviewPage';
 import EditDeliveryPage from './EditDeliveryPage';
 import OrdersPage from './OrdersPage';
+import OrderPage from './OrderPage';
 
 const Routes = () => <>
     <Switch>
@@ -43,6 +44,8 @@ const Routes = () => <>
 
         <AuthorizedOnlyRoute roles={['OWNER']} exact path='/owner/orders'
             component={OrdersPage} />
+        <AuthorizedOnlyRoute roles={['OWNER']} path='/owner/orders/:id'
+            component={OrderPage} />
     </Switch>
 </>
 
