@@ -4,79 +4,78 @@ import ImagePreview from './ImagePreview';
 
 const RestaurantOverview = ({ restaurant, children }) => {
     return <>
-        <h3 className="mb-4">Basic Info</h3>
-        <div className="p-3 mb-2" style={{ border: '1px solid gray' }}>
-            <p>
-                <b>Id: </b> {restaurant._id}
-            </p>
+        <h3 className="mb-3">Basic Info</h3>
+        <div className="p-3 mb-2 border border-darken-1">
+            <b>Id: </b> {restaurant._id}
 
-            <p>
-                <b>Status: </b> {restaurant.status}
-            </p>
+            <br />
 
-            <p>
-                <b>Created At: </b> {moment(restaurant.createdAt).format('YYYY-MM-DD HH:mm')}
-            </p>
+            <b>Status: </b> {restaurant.status}
 
-            <p>
-                <b>Name: </b> {restaurant.name}
-            </p>
+            <br />
 
-            <p>
-                <b>Description: </b> {restaurant.description}
-            </p>
+            <b>Created At: </b> {moment(restaurant.createdAt).format('YYYY-MM-DD HH:mm')}
 
-            <p>
-                <b>City: </b> {restaurant.location.city}
-            </p>
+            <br />
 
-            <p>
-                <b>Postcode: </b> {restaurant.location.postcode}
-            </p>
+            <b>Name: </b> {restaurant.name}
 
-            <p>
-                <b>Address: </b> {restaurant.location.address}
-            </p>
+            <br />
 
-            <p>
-                <b>Contact number: </b> {restaurant.contactNumber}
-            </p>
+            <b>Description: </b> {restaurant.description}
 
-            <p>
-                <b>Categories: </b>
-                {
-                    restaurant.categories.map((cat, i) => <span key={`cat-${i}`}>
-                        {cat.name}{i != restaurant.categories.length - 1 && ", "}
-                    </span>)
-                }
-            </p>
+            <br />
+
+            <b>City: </b> {restaurant.location.city}
+
+            <br />
+
+            <b>Postcode: </b> {restaurant.location.postcode}
+
+            <br />
+
+            <b>Address: </b> {restaurant.location.address}
+
+            <br />
+
+            <b>Contact number: </b> {restaurant.contactNumber}
+
+            <br />
+
+            <b>Categories: </b>
+            {
+                restaurant.categories.map((cat, i) => <span key={`cat-${i}`}>
+                    {cat.name}{i != restaurant.categories.length - 1 && ", "}
+                </span>)
+            }
         </div>
 
-        <h3 className="mb-4">Delivery info</h3>
-        <div className="p-3 mb-2" style={{ border: '1px solid gray' }}>
-            <p>
-                <b>Delivery price: </b> {restaurant.deliveryPrice.toFixed(2)} PLN
-            </p>
+        <h3 className="mb-3">Delivery info</h3>
+        <div className="p-3 mb-2 border border-darken-1">
 
-            <p>
-                {
-                    !restaurant.minFreeDeliveryPrice
-                        ? <b>No min free delivery price</b>
-                        : <>
-                            <b>Min free delivery price: </b>
-                            {restaurant.minFreeDeliveryPrice.toFixed(2)} PLN
-                        </>
-                }
+            <b>Delivery price: </b> {restaurant.deliveryPrice.toFixed(2)} PLN
 
-            </p>
+            <br />
 
-            <p>
-                <b>Avg delivery time: </b>
-                {restaurant.avgDeliveryTime + restaurant.avgPreparationTime}m
-            </p>
+            {
+                !restaurant.minFreeDeliveryPrice
+                    ? <b>No min free delivery price</b>
+                    : <>
+                        <b>Min free delivery price: </b>
+                        {restaurant.minFreeDeliveryPrice.toFixed(2)} PLN
+                        <br />
+                    </>
+            }
+
+
+            <b>Averate order preparation time: </b> {restaurant.avgPreparationTime}m
+
+            <br />
+
+            <b>Average delivery time: </b> {restaurant.avgDeliveryTime}m
         </div>
 
-        <h3 className="my-4">Gallery</h3>
+        <h3 className="my-3">Gallery</h3>
         {
             !restaurant.images.length
                 ? <p>Nothing here</p>
@@ -89,65 +88,61 @@ const RestaurantOverview = ({ restaurant, children }) => {
                 </div>
         }
 
-        <h3 className="my-4">Pizzas</h3>
+        <h3 className="my-3">Pizzas</h3>
 
         {
             !restaurant.menu.pizzas.length
                 ? <p>Nothing here</p>
                 : restaurant.menu.pizzas.map((pizza, i) =>
-                    <div className="p-3 mb-2" style={{ border: '1px solid gray' }} key={`p-${i}`}>
-                        <p>
-                            <b>Name: </b> {pizza.name}
-                        </p>
+                    <div className="p-3 mb-2 border border-darken-1" key={`p-${i}`}>
+                        <b>Name: </b> {pizza.name}
 
-                        <p>
-                            <b>Description: </b> {pizza.description}
-                        </p>
+                        <br />
 
-                        <p>
-                            <b>Diameter: </b> {pizza.diameter} cm
-        	            </p>
+                        <b>Description: </b> {pizza.description}
 
-                        <p>
-                            <b>Price: </b> {pizza.price.toFixed(2)} PLN
-        			    </p>
+                        <br />
+
+                        <b>Diameter: </b> {pizza.diameter} cm
+
+                        <br />
+
+                        <b>Price: </b> {pizza.price.toFixed(2)} PLN
                     </div>
                 )
         }
 
-        <h3 className="my-4">Extra ingredients</h3>
+        <h3 className="my-3">Extra ingredients</h3>
         {
             !restaurant.menu.extraIngredients.length
                 ? <p>Nothing here</p>
                 : restaurant.menu.extraIngredients.map((extraIngredient, i) =>
-                    <div className="p-3 mb-2" style={{ border: '1px solid gray' }} key={`e-i-${i}`}>
-                        <p>
-                            <b>Name: </b> {extraIngredient.name}
-                        </p>
+                    <div className="p-3 mb-2 border border-darken-1" key={`e-i-${i}`}>
+                        <b>Name: </b> {extraIngredient.name}
 
-                        <p>
-                            <b>Price: </b> {extraIngredient.price.toFixed(2)} PLN
-        			    </p>
+                        <br />
+
+                        <b>Price: </b> {extraIngredient.price.toFixed(2)} PLN
                     </div>
                 )
         }
 
-        <h3 className="my-4">Extras</h3>
+        <h3 className="my-3">Extras</h3>
         {
             !restaurant.menu.extras.length
                 ? <p>Nothing here</p>
                 : restaurant.menu.extras.map((extra, i) =>
-                    <div className="p-3 mb-2" style={{ border: '1px solid gray' }} key={`e-i-${i}`}>
-                        <p>
-                            <b>Name: </b> {extra.name}
-                        </p>
+                    <div className="p-3 mb-2 border border-darken-1" key={`e-i-${i}`}>
+                        <b>Name: </b> {extra.name}
 
-                        <p>
-                            <b>Price: </b> {extra.price.toFixed(2)} PLN
-        			    </p>
+                        <br />
+
+                        <b>Price: </b> {extra.price.toFixed(2)} PLN
                     </div>
                 )
         }
+
+        <div className="mb-4"></div>
 
         {children}
     </>

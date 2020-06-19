@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExtraForm from './components/ExtraForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
+import { toast } from 'react-toastify';
 
 const CreateExtraPage = ({ match }) => {
 
@@ -21,7 +22,7 @@ const CreateExtraPage = ({ match }) => {
         await requestHandler(action, {
             status: 200,
             callback: async () => {
-                alert('Extra created');
+                toast('Extra created');
                 history.goBack();
             }
         });

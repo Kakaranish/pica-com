@@ -17,7 +17,6 @@ const EditMenuPage = ({ match }) => {
             const uri = `/owner/restaurants/${restaurantId}/menu`;
             const action = async () => axios.get(uri, { validateStatus: false });
             const result = await requestHandler(action);
-
             setState({ loading: false, menu: result });
         };
         fetch();
@@ -28,8 +27,7 @@ const EditMenuPage = ({ match }) => {
     return <>
         <div className="nav nav-tabs" id="nav-tab" role="tablist">
 
-            <TabHeader title={'Pizzas'} uniqueInitial={'nav-pizza'}
-                isSelected={true} />
+            <TabHeader title={'Pizzas'} uniqueInitial={'nav-pizza'} isActive={true} />
 
             <TabHeader title={'Extra Ingredients'} uniqueInitial={'nav-extra-ing'} />
 

@@ -5,10 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import MinFreeDeliveryInput from './components/EditDeliveryPage/MinFreeDeliveryInput';
 import { requestHandler, getFormDataJsonFromEvent } from '../../common/utils';
+import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EditDeliveryPage = ({ match }) => {
 
     const restaurantId = match.params.id;
+    const history = useHistory();
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
@@ -37,7 +40,10 @@ const EditDeliveryPage = ({ match }) => {
         const action = async () => axios.put(uri, formData, { validateStatus: false });
         await requestHandler(action, {
             status: 200,
-            callback: async () => alert('OK - updated')
+            callback: async () => {
+                toast('Delivery info updated');
+                history.goBack();
+            }
         });
     };
 
@@ -49,7 +55,7 @@ const EditDeliveryPage = ({ match }) => {
             </div>
 
             <div className="form-group">
-                <label>Delivery Price</label>
+                <label>Delivery Price (PLN)</label>
                 <input name="deliveryPrice"
                     defaultValue={state.deliveryInfo.deliveryPrice}
                     type="number"
@@ -101,7 +107,7 @@ const EditDeliveryPage = ({ match }) => {
             </div>
 
             <button type="submit" className="btn btn-primary btn-block">
-                Submit
+                Update
             </button>
 
             <ReactTooltip />

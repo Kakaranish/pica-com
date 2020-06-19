@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import PizzaForm from './components/PizzaForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
+import { toast } from 'react-toastify';
 
 const CreatePizzaPage = ({ match }) => {
 
@@ -21,7 +22,7 @@ const CreatePizzaPage = ({ match }) => {
         await requestHandler(action, {
             status: 200,
             callback: async () => {
-                alert('Pizza created');
+                toast('Pizza created');
                 history.goBack();
             }
         });

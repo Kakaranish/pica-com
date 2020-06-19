@@ -12,7 +12,7 @@ const MinFreeDeliveryInput = ({ defaultValue }) => {
                 checked={selected}
                 onChange={() => setSelected(s => !s)} />
             <label className="form-check-label" htmlFor="opt-checkbox">
-                Has minimum free delivery price?
+                Has minimum free delivery price? {selected && '(PLN)'}
             </label>
         </div>
 

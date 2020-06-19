@@ -37,6 +37,7 @@ OrdersRouter.get('/:id', tokenValidatorMW, async (req, res) => {
             userId: req.identity.id
         }).populate('pizzas.pizza pizzas.extraIngredients.extraIngredient extras.extra')
             .populate('restaurant', 'name location');
+        if(!order) return res.status(200).json(null);
 
         let totalPrice = calculateItemsTotalPrice(order.pizzas, order.extras)
             + order.deliveryPrice;

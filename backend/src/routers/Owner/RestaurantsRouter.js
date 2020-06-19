@@ -23,7 +23,7 @@ RestaurantsRouter.get('/preview', tokenValidatorMW, ownerValidatorMW,
     async (req, res) => {
         withAsyncRequestHandler(res, async () => {
             const restaurants = await Restaurant.find({ ownerId: req.identity.id })
-                .select('name status description location categoryCodes createdAt');
+                .select('name status description location categoryCodes createdAt images');
             res.status(200).json(restaurants);
         });
     }
@@ -253,7 +253,6 @@ function createDraftValidationMWs() {
     return [
         tokenValidatorMW,
         ownerValidatorMW,
-        restaurantInDraftValidatorMW,
         body('name').notEmpty().withMessage('cannot be empty'),
         body('description').notEmpty().withMessage('cannot be empty'),
         body('city').notEmpty().withMessage('cannot be empty'),
@@ -262,16 +261,6 @@ function createDraftValidationMWs() {
         body('contactNumber').notEmpty().withMessage('cannot be empty'),
         validationExaminator
     ];
-}
-
-async function restaurantInDraftValidatorMW(req, res, next) {
-    const ownerId = req.identity.id;
-    const hasInDraft = await Restaurant.exists({
-        ownerId, status: 'DRAFT'
-    });
-    if (hasInDraft) return res.status(400).json(
-        { errors: ['owner has already other restaurant in draft'] });
-    next();
 }
 
 function miscPicUrlsValidationMWs() {

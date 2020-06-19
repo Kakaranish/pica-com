@@ -5,6 +5,7 @@ import Lightbox from 'react-image-lightbox';
 import { requestHandler } from '../../../../common/utils';
 import 'react-image-lightbox/style.css';
 import "./style.css";
+import { toast } from 'react-toastify';
 
 const ImagePreview = ({ image, restaurantId }) => {
 
@@ -20,7 +21,10 @@ const ImagePreview = ({ image, restaurantId }) => {
         });
         await requestHandler(action, {
             status: 200,
-            callback: async () => history.go()
+            callback: async () => {
+                toast('Image deleted');
+                history.push('/refresh');
+            }
         });
     };
 

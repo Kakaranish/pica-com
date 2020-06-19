@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExtraForm from '../ExtraForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../../../common/utils';
+import { toast } from 'react-toastify';
 
 const ExtraIngredientItem = ({ extraIngredient }) => {
 
@@ -23,15 +24,19 @@ const ExtraIngredientItem = ({ extraIngredient }) => {
 
         setExtraIngredientState(extraIngState => Object.assign(formData, { _id: extraIngState._id }));
         setInEditMode(false);
+        toast('Extra ingredient updated');
     };
 
     const onDelete = async () => {
-        if (window.confirm("Are you sure to remove pernamently this extra ingredient?")) {
+        if (window.confirm("Do you really want to delete this extra ingredient?")) {
             const action = async () => axios.delete(`/owner/extra-ingredient/${extraIngredientState._id}`,
                 { validateStatus: false });
             await requestHandler(action, {
                 status: 200,
-                callback: async () => history.go()
+                callback: async () => {
+                    toast('Extra ingredient created');
+                    history.push('/refresh');
+                }
             });
         }
     };
@@ -45,7 +50,7 @@ const ExtraIngredientItem = ({ extraIngredient }) => {
             <b>Price: </b> {extraIngredientState.price.toFixed(2)} PLN
         </p>
 
-        <button className="btn btn-primary" onClick={() => setInEditMode(true)}>
+        <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
             Edit
         </button>
 
@@ -56,7 +61,7 @@ const ExtraIngredientItem = ({ extraIngredient }) => {
 
     return <>
         <ExtraForm extra={extraIngredient} onSubmitCb={onSubmitCb}>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary mr-2">
                 Update
             </button>
 

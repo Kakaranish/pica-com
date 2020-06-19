@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
+import { toast } from 'react-toastify';
 
 const CreateRestaurantPage = () => {
 
@@ -15,7 +16,10 @@ const CreateRestaurantPage = () => {
             { validateStatus: false });
         await requestHandler(action, {
             status: 200,
-            callback: async result => history.push(`/owner/restaurants/${result}/edit`)
+            callback: async result => {
+                toast('Restaurant created');
+                history.push(`/owner/restaurants/${result}/edit`)
+            }
         });
     }
 
@@ -32,7 +36,6 @@ const CreateRestaurantPage = () => {
                 <label>Description</label>
                 <textarea name="description" type="text" className="form-control"
                     placeholder="Description..." rows="4" required>
-
                 </textarea>
             </div>
 

@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import PizzaForm from '../PizzaForm';
 import { getFormDataJsonFromEvent, requestHandler } from '../../../../common/utils';
+import { toast } from 'react-toastify';
 
 const PizzaItem = ({ pizza }) => {
 
@@ -23,15 +24,20 @@ const PizzaItem = ({ pizza }) => {
 
         setPizzaState(pizzaState => Object.assign(formData, { _id: pizzaState._id }));
         setInEditMode(false);
+
+        toast('Pizza updated');
     }
 
     const onDelete = async () => {
-        if (window.confirm("Are you sure to remove pernamently this pizza?")) {
+        if (window.confirm("Do you really want to delete this pizza?")) {
             const action = async () => axios.delete(`/owner/pizza/${pizzaState._id}`,
                 { validateStatus: false });
             await requestHandler(action, {
                 status: 200,
-                callback: async () => history.go()
+                callback: async () => {
+                    toast('Pizza deleted');
+                    history.push('/refresh');
+                }
             });
         }
     };
@@ -53,7 +59,7 @@ const PizzaItem = ({ pizza }) => {
             <b>Price: </b> {pizzaState.price.toFixed(2)} PLN
         </p>
 
-        <button className="btn btn-primary" onClick={() => setInEditMode(true)}>
+        <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
             Edit
         </button>
 
@@ -64,7 +70,7 @@ const PizzaItem = ({ pizza }) => {
 
     return <>
         <PizzaForm pizza={pizzaState} onSubmitCb={onSubmit}>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary mr-2">
                 Update
             </button>
 

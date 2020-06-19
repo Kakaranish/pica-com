@@ -65,13 +65,6 @@ AuthRouter.post('/logout', async (req, res) => {
     res.sendStatus(200);
 });
 
-AuthRouter.post('/logout/all', tokenValidatorMW, async (req, res) => {
-    await RefreshToken.deleteOne({ userId: req.identity.id });
-    await createRefreshToken(req.identity);
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-});
-
 AuthRouter.post('/verify', async (req, res) => {
     const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken);
     if (decodedAccessToken) return res.status(200)

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 
 const ChangePasswordPage = () => {
 
@@ -23,7 +24,7 @@ const ChangePasswordPage = () => {
         await requestHandler(action, {
             status: 200,
             callback: async () => {
-                alert('Password has been updated');
+                toast('Password has been updated');
                 history.goBack();
             }
         }, {

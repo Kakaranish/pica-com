@@ -17,9 +17,9 @@ const OrdersPage = () => {
 	}, []);
 
 	if (state.loading) return <></>
-	else if (!state.orders) return <>
+	else if (!state.orders?.length) return <h3>
 		You have no orders yet
-	</>
+	</h3>
 
 	return <>
 		{

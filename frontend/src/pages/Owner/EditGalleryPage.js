@@ -3,7 +3,6 @@ import axios from 'axios';
 import { requestHandler } from '../../common/utils';
 import ImagesPreviews from './components/GalleryPage/ImagesPreviews';
 import ImageUploader from '../Owner/components/GalleryPage/ImageUploader';
-import RestaurantInfo from './components/RestaurantInfo';
 
 const EditGalleryPage = ({ match }) => {
 
@@ -28,8 +27,6 @@ const EditGalleryPage = ({ match }) => {
     if (state.loading) return <></>
 
     return <>
-        <RestaurantInfo restaurant={state.restaurant} />
-
         <ImagesPreviews images={images} restaurantId={restaurantId} />
 
         {

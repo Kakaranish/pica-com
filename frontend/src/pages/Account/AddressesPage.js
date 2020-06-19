@@ -20,8 +20,8 @@ const AddressesPage = () => {
     }, []);
 
     const onDelete = async addressId => {
-        if(!window.confirm('Are you sure?')) return;
-        
+        if (!window.confirm('Are you sure?')) return;
+
         const uri = `/account/address/${addressId}`;
         const action = async () => axios.delete(uri, { validateStatus: false });
         await requestHandler(action, {
@@ -45,24 +45,28 @@ const AddressesPage = () => {
         <h3>Your delivery addresses</h3>
 
         {
-            state.addresses.map((address, i) => <div className="p-3 mb-3"
-                style={{ border: "1px solid red" }} key={`a-${i}`}>
-                <p>City: {address.city}</p>
-                <p>Postcode: {address.postcode}</p>
-                <p>Address: {address.address}</p>
-                {
-                    address.flatCode &&
-                    <p>Flat code: {address.flatCode}</p>
-                }
-                <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
-                    Edit
-                </Link>
+            state.addresses.map((address, i) => <>
+                <div className="p-3 mb-3 border border-darken-1" key={`a-${i}`}>
+                    <p>City: {address.city}</p>
+                    <p>Postcode: {address.postcode}</p>
+                    <p>Address: {address.address}</p>
+                    
+                    {
+                        address.flatCode &&
+                        <p>Flat code: {address.flatCode}</p>
+                    }
+                    
+                    <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
+                        Edit
+                    </Link>
 
-                <button className="btn btn-danger ml-2"
-                    onClick={async () => onDelete(address._id)}>
-                    Delete
-                </button>
-            </div>)
+                    <button className="btn btn-danger ml-2"
+                        onClick={async () => onDelete(address._id)}>
+                        Delete
+                    </button>
+                </div>
+
+            </>)
         }
 
         <Link to='/account/create/address' className="btn btn-success mt-2">

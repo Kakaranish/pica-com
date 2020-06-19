@@ -91,7 +91,7 @@ AccountRouter.put('/address/:id', updateAddressValidationMWs(), async (req, res)
 
         if (!user.addresses) user.addresses = [];
         const updatedAddress = {
-            _id: req.params._id,
+            _id: req.params.id,
             city: req.body.city,
             postcode: req.body.postcode,
             address: req.body.address,
@@ -162,6 +162,7 @@ function createAddressValidationMWs() {
 
 function updateAddressValidationMWs() {
     return [
+        tokenValidatorMW,
         param('id').notEmpty().withMessage('cannot be empty'),
         body('city').notEmpty().withMessage('cannot be empty'),
         body('postcode').notEmpty().withMessage('cannot be empty'),

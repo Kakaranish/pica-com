@@ -16,7 +16,7 @@ const PizzasTab = ({ restaurantId, pizzas }) => {
     return <>
         {
             pizzas.map((pizza, i) =>
-                <div className="p-3 mb-3" style={{ border: '1px solid blue' }} key={`p-${i}`}>
+                <div className="p-3 mb-3 border border-darken-1"  key={`p-${i}`}>
                     <PizzaItem pizza={pizza} />
                 </div>
             )

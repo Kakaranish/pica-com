@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { getFormDataJsonFromEvent, requestHandler, } from '../../common/utils';
 import AddressForm from './components/AddressForm';
 import { useHistory } from 'react-router-dom';
@@ -31,7 +32,7 @@ const EditAddressPage = (props) => {
         await requestHandler(action, {
             status: 200,
             callback: async () => {
-                alert('Address updated');
+                toast('Address updated');
                 history.goBack();
             }
         });

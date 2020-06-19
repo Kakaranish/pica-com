@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { requestHandler } from '../../../../common/utils';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const maxSizeInMB = 3;
 
@@ -17,7 +18,7 @@ const ImageUploader = ({ restaurantId }) => {
             return;
         }
         if (!hasValidSize(file)) {
-            alert(`Max image size is ${maxSizeInMB}MB`)
+            toast.error(`Max image size is ${maxSizeInMB}MB`);
             return;
         }
 
@@ -27,7 +28,7 @@ const ImageUploader = ({ restaurantId }) => {
     const onImageUpload = async event => {
         event.preventDefault();
         if (!image) {
-            alert('No image chosen');
+            toast.error('No image chosen');
             return;
         }
 
@@ -42,7 +43,10 @@ const ImageUploader = ({ restaurantId }) => {
 
         await requestHandler(action, {
             status: 200,
-            callback: async () => history.go()
+            callback: async () => {
+                toast('Image uploaded')
+                history.push('/refresh');
+            }
         });
     }
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ExtraItem from './ExtraItem';
 
 const ExtrasTab = ({ restaurantId, extras }) => {
-    
+
     const createUri = `/owner/restaurants/${restaurantId}/create/extra`;
     if (!extras?.length) return <>
         <h3>No extras yet</h3>
@@ -12,11 +12,11 @@ const ExtrasTab = ({ restaurantId, extras }) => {
             Create Extra
         </Link>
     </>
-    
+
     return <>
         {
             extras.map((extra, i) =>
-                <div className="p-3 mb-3" style={{ border: '1px solid blue' }} key={`p-${i}`}>
+                <div className="p-3 mb-3 border border-darken-1" key={`p-${i}`}>
                     <ExtraItem extra={extra} />
                 </div>
             )

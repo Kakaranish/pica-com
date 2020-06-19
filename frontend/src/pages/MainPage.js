@@ -8,6 +8,7 @@ const MainPage = (props) => {
 
     const history = useHistory();
 
+    // TODO: To remove in the future
     const verifyOnClick = async () => {
         const result = await requestHandler(async () => axios.post('/auth/verify'));
         if (result.identity) alert('Logged in');
@@ -16,13 +17,6 @@ const MainPage = (props) => {
 
     const logOutOnClick = async () => {
         await requestHandler(async () => axios.post('/auth/logout'));
-        props.unsetIdentity();
-        props.clearNotifs();
-        history.go();
-    };
-
-    const logOutAllOnClick = async () => {
-        await requestHandler(async () => axios.post('/auth/logout/all'));
         props.unsetIdentity();
         props.clearNotifs();
         history.go();
@@ -114,12 +108,6 @@ const MainPage = (props) => {
                     <p>
                         <button className="btn btn-primary" onClick={logOutOnClick}>
                             Log Out
-                        </button>
-                    </p>
-
-                    <p>
-                        <button className="btn btn-primary" onClick={logOutAllOnClick}>
-                            Log out "All"
                         </button>
                     </p>
                 </>

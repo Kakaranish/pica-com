@@ -3,6 +3,7 @@ import axios from 'axios';
 import { requestHandler, getFormDataJsonFromEvent } from '../../common/utils';
 import RestaurantBasicInfoForm from './components/RestaurantBasicInfoForm';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EditRestaurantBasicInfoPage = ({ match }) => {
 
@@ -32,8 +33,8 @@ const EditRestaurantBasicInfoPage = ({ match }) => {
         await requestHandler(action, {
             status: 200,
             callback: async () => {
-                alert('Updated');
-                history.go();
+                toast('Basic info updated');
+                history.goBack();
             }
         });
     };

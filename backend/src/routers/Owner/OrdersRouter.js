@@ -33,8 +33,8 @@ OrdersRouter.get('/:id', getOrderValidationMWs(), async (req, res) => {
             path: 'restaurant',
             match: { ownerId: req.identity.id },
             select: 'ownerId name'
-        })
-            .populate('pizzas.pizza pizzas.extraIngredients.extraIngredient extras.extra');
+        }).populate('pizzas.pizza pizzas.extraIngredients.extraIngredient extras.extra');
+        if (!order) return res.status(200).json(null);
 
         let totalPrice = calculateItemsTotalPrice(order.pizzas, order.extras)
             + order.deliveryPrice;
@@ -60,7 +60,7 @@ OrdersRouter.put('/:id/status/:status', updateStatusValidationMWs(), async (req,
         await req.order.save();
 
         notify({
-            identity: { id: req.order.userId},
+            identity: { id: req.order.userId },
             notification: {
                 header: 'Order changed',
                 content: `Status changed to "${req.params.status}"`
