@@ -109,6 +109,18 @@ AccountRouter.put('/address/:id', updateAddressValidationMWs(), async (req, res)
     });
 });
 
+AccountRouter.delete('/address/:id', deleteAddressValidationMWs(),
+    async (req, res) => {
+        withAsyncRequestHandler(res, async () => {
+            req.user.addresses = req.user.addresses.filter(addr =>
+                addr._id != req.params.id);
+
+            await req.user.save();
+            res.sendStatus(200);
+        });
+    }
+);
+
 function updateProfileValidationMWs() {
     return [
         tokenValidatorMW,
@@ -162,6 +174,23 @@ function getAddressValidationMWs() {
     return [
         tokenValidatorMW,
         param('id').notEmpty().withMessage('cannot be empty'),
+        validationExaminator
+    ];
+}
+
+function deleteAddressValidationMWs() {
+    return [
+        tokenValidatorMW,
+        param('id').custom(async (value, { req }) => {
+            const user = await User.findById(req.identity.id);
+            if (!user)
+                return Promise.reject('no such address');
+
+            if (!user.addresses.some(addr => addr._id == value))
+                return Promise.reject('no such address');
+
+            req.user = user;
+        }),
         validationExaminator
     ];
 }

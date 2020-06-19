@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { requestHandler } from '../../common/utils';
+import { toast } from 'react-toastify';
 
 const AddressesPage = () => {
+
+    const history = useHistory();
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
@@ -15,6 +18,20 @@ const AddressesPage = () => {
         };
         fetch();
     }, []);
+
+    const onDelete = async addressId => {
+        if(!window.confirm('Are you sure?')) return;
+        
+        const uri = `/account/address/${addressId}`;
+        const action = async () => axios.delete(uri, { validateStatus: false });
+        await requestHandler(action, {
+            status: 200,
+            callback: async () => {
+                toast('Address deleted');
+                history.push('/refresh');
+            }
+        });
+    };
 
     if (state.loading) return <></>;
     else if (!state.addresses.length) return <>
@@ -40,6 +57,11 @@ const AddressesPage = () => {
                 <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
                     Edit
                 </Link>
+
+                <button className="btn btn-danger ml-2"
+                    onClick={async () => onDelete(address._id)}>
+                    Delete
+                </button>
             </div>)
         }
 
