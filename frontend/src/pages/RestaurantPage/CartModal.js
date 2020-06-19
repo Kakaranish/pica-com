@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import HyperModal from 'react-hyper-modal';
+import { toast } from 'react-toastify';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 import CartPizzaItems from './CartModal/CartPizzaItems';
 import CartExtraItems from './CartModal/CartExtraItems';
@@ -23,8 +24,10 @@ const CartModal = (props) => {
 
 	const clearCart = () => {
 		const confirmText = 'Do you want to clear cart?';
-		if (window.confirm(confirmText))
-			props.clearCart(restaurantId)
+		if (window.confirm(confirmText)) {
+			props.clearCart(restaurantId);
+			toast('Cart cleared');
+		}
 	};
 
 	const onFinalize = async () => {

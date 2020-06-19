@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EditProfilePage = () => {
 
@@ -29,7 +30,10 @@ const EditProfilePage = () => {
             { validateStatus: false });
         await requestHandler(action, {
             status: 200,
-            callback: async () => history.go()
+            callback: async () => {
+                toast('Profile info updated');
+                history.goBack();
+            }
         }, {
             status: 400,
             callback: async result =>

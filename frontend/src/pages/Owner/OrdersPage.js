@@ -37,6 +37,7 @@ const OrdersPage = () => {
         <div className="nav nav-tabs" id="nav-tab" role="tablist">
             <TabHeader title='In Progress' uniqueInitial='nav-in-progress'
                 isActive={true} />
+            
             <TabHeader title='Completed' uniqueInitial='nav-completed' />
         </div>
 

@@ -124,6 +124,12 @@ const MainPage = (props) => {
                 Generate notif
             </button>
         </p>
+
+        <p>
+            <Link to={'/restaurants/5ee3653552f97011ca816218'} className="btn btn-primary">
+                Test restaurant
+            </Link>
+        </p>
     </>
 };
 

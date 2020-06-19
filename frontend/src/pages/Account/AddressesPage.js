@@ -45,17 +45,17 @@ const AddressesPage = () => {
         <h3>Your delivery addresses</h3>
 
         {
-            state.addresses.map((address, i) => <>
+            state.addresses.map((address, i) =>
                 <div className="p-3 mb-3 border border-darken-1" key={`a-${i}`}>
                     <p>City: {address.city}</p>
                     <p>Postcode: {address.postcode}</p>
                     <p>Address: {address.address}</p>
-                    
+
                     {
                         address.flatCode &&
                         <p>Flat code: {address.flatCode}</p>
                     }
-                    
+
                     <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
                         Edit
                     </Link>
@@ -65,8 +65,7 @@ const AddressesPage = () => {
                         Delete
                     </button>
                 </div>
-
-            </>)
+            )
         }
 
         <Link to='/account/create/address' className="btn btn-success mt-2">
