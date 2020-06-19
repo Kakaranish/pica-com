@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import ReactTooltip from "react-tooltip";
 import Select from 'react-select';
 import QuantityInput from './QuantityInput';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
+import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
-const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
+const PizzaItem = (props) => {
+    const { pizza, extraIngredients, addToCartCb } = props;
 
     const ingredientsOptions = extraIngredients.map(extra => ({
         value: JSON.stringify(extra),
@@ -20,6 +23,13 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
     const extraIngredientsOnChange = selectedOptions => setSelected(selectedOptions);
     const onQuantityChange = newQuantity => setQuantity(newQuantity);
 
+    const iconOnClick = () => {
+        if (!props.identity) {
+            return;
+        }
+        setIsFocused(focused => !focused);
+    };
+
     const addToCartOnClick = () => {
         const cartItem = {
             pizza: pizza,
@@ -34,21 +44,22 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
         setIsFocused(false);
     };
 
-    if (!isFocused) return <div style={{ cursor: 'pointer' }}
-        onClick={() => setIsFocused(focused => !focused)}>
-        <div className="pull-right">
-            <FontAwesomeIcon icon={faPlus} size={'1x'} />
+    if (!isFocused) return <>
+        <div style={{ cursor: 'pointer' }} onClick={iconOnClick}>
+            <div className="pull-right" data-tip="Log in to make order">
+                <FontAwesomeIcon icon={faPlus} size={'1x'} />
+            </div>
+
+            <p>
+                <b>{pizza.name} </b>
+                ({pizza.price.toFixed(2)} PLN)
+            </p>
+
+            <p>
+                {pizza.description}
+            </p>
         </div>
-
-        <p>
-            <b>{pizza.name} </b>
-            ({pizza.price.toFixed(2)} PLN)
-        </p>
-
-        <p>
-            {pizza.description}
-        </p>
-    </div>
+    </>
 
     const calculateCost = () => {
         const ingredients = (selected ?? []).map(s => JSON.parse(s.value));
@@ -62,7 +73,8 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
             <FontAwesomeIcon icon={faTimes}
                 size={'1x'}
                 style={{ cursor: 'pointer' }}
-                onClick={() => setIsFocused(focused => !focused)} />
+                onClick={iconOnClick} />
+            {!props.identity && <ReactTooltip />}
         </div>
 
         <p>
@@ -99,4 +111,6 @@ const PizzaItem = ({ pizza, extraIngredients, addToCartCb }) => {
     </>
 };
 
-export default PizzaItem;
+export default new AwareComponentBuilder()
+    .withIdentityAwareness()
+    .build(PizzaItem);
