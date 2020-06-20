@@ -15,6 +15,15 @@ export const createInterserviceToken = payload => {
 };
 
 /**
+ * @param {String} userId 
+ */
+export const createNotifIdentityToken = userId => {
+    if (!userId) return null;
+    return jwt.sign({ userId }, process.env.NOTIF_IDENTITY_TOKEN_SECRET,
+        { expiresIn: process.env.NOTIF_IDENTITY_TOKEN_EXPIRATION });
+};
+
+/**
  * @param {Object} identityJson 
  */
 export const createAccessToken = identityJson => {
@@ -64,8 +73,8 @@ export const refreshAccessToken = async jwtRefreshToken => {
  */
 export const reCreateRefreshToken = async userId => {
     const user = await User.findById(userId);
-    if(!user) return null;
-    await RefreshToken.deleteOne({userId: userId});
+    if (!user) return null;
+    await RefreshToken.deleteOne({ userId: userId });
     return await createRefreshToken(user.toIdentityJson());
 };
 
@@ -103,5 +112,5 @@ export const decodedTokenToIdentityJson = payload => ({
     id: payload.id,
     provider: payload.provider,
     providerKey: payload.providerKey,
-    role: payload.role   
+    role: payload.role
 });

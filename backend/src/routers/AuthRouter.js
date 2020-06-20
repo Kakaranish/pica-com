@@ -5,16 +5,13 @@ import RefreshToken from '../db/models/RefreshToken';
 import {
     createAccessToken,
     createRefreshToken,
-    decodedTokenToIdentityJson
-} from '../auth/utils';
-import {
-    decodeJwtAccessToken,
+    createNotifIdentityToken,
     decodeJwtRefreshToken,
     refreshAccessToken
 } from '../auth/utils';
+import { decodeJwtAccessToken } from '../auth/utils';
 import '../auth/passport-config';
 import ProviderRouter from './ProviderRouter';
-import { tokenValidatorMW } from "../auth/validators";
 
 const AuthRouter = express();
 
@@ -23,7 +20,6 @@ AuthRouter.use('/provider', ProviderRouter);
 AuthRouter.post('/register', registerValidators(), async (req, res) => {
     if (validationResult(req).errors.length > 0)
         return res.status(400).json(validationResult(req));
-
     passport.authenticate('register', { session: false },
         async (error, user) => {
             if (!user) return res.status(400).json({ errors: [error] });
@@ -67,16 +63,34 @@ AuthRouter.post('/logout', async (req, res) => {
 
 AuthRouter.post('/verify', async (req, res) => {
     const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken);
-    if (decodedAccessToken) return res.status(200)
-        .json({ identity: decodedAccessToken });
+    if (decodedAccessToken)
+        return res.status(200).json({ identity: decodedAccessToken });
 
     const decodedRefreshToken = await decodeJwtRefreshToken(req.cookies.refreshToken);
-    if (!decodedRefreshToken) return res.status(200).json({ identity: null });
+    if (!decodedRefreshToken)
+        return res.status(200).json({ identity: null });
 
     const newJwtAccessToken = await refreshAccessToken(req.cookies.refreshToken);
     if (!newJwtAccessToken) return res.status(200).json({ identity: null });
+
     res.cookie('accessToken', newJwtAccessToken, { httpOnly: true, sameSite: 'lax' });
     res.status(200).json({ identity: decodedRefreshToken });
+});
+
+AuthRouter.post('/notif-identity', async (req, res) => {
+    const decodedAccessToken = decodeJwtAccessToken(req.cookies.accessToken);
+    if (decodedAccessToken)
+        return res.status(200).json(createNotifIdentityToken(decodedAccessToken.id));
+
+    const newJwtAccessToken = await getRefreshedAccessToken(req.cookies.refreshToken);
+    if (!newJwtAccessToken)
+        return res.status(200).json(null);
+    res.cookie('accessToken', newJwtAccessToken, { httpOnly: true, sameSite: 'lax' });
+
+    const userId = decodeJwtRefreshToken(req.cookies.refreshToken).id;
+    const notifIdentityToken = createNotifIdentityToken(userId);
+
+    res.status(200).json(notifIdentityToken);
 });
 
 function registerValidators() {
@@ -95,6 +109,15 @@ function loginValidators() {
             .isEmail().withMessage('must have email format'),
         body('password').notEmpty().withMessage('cannot be empty')
     ];
+}
+
+/**
+ * @param {String} jwtRefreshToken 
+ */
+async function getRefreshedAccessToken(refreshToken) {
+    const decodedRefreshToken = await decodeJwtRefreshToken(refreshToken);
+    if (!decodedRefreshToken) return null;
+    return await refreshAccessToken(refreshToken);
 }
 
 export default AuthRouter;

@@ -12,10 +12,11 @@ const NotificationHandler = (props) => {
     useEffect(() => {
         const initSocket = async () => {
             if (!props.identity) return;
-            const result = await axios.post('/auth/verify');
-            if (!result.data.identity) return;
+            const result = await axios.post('/auth/notif-identity');
+            if (!result.data) return;
 
-            socket = io('http://localhost:8000');
+            const query = `notifIdentityToken=${result.data}`;
+            socket = io('http://localhost:8000', { query });
 
             socket.on('notif', ({ id, content, header, createdAt }) => {
                 props.addNotif({ id, content, header, createdAt });

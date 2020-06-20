@@ -11,15 +11,15 @@ export const decodeJwtInterserviceToken = jwtInterserviceToken => {
     } catch (error) {
         return null;
     }
-}
+};
 
 /**
- * @param {String} jwtAccessToken 
+ * @param {String} notifIdentityToken 
  */
-export const decodeJwtAccessToken = jwtAccessToken => {
+export const decodeNotifIdentityToken = notifIdentityToken => {
     try {
-        return jwt.verify(jwtAccessToken, process.env.ACCESS_TOKEN_SECRET);
+        return jwt.verify(notifIdentityToken, process.env.NOTIF_IDENTITY_TOKEN_SECRET);
     } catch (error) {
         return null;
     }
-}
+};

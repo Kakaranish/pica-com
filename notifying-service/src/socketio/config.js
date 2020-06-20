@@ -1,6 +1,5 @@
-import cookie from 'cookie';
 import socketio from 'socket.io';
-import { decodeJwtAccessToken } from '../auth/utils';
+import { decodeNotifIdentityToken } from '../auth/utils';
 import SocketRepository from './SocketRepository';
 
 /**
@@ -10,11 +9,11 @@ import SocketRepository from './SocketRepository';
 const configSocketIO = (server, socketRepository) => {
     const io = socketio(server);
     io.on('connection', socket => {
-        const cookies = cookie.parse(socket.handshake.headers.cookie);
-        const identity = decodeJwtAccessToken(cookies.accessToken);
-        if (!identity) return;
+        const identityToken = socket.handshake.query.notifIdentityToken;
+        const userId = decodeNotifIdentityToken(identityToken)?.userId;
+        if (!userId) return;
 
-        socketRepository.add(socket.id, identity.id);
+        socketRepository.add(socket.id, userId);
 
         logConnectedUsers(socketRepository);
 
