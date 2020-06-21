@@ -12,18 +12,22 @@ const LoginPage = (props) => {
 
     const [validationErrors, setValidationErrors] = useState(null);
 
+    const backendBaseUri = process.env.NODE_ENV === 'production'
+        ? 'https://pica-com-backend.azurewebsites.net'
+        : 'http://localhost:9000';
+
     const logWithGoogleOnClick = () =>
-        window.location = 'http://localhost:9000/auth/provider/google';
+        window.location = `${backendBaseUri}/auth/provider/google`;
 
     const logWithFacebookOnClick = () =>
-        window.location = 'http://localhost:9000/auth/provider/facebook';
+        window.location = `${backendBaseUri}/auth/provider/facebook`;
 
     const onSubmit = async event => {
         event.preventDefault();
         const formData = getFormDataJsonFromEvent(event);
 
         const loginAction = async () => axios.post('/auth/login', formData,
-            { validateStatus: false });
+            { validateStatus: false, withCredentials: true });
         const loginResult = await requestHandler(loginAction, {
             status: 400,
             callback: async result =>

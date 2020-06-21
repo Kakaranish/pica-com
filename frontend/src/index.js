@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
+import HttpsRedirect from 'react-https-redirect';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
@@ -8,12 +10,20 @@ import configureStore from './store';
 
 const { store, persistor } = configureStore();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+axios.defaults.withCredentials = true;
+if (isProduction) axios.defaults.baseURL = 'https://pica-com-backend.azurewebsites.net';
+else axios.defaults.baseURL = 'http://localhost:9000';
+
 ReactDOM.render(
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <HttpsRedirect disabled={!isProduction}>
         <App />
-      </PersistGate>
-    </Provider>,
+      </HttpsRedirect>
+    </PersistGate>
+  </Provider>,
   document.getElementById('root')
 );
 

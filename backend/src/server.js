@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(fileUpload());
-app.use(cors());
+app.use(cors({ credentials: true, origin: process.env.FRONTEND_URI }));
 
 app.use('/', MiscRouter);
 app.use('/auth', AuthRouter);

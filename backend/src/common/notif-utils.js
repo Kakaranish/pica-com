@@ -1,6 +1,8 @@
 import axios from "axios";
 import { createInterserviceToken } from "../auth/utils";
 
+require('dotenv').config();
+
 /**
  * @param {Object} identity 
  * @param {String} identity.id 
@@ -9,7 +11,7 @@ import { createInterserviceToken } from "../auth/utils";
 export const notifyToastOnly = async (identity, content) => {
     const payload = { identity, content };
     const interserviceToken = createInterserviceToken(payload);
-    axios.post('http://localhost:8000/notify/user/toast-only',
+    axios.post(`${process.env.NOTIF_SERVICE_URI}/notify/user/toast-only`,
         { interserviceToken });
 };
 
@@ -23,7 +25,7 @@ export const notifyToastOnly = async (identity, content) => {
  */
 export const notify = async payload => {
     const interserviceToken = createInterserviceToken(payload);
-    axios.post('http://localhost:8000/notify/user', { interserviceToken });
+    axios.post(`${process.env.NOTIF_SERVICE_URI}/notify/user`, { interserviceToken });
 };
 
 /**
@@ -35,7 +37,7 @@ export const notify = async payload => {
  */
 export const notifyAdmins = async payload => {
     const interserviceToken = createInterserviceToken(payload);
-    const uri = 'http://localhost:8000/notify/admins';
+    const uri = `${process.env.NOTIF_SERVICE_URI}/notify/admins`;
     axios.post(uri, { interserviceToken }, { validateStatus: false });
 };
 
@@ -45,6 +47,6 @@ export const notifyAdmins = async payload => {
 export const clearNotifsForEvent = async eventId => {
     const payload = { eventId };
     const interserviceToken = createInterserviceToken(payload);
-    const uri = 'http://localhost:8000/clear/event';
+    const uri = `${process.env.NOTIF_SERVICE_URI}/clear/event`;
     axios.post(uri, { interserviceToken }, { validateStatus: false });
 };

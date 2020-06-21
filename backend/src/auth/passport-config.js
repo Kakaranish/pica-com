@@ -51,7 +51,7 @@ passport.use('login', new LocalStrategy({
 }));
 
 passport.use(new GoogleStrategy({
-    callbackURL: 'http://localhost:9000/auth/provider/google/callback',
+    callbackURL: `${process.env.BACKEND_URI}/auth/provider/google/callback`,
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     passReqToCallback: true
@@ -76,7 +76,7 @@ passport.use(new GoogleStrategy({
 }));
 
 passport.use(new FacebookStrategy({
-    callbackURL: 'http://localhost:9000/auth/provider/facebook/callback',
+    callbackURL: `${process.env.BACKEND_URI}/auth/provider/facebook/callback`,
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     passReqToCallback: true,

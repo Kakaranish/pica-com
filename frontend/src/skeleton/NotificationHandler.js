@@ -16,7 +16,10 @@ const NotificationHandler = (props) => {
             if (!result.data) return;
 
             const query = `notifIdentityToken=${result.data}`;
-            socket = io('http://localhost:8000', { query });
+            const uri = process.env.NODE_ENV === 'production'
+                ? 'https://notifying-service.azurewebsites.net'
+                : 'http://localhost:8000';
+            socket = io(uri, { query });
 
             socket.on('notif', ({ id, content, header, createdAt }) => {
                 props.addNotif({ id, content, header, createdAt });

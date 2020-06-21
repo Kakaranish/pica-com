@@ -27,7 +27,7 @@ export const tokenValidatorMW = async (req, res, next) => {
         errors: ['cannot refresh access token - such user does not exist']
     });
 
-    res.cookie('accessToken', newAccessToken, { httpOnly: true, sameSite: 'lax' });
+    res.cookie('accessToken', newAccessToken, { httpOnly: true });
     req.identity = decodedTokenToIdentityJson(decodedRefreshToken);
     next();
 };
