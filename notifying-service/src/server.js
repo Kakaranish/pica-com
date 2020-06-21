@@ -25,6 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.get('/', (req, res) => res.status(200).json({ msg: 'Ok' }));
+
 app.use('/notify', createNotifyRouter(socketRepository, io));
 app.use('/clear', createClearNotificationsRouter(socketRepository, io));
 
@@ -41,7 +43,6 @@ app.post('/notifications/user', interserviceTokenValidatorMW, async (req, res) =
 	});
 });
 
-app.get('/healthcheck', (req, res) => res.status(200).json({ msg: 'Ok' }));
 
 const port = process.env.PORT || 8000;
 server.listen(port, () => console.log(`Listening on ${port}...`));

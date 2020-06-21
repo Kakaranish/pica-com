@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "start": "npx nodemon --exec babel-node src/server.js",
+    "start-dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/server.js",
+    "start-prod": "cross-env NODE_ENV=production nodemon --exec babel-node src/server.js",
     "populate-test-db": "npx babel-node scripts/populate.js",
     "test": "jest"
   },
@@ -26,6 +27,7 @@
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",

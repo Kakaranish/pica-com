@@ -1,5 +1,10 @@
-export const cookieSettings = {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true
-};
+export const cookieSettings = process.env.NODE_ENV === 'development'
+    ? {
+        httpOnly: true,
+        sameSite: 'lax',
+    }
+    : {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
+    };
