@@ -12,6 +12,7 @@ import {
 import { decodeJwtAccessToken } from '../auth/utils';
 import '../auth/passport-config';
 import ProviderRouter from './ProviderRouter';
+import { cookieSettings } from "../../config";
 
 const AuthRouter = express();
 
@@ -26,8 +27,8 @@ AuthRouter.post('/register', registerValidators(), async (req, res) => {
 
             const jwtRefreshToken = await createRefreshToken(user.toIdentityJson());
             const jwtAccessToken = createAccessToken(user.toIdentityJson());
-            res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-            res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+            res.cookie('accessToken', jwtAccessToken, cookieSettings);
+            res.cookie('refreshToken', jwtRefreshToken, cookieSettings);
 
             res.status(200).json(user.toProfileInfoJson());
         }
@@ -48,8 +49,8 @@ AuthRouter.post('/login', loginValidators(), async (req, res, next) => {
 
         const jwtAccessToken = createAccessToken(user.toIdentityJson());
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: user._id })).token;
-        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+        res.cookie('accessToken', jwtAccessToken, cookieSettings);
+        res.cookie('refreshToken', jwtRefreshToken, cookieSettings);
         res.status(200).json(user.toProfileInfoJson());
     })(req, res, next);
 });
@@ -72,7 +73,7 @@ AuthRouter.post('/verify', async (req, res) => {
     const newJwtAccessToken = await refreshAccessToken(req.cookies.refreshToken);
     if (!newJwtAccessToken) return res.status(200).json({ identity: null });
 
-    res.cookie('accessToken', newJwtAccessToken, { httpOnly: true });
+    res.cookie('accessToken', newJwtAccessToken, cookieSettings);
     res.status(200).json({ identity: decodedRefreshToken });
 });
 
@@ -84,7 +85,7 @@ AuthRouter.post('/notif-identity', async (req, res) => {
     const newJwtAccessToken = await getRefreshedAccessToken(req.cookies.refreshToken);
     if (!newJwtAccessToken)
         return res.status(200).json(null);
-    res.cookie('accessToken', newJwtAccessToken, { httpOnly: true });
+    res.cookie('accessToken', newJwtAccessToken, cookieSettings);
 
     const userId = decodeJwtRefreshToken(req.cookies.refreshToken).id;
     const notifIdentityToken = createNotifIdentityToken(userId);

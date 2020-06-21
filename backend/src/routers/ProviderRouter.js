@@ -4,6 +4,7 @@ import RefreshToken from '../db/models/RefreshToken';
 import { createAccessToken } from '../auth/utils';
 import queryString from 'query-string';
 import '../auth/passport-config';
+import { cookieSettings } from "../../config";
 
 require('dotenv').config();
 
@@ -21,8 +22,8 @@ ProviderRouter.get('/google/callback',
     async (req, res) => {
         const jwtAccessToken = createAccessToken(req.user.toIdentityJson());
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: req.user._id })).token;
-        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+        res.cookie('accessToken', jwtAccessToken, cookieSettings);
+        res.cookie('refreshToken', jwtRefreshToken, cookieSettings);
 
         res.redirect(`${process.env.FRONTEND_URI}/auth/success?${queryString.stringify(req.user.toProfileInfoJson())}`);
     }
@@ -40,8 +41,8 @@ ProviderRouter.get('/facebook/callback',
     async (req, res) => {
         const jwtRefreshToken = (await RefreshToken.findOne({ userId: req.user._id })).token;
         const jwtAccessToken = createAccessToken(req.user.toIdentityJson());
-        res.cookie('accessToken', jwtAccessToken, { httpOnly: true });
-        res.cookie('refreshToken', jwtRefreshToken, { httpOnly: true });
+        res.cookie('accessToken', jwtAccessToken, cookieSettings);
+        res.cookie('refreshToken', jwtRefreshToken, cookieSettings);
 
         res.redirect(`${process.env.FRONTEND_URI}/auth/success?${queryString.stringify(req.user.toProfileInfoJson())}`);
     }

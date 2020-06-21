@@ -4,6 +4,7 @@ import {
     decodeJwtRefreshToken,
     refreshAccessToken
 } from './utils';
+import { cookieSettings } from '../../config';
 
 /**
  * @param {import('express').Request} req
@@ -27,7 +28,7 @@ export const tokenValidatorMW = async (req, res, next) => {
         errors: ['cannot refresh access token - such user does not exist']
     });
 
-    res.cookie('accessToken', newAccessToken, { httpOnly: true });
+    res.cookie('accessToken', newAccessToken, cookieSettings);
     req.identity = decodedTokenToIdentityJson(decodedRefreshToken);
     next();
 };
