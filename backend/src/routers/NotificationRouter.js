@@ -12,10 +12,12 @@ NotificationRouter.get('/', tokenValidatorMW, async (req, res) => {
     withAsyncRequestHandler(res, async () => {
         const payload = { identity: req.identity };
         const interserviceToken = createInterserviceToken(payload);
-        
+
         const uri = `${process.env.NOTIF_SERVICE_URI}/notifications/user`;
-        const result = await axios.post(uri, { interserviceToken });
-        res.status(200).json(result.data);
+        const result = await axios.post(uri, { interserviceToken },
+            { validateStatus: false });
+        if (result.status !== 200) res.status(400).json(result.data);
+        else res.status(200).json(result.data);
     });
 });
 
@@ -25,7 +27,7 @@ NotificationRouter.delete('/', tokenValidatorMW, async (req, res) => {
         const interserviceToken = createInterserviceToken(payload);
 
         const uri = `${process.env.NOTIF_SERVICE_URI}/clear/user`;
-        axios.post(uri, { interserviceToken }, { validateStatus: false });
+        axios.post(uri, { interserviceToken });
         res.sendStatus(200);
     });
 });

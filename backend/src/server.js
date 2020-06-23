@@ -54,7 +54,7 @@ app.post('/notify', tokenValidatorMW, async (req, res) => {
     res.sendStatus(200);
 });
 
-app.get('/', (_req, res) => res.status(200).json({ msg: "Hello world" }));
+app.get('/', (_req, res) => res.status(200).json({ msg: "Ok" }));
 
 app.get('*', (_req, res) => res.sendStatus(404));
 
