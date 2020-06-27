@@ -14,7 +14,7 @@ import OwnerRouter from './routers/Owner/OwnerRouter';
 import MiscRouter from "./routers/MiscRouter";
 import RestaurantsRouter from "./routers/RestaurantsRouter";
 import OrdersRouter from "./routers/OrdersRouter";
-
+import OpinionRouter from "./routers/OpinionRouter";
 require('dotenv').config();
 
 connectDb();
@@ -36,6 +36,7 @@ app.use('/admin', AdminRouter);
 app.use('/account', AccountRouter);
 app.use('/owner', OwnerRouter);
 app.use('/notifications', NotificationRouter);
+app.use('/opinions', OpinionRouter);
 
 app.use('/restaurants', RestaurantsRouter);
 app.use('/orders', OrdersRouter);

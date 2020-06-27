@@ -13,6 +13,7 @@ import ErrorPage from './pages/ErrorPage';
 import OwnerRoutes from './pages/Owner/Routes';
 import RefreshPage from './pages/RefreshPage';
 import RestaurantPage from './pages/RestaurantPage';
+import RestaurantListPage from './pages/RestaurantList/RestaurantListPage';
 
 const App = () => <>
   <MainLayout>
@@ -25,6 +26,7 @@ const App = () => <>
         <Route path='/admin' component={AdminRoutes} />
         <Route path='/account' component={AccountRoutes} />
         <Route path='/owner' component={OwnerRoutes} />
+        <Route path='/list' component={RestaurantListPage} />
 
         {/* temp here */}
         <Route path='/restaurants/:id' component={RestaurantPage} />
