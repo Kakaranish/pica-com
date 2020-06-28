@@ -18,23 +18,16 @@ const DeliveryAddress = ({ address }) => {
                     aria-labelledby="deliveryHeading" data-parent="#deliveryAccordion">
                     <div className="card-body">
 
-                        <p>
-                            <b>City: </b> {address.city}
-                        </p>
+                        <b>City: </b> {address.city} <br />
 
-                        <p>
-                            <b>Postcode: </b> {address.postcode}
-                        </p>
+                        <b>Postcode: </b> {address.postcode} <br />
 
-                        <p>
-                            <b>Address: </b> {address.address}
-                        </p>
+                        <b>Address: </b> {address.address} <br />
 
                         {
-                            address.flatCode &&
-                            <p>
-                                <b>Flat Code: </b> {address.flatCode}
-                            </p>
+                            address.flatCode && <>
+                                <b>Flat Code: </b> {address.flatCode} <br/>
+                            </>
                         }
 
                     </div>

@@ -1,139 +1,47 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import axios from 'axios';
-import AwareComponentBuilder from '../common/AwareComponentBuilder';
-import { requestHandler } from '../common/utils';
+import { useHistory } from 'react-router-dom';
+import { getFormDataJsonFromEvent, normalizeText } from '../common/utils';
+import mainBgImg from '../assets/img/main-bg.jpg';
+import Navbar from '../skeleton/Navbar';
 
-const MainPage = (props) => {
+const MainPage = () => {
 
-    const history = useHistory();
+	const history = useHistory();
 
-    // TODO: To remove in the future
-    const verifyOnClick = async () => {
-        const result = await requestHandler(async () => axios.post('/auth/verify'));
-        if (result.identity) alert('Logged in');
-        else alert('Not logged in');
-    };
+	const onSubmit = async event => {
+		event.preventDefault();
+		const formData = getFormDataJsonFromEvent(event);
+		if (!formData.city) return;
 
-    const logOutOnClick = async () => {
-        await requestHandler(async () => axios.post('/auth/logout'));
-        props.unsetIdentity();
-        props.clearNotifs();
-        history.go();
-    };
+		const normalizedCity = normalizeText(formData.city);
+		history.push(`/restaurants?city=${normalizedCity}`);
+	}
 
-    const generateNotifOnClick = async () => {
-        await requestHandler(async () =>
-            axios.post('/notify', { content: 'NOTIF' }, { validateStatus: false }));
-    };
+	return <>
+		<div className="container-fluid p-0">
+			<Navbar />
+			<div className="w-100 py-5 text-center" style={{ background: "darkgray" }}>
+				<h1>
+					It's time to order...<br />
+					<b>PIZZA</b>
+				</h1>
 
-    return <>
+				<h3>Tell us the city where you live in</h3>
 
-        {
-            props.identity?.role === 'ADMIN' &&
-            <>
-                <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
-                    <p>Admin-only actions:</p>
+				<div className="container mt-4">
+					<form className="form-inline" onSubmit={onSubmit}>
+						<input name="city" className="form-control" type="search"
+							placeholder="City..." aria-label="Search"
+							style={{ width: "90%" }} />
 
-                    <p>
-                        <Link to={'/admin/manage'}>
-                            Manage
-                        </Link>
-                    </p>
-                </div>
-            </>
-        }
-
-        {
-            props.identity?.role === 'OWNER' &&
-            <>
-                <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
-                    <p>Owner-only actions:</p>
-
-                    <p>
-                        <Link to={'/owner/restaurants'}>
-                            Manage Restaurants
-                        </Link>
-                    </p>
-                    
-                    <p>
-                        <Link to={'/owner/orders'}>
-                            Manage Orders
-                        </Link>
-                    </p>
-
-                </div>
-            </>
-        }
-
-        {
-            props.identity &&
-            <>
-                <div className="p-3 mb-2" style={{ border: '1px solid red' }}>
-                    <p>Authorized only actions:</p>
-
-                    <p>
-                        <Link to={'/account'}>
-                            Manage Account
-                        </Link>
-                    </p>
-
-                    <p>
-                        <Link to={'/user/orders'}>
-                            Manage Orders
-                        </Link>
-                    </p>
-
-                </div>
-            </>
-        }
-
-        {
-            !props.identity
-                ? <>
-                    <p>
-                        <Link to={'/auth/login'} >
-                            Login
-                        </Link>
-                    </p>
-
-                    <p>
-                        <Link to={'/auth/register'} >
-                            Register
-                        </Link>
-                    </p>
-                </>
-
-                : <>
-                    <p>
-                        <button className="btn btn-primary" onClick={logOutOnClick}>
-                            Log Out
-                        </button>
-                    </p>
-                </>
-        }
-
-        <p>
-            <button className="btn btn-primary" onClick={verifyOnClick}>
-                Verify
-            </button>
-        </p>
-
-        <p>
-            <button className="btn btn-primary" onClick={generateNotifOnClick}>
-                Generate notif
-            </button>
-        </p>
-
-        <p>
-            <Link to={'/restaurants/5ee3653552f97011ca816218'} className="btn btn-primary">
-                Test restaurant
-            </Link>
-        </p>
-    </>
+						<button className="btn btn-primary my-2" type="submit" style={{ width: "10%" }}>
+							Search
+					</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</>
 };
 
-export default new AwareComponentBuilder()
-    .withIdentityAwareness()
-    .withNotifsAwareness()
-    .build(MainPage);
+export default MainPage;

@@ -1,19 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getStatusName } from '../../../common/utils';
 
 const DeliveryStatus = ({ order }) => {
-
-	const mapOrderStatus = status => {
-		switch (status) {
-			case 'IN_PREPARATION':
-				return 'In Preparation';
-			case 'IN_DELIVERY':
-				return 'In Delivery';
-			case 'COMPLETED':
-				return 'Completed';
-		}
-	};
-
+	
 	let continueUri;
 	if (!order.deliveryAddress)
 		continueUri = `/user/orders/${order._id}/step/delivery-address`;
@@ -24,7 +14,7 @@ const DeliveryStatus = ({ order }) => {
 		<b>
 			Status:&nbsp;
 			<span style={{ color: 'green' }}>
-				{mapOrderStatus(order.status)}
+				{getStatusName(order.status)}
 			</span>
 		</b>
 

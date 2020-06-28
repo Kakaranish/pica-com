@@ -43,6 +43,9 @@ const EditProfilePage = () => {
 
     if (state.loading) return <></>;
     return <>
+        
+        <h3 className="mb-3">Edit contact info</h3>
+
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <label>Contact email</label>

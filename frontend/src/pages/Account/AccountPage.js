@@ -6,7 +6,7 @@ const AccountPage = (props) => {
     return <>
         <p>
             <Link to='/account/edit/profile'>
-                Edit profile
+                Edit contact info
             </Link>
         </p>
 

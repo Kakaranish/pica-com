@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import StarRatings from "react-star-ratings";
 import { requestHandler } from "../../common/utils";
+import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const OrderOpinionPage = (props) => {
+const OrderOpinionPage = ({ orderId, restaurantId }) => {
+  
+  const history = useHistory();
+  
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState("");
 
@@ -13,16 +18,24 @@ const OrderOpinionPage = (props) => {
 
   function addReview() {
     const post = async () => {
-      const uri = `/opinions/`;
+      
+      const uri = `/restaurants/${restaurantId}/opinions`;
       const action = async () =>
         axios.post(uri, {
-          orderId: props.orderId,
-          restaurantId: props.restaurantId,
+          orderId: orderId,
+          restaurantId: restaurantId,
           starRating: rating,
-          content: content,
-        });
-      const result = await requestHandler(action);
-      setContent("");
+          content: content
+        }, { validateStatus: false });
+      
+        await requestHandler(action, {
+        status: 200,
+        callback: async () => {
+          toast('Opinion added');
+          history.push('/refresh');
+        }
+      });
+      
     };
     post();
   }
@@ -33,8 +46,8 @@ const OrderOpinionPage = (props) => {
 
   return (
     <React.Fragment>
-      <h3>Opinion:</h3>
-      <div class="form-group">
+      <h3>Add opinion:</h3>
+      <div className="form-group">
         <form>
           <StarRatings
             rating={rating}
@@ -46,15 +59,15 @@ const OrderOpinionPage = (props) => {
           <br />
           <br />
           <textarea
-            class="form-control"
+            className="form-control"
             id="exampleFormControlTextarea1"
             rows="3"
             value={content}
             onChange={onReviewChange}
           ></textarea>
           <br />
-          <button onClick={addReview} type="button" class="btn btn-secondary">
-            Add opinion
+          <button onClick={addReview} type="button" className="btn btn-success">
+            Add
           </button>
         </form>
       </div>

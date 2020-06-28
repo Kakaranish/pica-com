@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { requestHandler } from '../../common/utils';
+import { requestHandler, getStatusName } from '../../common/utils';
 import { Link } from 'react-router-dom';
 
 const OrdersPage = () => {
@@ -22,24 +22,32 @@ const OrdersPage = () => {
 	</h3>
 
 	return <>
+		
+		<h3 className="mb-3">Your orders</h3>
 		{
 			state.orders.map((order, i) =>
-				<div className="p-3 mb-2" style={{ border: '1px solid red' }} key={`o-${i}`}>
-					<p>
+				<div className="p-3 mb-2 border border-darken-1" 
+					key={`o-${i}`}>
+
+					<div className="mb-2">
+						<b>Date of order: </b>
 						{moment(order.createdAt).format('YYYY-MM-DD HH:mm')}
-					</p>
+						<br />
 
-					<p>
-						Restaurant: {order.restaurant.name}
-					</p>
+						<b>Restaurant: </b>
+						<Link to={`/restaurants/${order.restaurant._id}`}>
+							{order.restaurant.name}
+						</Link>
+						<br />
 
-					<p>
-						Status: {order.status}
-					</p>
+						<b>Status: </b>
+						{getStatusName(order.status)}
+						<br />
 
-					<p>
-						Total Price: {order.totalPrice.toFixed(2)}PLN
-					</p>
+						<b>Total Price: </b>
+						{order.totalPrice.toFixed(2)}PLN
+						<br />
+					</div>
 
 					<Link to={`/user/orders/${order._id}`} className="btn btn-primary">
 						Show

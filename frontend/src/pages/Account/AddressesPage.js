@@ -42,19 +42,23 @@ const AddressesPage = () => {
         </Link>
     </>
     return <>
-        <h3>Your delivery addresses</h3>
+        <h3 className="mb-3">Your delivery addresses</h3>
 
         {
             state.addresses.map((address, i) =>
                 <div className="p-3 mb-3 border border-darken-1" key={`a-${i}`}>
-                    <p>City: {address.city}</p>
-                    <p>Postcode: {address.postcode}</p>
-                    <p>Address: {address.address}</p>
+                    <div className="mb-2">
+                        <b>City: </b> {address.city}<br />
+                        <b>Postcode: </b> {address.postcode}<br />
+                        <b>Address: </b> {address.address}<br />
 
-                    {
-                        address.flatCode &&
-                        <p>Flat code: {address.flatCode}</p>
-                    }
+                        {
+                            address.flatCode &&
+                            <>
+                                <b>Flat code:</b> {address.flatCode}<br />
+                            </>
+                        }
+                    </div>
 
                     <Link to={`/account/edit/address/${address._id}`} className="btn btn-primary">
                         Edit

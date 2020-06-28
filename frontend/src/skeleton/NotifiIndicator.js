@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell } from '@fortawesome/free-solid-svg-icons'
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
-import notifIcon from '../assets/img/notification.svg';
 import { requestHandler } from '../common/utils';
 
 const NotifIndicator = (props) => {
@@ -33,20 +34,20 @@ const NotifIndicator = (props) => {
     }
 
     if (!props.notifs?.length)
-        return <img src={notifIcon} style={{ width: "35px" }} />
+        return <FontAwesomeIcon icon={faBell} size={'2x'} />
     else return <>
         <div className={`btn-group ${isExpanded && 'show'}`} >
-            <img src={notifIcon}
-                style={{ width: "35px", cursor: "pointer" }}
-                aria-haspopup="true"
-                aria-expanded={isExpanded}
-                onClick={notifIconClick}
-            />
-            <span className="badge badge-danger">
+
+            <div onClick={notifIconClick} aria-haspopup="true"
+                aria-expanded={isExpanded}>
+                <FontAwesomeIcon icon={faBell} size={'2x'}  />
+            </div>
+
+            <span className="badge badge-danger" style={{height: "20px"}}>
                 {props.notifs.length}
             </span>
 
-            <div ref={wrapperRef} className={`dropdown-menu ${isExpanded && 'show'}`}
+            <div ref={wrapperRef} className={`dropdown-menu dropdown-menu-right ${isExpanded && 'show'}`}
                 style={{ minWidth: "30vw" }}>
                 {
                     props.notifs.map((notif, i) => <div className="py-2 px-4" key={`notif-${i}`}>

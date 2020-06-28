@@ -1,22 +1,35 @@
 import React from 'react';
+import logoIcon from '../assets/img/logo.svg';
 import NotifIndicator from './NotifiIndicator';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
+import ModalMenu from './ModalMenu';
 
-const Navbar = (props) =>
-    <div className="p-3" style={{ border: "1px solid red" }}>
-        {
-            props.identity &&
-            <>Logged as {props.identity.firstName} {props.identity.lastName} ({props.identity.email})</>
-        }
+const Navbar = (props) => <>
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <a href='/' style={{ textDecoration: 'none' }}>
+            <div class="navbar-brand d-flex align-items-center ml-2">
+                <div>
+                    <img src={logoIcon} style={{ height: "30px" }} />
+                </div>
+                <div className="ml-2">
+                    Pica.com
+                </div>
+            </div>
+        </a>
 
-        {
-            props.identity &&
-            <span className="ml-3">
-                <NotifIndicator />
-            </span>
-        }
+        <form class="form-inline">
+            {
+                props.identity &&
+                <div className="mr-3" style={{ cursor: 'pointer' }}>
+                    <NotifIndicator />
+                </div>
+            }
 
-    </div>
+            <ModalMenu />
+            
+        </form>
+    </nav>
+</>
 
 export default new AwareComponentBuilder()
     .withIdentityAwareness()

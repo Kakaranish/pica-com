@@ -1,10 +1,8 @@
 import React from 'react';
-import Navbar from './Navbar';
 
-const MainLayout = (props) => {
+const SearchLayout = () => {
     return <>
-        <Navbar />
-        <div className="container mt-2">
+        <div className="container">
             <div className="p-3">
                 {props.children}
             </div>
@@ -12,4 +10,4 @@ const MainLayout = (props) => {
     </>
 };
 
-export default MainLayout;
+export default SearchLayout;
