@@ -10,6 +10,7 @@ import Pizza from '../db/models/Pizza';
 import Extra from '../db/models/Extra';
 import Order from '../db/models/Order';
 import { notify } from '../common/notif-utils';
+import Opinion from '../db/models/Opinion';
 
 const OrdersRouter = express.Router();
 
@@ -37,11 +38,18 @@ OrdersRouter.get('/:id', tokenValidatorMW, async (req, res) => {
             userId: req.identity.id
         }).populate('pizzas.pizza pizzas.extraIngredients.extraIngredient extras.extra')
             .populate('restaurant', 'name location');
-        if(!order) return res.status(200).json(null);
+        if (!order) return res.status(200).json(null);
+
+        const opinion = await Opinion.findOne({
+            userId: req.identity.id,
+            orderId: req.params.id
+        });
 
         let totalPrice = calculateItemsTotalPrice(order.pizzas, order.extras)
             + order.deliveryPrice;
-        const orderJson = Object.assign(order.toObject(), { totalPrice });
+        const orderJson = Object.assign(order.toObject(), {
+            totalPrice, opinion: opinion ?? undefined
+        });
 
         res.status(200).json(orderJson);
     });

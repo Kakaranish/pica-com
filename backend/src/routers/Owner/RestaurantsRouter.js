@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import { body, param } from 'express-validator';
 import { tokenValidatorMW, ownerValidatorMW } from '../../auth/validators';
 import Restaurant from '../../db/models/Restaurant';
-import { withAsyncRequestHandler, parseObjectId } from '../../common/utils';
+import { withAsyncRequestHandler, parseObjectId, normalizeText } from '../../common/utils';
 import { validationExaminator, uploadImageMW } from '../../common/middlewares';
 import { clearNotifsForEvent, notifyAdmins, notifyToastOnly } from '../../common/notif-utils';
 
@@ -82,6 +82,7 @@ RestaurantsRouter.post('/', createDraftValidationMWs(), async (req, res) => {
             contactNumber: req.body.contactNumber,
             location: {
                 city: req.body.city,
+                normalizedCity: normalizeText(req.body.city),
                 postcode: req.body.postcode,
                 address: req.body.address
             }
@@ -117,6 +118,7 @@ RestaurantsRouter.put('/:id/status/:status', updateStatusValidationMWs(),
                 ? undefined
                 : mongoose.Types.ObjectId();
 
+            console.log(req.params.status);
             req.restaurant.status = req.params.status;
             req.restaurant.statusEventId = eventId;
             req.restaurant.save();
@@ -146,6 +148,7 @@ RestaurantsRouter.put('/:id/basic', updateBasicInfoValidationMWs(),
                     contactNumber: req.body.contactNumber,
                     location: {
                         city: req.body.city,
+                        normalizedCity: normalizeText(req.body.city),
                         postcode: req.body.postcode,
                         address: req.body.address
                     },
@@ -300,12 +303,12 @@ function deletePicUrlValidationMWs() {
 }
 
 function updateStatusValidationMWs() {
-    const legalStatuses = ['draft', 'pending', 'cancelled'];
+    const legalStatuses = ['DRAFT', 'PENDING', 'CANCELLED'];
     return [
         tokenValidatorMW,
         ownerValidatorMW,
-        param('status').isIn(legalStatuses).withMessage('illegal status')
-            .customSanitizer(value => value.toUpperCase()),
+        param('status').customSanitizer(value => value.toUpperCase())
+            .isIn(legalStatuses).withMessage('illegal status'),
         param('id').custom(async (value, { req }) => {
             const restaurant = await Restaurant.findById(value);
             if (restaurant.ownerId != req.identity.id)

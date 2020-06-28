@@ -49,3 +49,25 @@ export const calculateItemsTotalPrice = (pizzaItems, extraItems) => {
     extraItems.forEach(extraItem => totalPrice += extraItem.pricePerExtra);
     return totalPrice;
 };
+
+/**
+ * @param {String} text 
+ */
+export const normalizeText = text => {
+    let normalizedText = text.toLowerCase();
+    normalizedText = replaceAll(normalizedText, 'ó', 'o');
+    normalizedText = replaceAll(normalizedText, 'ą', 'a');
+    normalizedText = replaceAll(normalizedText, 'ź', 'z');
+    normalizedText = replaceAll(normalizedText, 'ż', 'z');
+    normalizedText = replaceAll(normalizedText, 'ę', 'e');
+    normalizedText = replaceAll(normalizedText, 'ś', 's');
+    normalizedText = replaceAll(normalizedText, 'ł', 'l');
+    normalizedText = replaceAll(normalizedText, 'ć', 'c');
+    normalizedText = replaceAll(normalizedText, 'ń', 'n');
+    normalizedText = normalizedText.trim();
+    return normalizedText;
+};
+
+function replaceAll (string, search, replace) {
+    return string.split(search).join(replace);
+}

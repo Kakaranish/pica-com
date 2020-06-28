@@ -29,6 +29,12 @@ const restaurantSchema = new Schema({
         required: true,
         default: []
     },
+    avgStarRating: {
+        type: Number,
+        set: v => v.toFixed(2),
+        required: true,
+        default: 0
+    },
     deliveryPrice: {
         type: Number,
         set: v => v.toFixed(2),

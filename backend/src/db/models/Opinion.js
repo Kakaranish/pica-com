@@ -10,6 +10,10 @@ const opionionSchema = new Schema({
   starRating: { type: Number, required: true },
 
   content: { type: String, required: false },
+}, {
+  timestamps: {
+    createdAt: 'createdAt'
+  }
 });
 
 const Opinion = mongoose.model("opinion", opionionSchema);
@@ -27,6 +31,7 @@ opionionSchema.virtual("restaurant", {
   foreignField: "_id",
   justOne: true,
 });
+
 opionionSchema.virtual("user", {
   ref: "user",
   localField: "userId",
