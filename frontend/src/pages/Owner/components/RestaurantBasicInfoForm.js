@@ -18,9 +18,11 @@ const RestaurantBasicInfoForm = ({ restaurant, onSubmit = () => { }, children })
                 ({ value: cat._id, label: cat.name }));
             setState({ loading: false, categoryOptions: categoryOptions });
 
-            const selectedCategories = restaurant.categories.map(cat => ({
-                value: cat._id, label: cat.name
-            }));
+            const selectedCategories = !restaurant
+                ? []
+                : restaurant.categories.map(cat => ({
+                    value: cat._id, label: cat.name
+                }));
             setSelected(selectedCategories);
         };
         fetch();
