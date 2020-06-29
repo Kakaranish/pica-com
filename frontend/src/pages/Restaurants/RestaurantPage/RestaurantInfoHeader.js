@@ -13,7 +13,7 @@ const RestaurantInfoHeader = ({ restaurant }) => {
 		{
 			restaurant?.categories?.length > 0 &&
 			<>
-				<b>Food categories: </b>
+				<b>Pizza categories: </b>
 				{
 					restaurant.categories.map((category, i) => <span key={`cat-${i}`}>
 						{category.name}

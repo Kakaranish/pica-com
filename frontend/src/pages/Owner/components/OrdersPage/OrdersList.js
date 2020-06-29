@@ -7,28 +7,30 @@ const OrdersList = ({ orders, isStatusVisible = true }) => {
 
     const history = useHistory();
 
+    if(!orders?.length) return <h3>Nothing here</h3>
+
     return <>
         {
             orders.map((order, i) =>
-                <div className="p-3 mb-2 border border-darken-1 preview-box" key={`o-${i}`}
+                <div className="p-3 mb-3 border border-darken-1 preview-box" key={`o-${i}`}
                     onClick={() => history.push(`/owner/orders/${order._id}`)}>
 
                     <b>Id: </b>{order._id}                    
-                    <br/>
+                    <div className="my-1"></div>
 
                     <b>Date of order: </b>{moment(order.createdAt).format('YYYY-MM-DD HH:mm')}
 
-                    <br />
+                    <div className="my-1"></div>
 
                     <b>Restaurant: </b> {order.restaurant.name}
 
-                    <br />
+                    <div className="my-1"></div>
 
                     <b>Total Price: </b> {order.totalPrice.toFixed(2)}PLN
 
                     {
                         !!isStatusVisible && <>
-                            <br />
+                            <div className="my-1"></div>
                             <b>Status: </b> {getStatusName(order.status)}
                         </>
                     }

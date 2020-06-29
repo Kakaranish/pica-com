@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
 import { requestHandler } from '../../../common/utils';
+import ReactTooltip from 'react-tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 const RestaurantBasicInfoForm = ({ restaurant, onSubmit = () => { }, children }) => {
 
@@ -86,7 +89,14 @@ const RestaurantBasicInfoForm = ({ restaurant, onSubmit = () => { }, children })
             </div>
 
             <div className="form-group">
-                <label>Categories:</label>
+                <label>
+                    Pizza categories:&nbsp;
+                    <FontAwesomeIcon icon={faQuestionCircle}
+                        style={{ color: 'lightgray' }}
+                        size={'1x'}
+                        data-tip="Pizza types that restaurant offers" />
+
+                </label>
                 <input name="categories" value={JSON.stringify(selected?.map(s => s.value)) ?? []} readOnly hidden />
                 <Select multi={true} isMulti
                     onChange={categoriesOnChange}
@@ -97,6 +107,7 @@ const RestaurantBasicInfoForm = ({ restaurant, onSubmit = () => { }, children })
 
             {children}
 
+            <ReactTooltip />
         </form>
 
         {

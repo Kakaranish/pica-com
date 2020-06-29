@@ -22,7 +22,6 @@ export const getFormDataJsonFromEvent = event => {
  * );
  */
 export const requestHandler = async (action, ...handlers) => {
-
     handlers = handlers ?? [];
     let handlersDict = Object.assign({}, ...handlers.map
         (h => ({ [h.status]: h.callback })));

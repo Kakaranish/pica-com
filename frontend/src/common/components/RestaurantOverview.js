@@ -59,7 +59,10 @@ const RestaurantOverview = ({ restaurant, children }) => {
 
             {
                 !restaurant.minFreeDeliveryPrice
-                    ? <b>No min free delivery price</b>
+                    ? <>
+                        <b>No min free delivery price</b>
+                        <br />
+                    </>
                     : <>
                         <b>Min free delivery price: </b>
                         {restaurant.minFreeDeliveryPrice.toFixed(2)} PLN
