@@ -32,13 +32,15 @@ const OrderPage = ({ match }) => {
 
   return (
     <>
-      <b>Order: </b> {orderId} <br />
-      <b>Created At:</b> {state.order.createdAt} <br />
+      <h3 className="mb-2">Order '{orderId}'</h3>
+
+      <b>Created At:</b> {moment(state.order.createdAt).format('YYYY-MM-DD HH:mm')}
+      <br />
+
       <b>Restaurant: </b>&nbsp;
       <Link to={`/restaurants/${state.order.restaurant._id}`}>
         {state.order.restaurant.name}
       </Link>
-
       <br />
 
       <DeliveryStatus order={state.order} />
@@ -60,19 +62,25 @@ const OrderPage = ({ match }) => {
             orderId={orderId}
             restaurantId={state.order.restaurant._id}
           />
-          
+
           :
           <div>
             <h4>Your opinion</h4>
 
             <div className="mb-1">
-              <b>Rating: </b>
-              <StarRatings
-                rating={state.order.opinion.starRating}
-                starRatedColor="gold"
-                name="rating"
-                starDimension="20px"
-              />
+              <div>
+                <b>Rating: </b>
+              </div>
+
+              <div>
+
+                <StarRatings
+                  rating={state.order.opinion.starRating}
+                  starRatedColor="gold"
+                  name="rating"
+                  starDimension="20px"
+                />
+              </div>
             </div>
 
             <p>

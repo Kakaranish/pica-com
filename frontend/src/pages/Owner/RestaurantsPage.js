@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { requestHandler } from '../../common/utils';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import TabHeader from './components/TabHeader';
 import AcceptedRestaurants from './components/RestaurantsPage/AcceptedRestaurants';
 import PendingRestaurants from './components/RestaurantsPage/PendingRestaurants';
@@ -32,11 +34,18 @@ const RestaurantsPage = () => {
     const cancelledRestaurants = state.restaurants.filter(r => r.status === 'CANCELLED');
 
     return <>
-        <p>
-            <Link to='/owner/restaurants/create' className="btn btn-primary" >
+
+        <h3 className="mb-3">Your restaurants</h3>
+
+        <Link to='/owner/restaurants/create'
+            className="d-flex align-items-center text-decoration-none mb-4">
+            <div>
+                <FontAwesomeIcon icon={faPlus} size={'2x'} style={{ color: 'green', height: "20px" }} />
+            </div>
+            <div className="text-decoration-none text-dark">
                 Create Restaurant
-            </Link>
-        </p>
+            </div>
+        </Link>
 
         <nav>
             <div className="nav nav-tabs" id="nav-tab" role="tablist">

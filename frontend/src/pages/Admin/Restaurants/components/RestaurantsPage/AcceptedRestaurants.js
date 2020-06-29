@@ -22,25 +22,27 @@ const AcceptedRestaurants = ({ currentTab }) => {
         <Restaurants currentTab={currentTab}
             status="accepted"
             showRestaurants={restaurants => restaurants.map((restaurant, i) =>
-                <div className="p-3" style={{ border: '1px solid green' }}
+                <div className="p-3 mb-2 border border-darken-1 item-box"
                     key={`r-${i}`}>
 
                     <RestaurantBasicInfo restaurant={restaurant} />
 
-                    <Link to={`/admin/manage/restaurants/${restaurant._id}`}
-                        className="btn btn-primary mr-2">
-                        Overview
-                    </Link>
+                    <div className="mt-3">
+                        <Link to={`/admin/manage/restaurants/${restaurant._id}`}
+                            className="btn btn-primary mr-2">
+                            Overview
+                        </Link>
 
-                    <button className="btn btn-primary mr-2"
-                        onClick={() => onMakePending(restaurant)}>
-                        Make Pending
-                    </button>
+                        <button className="btn btn-primary mr-2"
+                            onClick={() => onMakePending(restaurant)}>
+                            Make Pending
+                        </button>
 
-                    <button className="btn btn-primary mr-2"
-                        onClick={() => onReject(restaurant)}>
-                        Reject
-                    </button>
+                        <button className="btn btn-primary mr-2"
+                            onClick={() => onReject(restaurant)}>
+                            Reject
+                        </button>
+                    </div>
                 </div>
             )}
         />

@@ -23,8 +23,7 @@ const EditRestaurantPage = ({ match }) => {
     else if (!state.restaurant) return <h3>There is no such restaurant</h3>
 
     return <>
-
-        <h3>{state.restaurant.name}</h3>
+        <h3>Edit restaurant "{state.restaurant.name}"</h3>
         <p>
             <b>Location: </b>
             {state.restaurant.location.city},&nbsp;

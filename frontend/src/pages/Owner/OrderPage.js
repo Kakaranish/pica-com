@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { requestHandler } from '../../common/utils';
+import { requestHandler, getStatusName } from '../../common/utils';
 import { useHistory } from 'react-router-dom';
 import DeliveryAddress from '../../common/components/Order/DeliveryAddress';
 import OrderedItems from '../../common/components/Order/OrderedItems';
@@ -23,25 +23,17 @@ const OrderPage = ({ match }) => {
         fetch();
     }, []);
 
-    const statuses = {
-        IN_PREPARATION: {
-            nextStatus: 'IN_DELIVERY',
-            label: 'In preparation'
-        },
-        IN_DELIVERY: {
-            nextStatus: 'COMPLETED',
-            label: 'In delivery'
-        },
-        COMPLETED: {
-            label: 'Completed'
-        }
+    const nextStatus = {
+        IN_PREPARATION: 'IN_DELIVERY',
+        IN_DELIVERY: 'COMPLETED',
+        COMPLETED: null
     };
 
     const onStatusChange = async () => {
-        const nextStatus = statuses[state.order.status].nextStatus;
-        if (!nextStatus) return;
+        const next = nextStatus[state.order.status];
+        if (!next) return;
 
-        const uri = `/owner/orders/${orderId}/status/${nextStatus}`;
+        const uri = `/owner/orders/${orderId}/status/${next}`;
         const action = async () => axios.put(uri, {}, { validateStatus: false });
         await requestHandler(action, {
             status: 200,
@@ -56,23 +48,25 @@ const OrderPage = ({ match }) => {
     else if (!state.order) return <h3>No such order</h3>
 
     return <>
-        <p>
-            <b>Order: </b> {orderId}
-        </p>
 
-        <p>
-            <b>Last status change: </b>
-            {moment(state.order.updatedAt).format('YYYY-MM-DD HH:mm')}
-        </p>
+        <h3>Order '{orderId}'</h3>
 
-        <p>
-            <b>Status: </b> {state.order.status}
-        </p>
+        <b>Last status change: </b>
+        {moment(state.order.updatedAt).format('YYYY-MM-DD HH:mm')}
+        <br />
+
+        <b>
+            Status: <span className="text-success">
+                {getStatusName(state.order.status)}
+            </span>
+        </b>
+        <br/>
 
         {
             ["IN_PREPARATION", "IN_DELIVERY"].includes(state.order.status) && <>
-                <button className="btn btn-primary" onClick={onStatusChange}>
-                    Make "{statuses[state.order.status].nextStatus}"
+                <button className="btn btn-primary mt-3" onClick={onStatusChange}>
+                    Make&nbsp;
+                    <b>{getStatusName(nextStatus[state.order.status])}</b>
                 </button>
             </>
         }

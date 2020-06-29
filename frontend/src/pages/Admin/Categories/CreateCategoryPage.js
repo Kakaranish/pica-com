@@ -25,8 +25,11 @@ const CreateCategoryPage = () => {
     };
 
     return <>
+        
+        <h3 className="mb-3">Create category</h3>
+        
         <CategoryForm onSubmitCb={onSubmitCb}>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-success w-25">
                 Create
             </button>
 

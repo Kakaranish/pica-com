@@ -41,6 +41,8 @@ const EditRestaurantBasicInfoPage = ({ match }) => {
 
     if (state.loading) return <></>
     else return <>
+        <h3 className="mb-3">Edit restaurant basic info</h3>
+
         <RestaurantBasicInfoForm restaurant={state.restaurant} onSubmit={onSubmit}>
             <button className="btn btn-primary btn-block">
                 Update

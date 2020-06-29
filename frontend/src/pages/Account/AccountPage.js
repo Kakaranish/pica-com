@@ -4,6 +4,9 @@ import AwareComponentBuilder from '../../common/AwareComponentBuilder';
 
 const AccountPage = (props) => {
     return <>
+
+        <h3 className="mb-3">Manage your account</h3>
+
         <p>
             <Link to='/account/edit/profile'>
                 Edit contact info

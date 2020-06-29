@@ -4,21 +4,17 @@ import moment from 'moment';
 const RestaurantBasicInfo = ({ restaurant }) => {
     return <>
         <div>
-            <p>
-                <b>Owner: </b> {restaurant.owner.firstName} {restaurant.owner.lastName}
-            </p>
+            <b>Owner: </b> {restaurant.owner.firstName} {restaurant.owner.lastName}
+            <br/>
 
-            <p>
-                <b>Name: </b> {restaurant.name}
-            </p>
+            <b>Name: </b> {restaurant.name}
+            <br/>
 
-            <p>
-                <b>Description: </b> {restaurant.description}
-            </p>
+            <b>Description: </b> {restaurant.description}
+            <br/>
 
-            <p>
-                <b>Created at: </b> {moment(restaurant.createdAt).format('YYYY-MM-DD HH:mm')}
-            </p>
+            <b>Created at: </b> {moment(restaurant.createdAt).format('YYYY-MM-DD HH:mm')}
+            <br/>
         </div>
     </>
 };

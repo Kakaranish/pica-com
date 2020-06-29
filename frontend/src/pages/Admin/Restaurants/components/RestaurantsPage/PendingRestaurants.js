@@ -22,25 +22,27 @@ const PendingRestaurants = ({ currentTab }) => {
 		<Restaurants currentTab={currentTab}
 			status="pending"
 			showRestaurants={restaurants => restaurants.map((restaurant, i) =>
-				<div className="p-3" style={{ border: '1px solid green' }}
+				<div className="p-3 border border-darken-1 item-box"
 					key={`r-${i}`}>
 
 					<RestaurantBasicInfo restaurant={restaurant} />
 
-					<Link to={`/admin/manage/restaurants/${restaurant._id}`}
-						className="btn btn-primary mr-2">
-						Overview
-					</Link>
+					<div className="mt-3">
+						<Link to={`/admin/manage/restaurants/${restaurant._id}`}
+							className="btn btn-primary mr-2">
+							Overview
+						</Link>
 
-					<button className="btn btn-primary mr-2"
-						onClick={() => onAccept(restaurant)}>
-						Accept
-					</button>
+						<button className="btn btn-primary mr-2"
+							onClick={() => onAccept(restaurant)}>
+							Accept
+						</button>
 
-					<button className="btn btn-primary mr-2"
-						onClick={() => onReject(restaurant)}>
-						Reject
-					</button>
+						<button className="btn btn-primary mr-2"
+							onClick={() => onReject(restaurant)}>
+							Reject
+						</button>
+					</div>
 				</div>
 			)}
 		/>

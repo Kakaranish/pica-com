@@ -1,0 +1,7 @@
+.preview-box:hover {
+    background: rgb(250, 250, 250);
+    cursor: pointer;
+}
+.item-box:hover {
+    background: rgb(250, 250, 250);
+}

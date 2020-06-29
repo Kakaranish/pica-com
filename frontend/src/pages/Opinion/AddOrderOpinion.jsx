@@ -6,9 +6,9 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const OrderOpinionPage = ({ orderId, restaurantId }) => {
-  
+
   const history = useHistory();
-  
+
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState("");
 
@@ -18,7 +18,6 @@ const OrderOpinionPage = ({ orderId, restaurantId }) => {
 
   function addReview() {
     const post = async () => {
-      
       const uri = `/restaurants/${restaurantId}/opinions`;
       const action = async () =>
         axios.post(uri, {
@@ -27,15 +26,14 @@ const OrderOpinionPage = ({ orderId, restaurantId }) => {
           starRating: rating,
           content: content
         }, { validateStatus: false });
-      
-        await requestHandler(action, {
+
+      await requestHandler(action, {
         status: 200,
         callback: async () => {
           toast('Opinion added');
           history.push('/refresh');
         }
       });
-      
     };
     post();
   }
@@ -66,7 +64,7 @@ const OrderOpinionPage = ({ orderId, restaurantId }) => {
             onChange={onReviewChange}
           ></textarea>
           <br />
-          <button onClick={addReview} type="button" className="btn btn-success">
+          <button onClick={addReview} type="button" className="btn btn-success w-25">
             Add
           </button>
         </form>

@@ -49,6 +49,8 @@ const EditDeliveryPage = ({ match }) => {
 
     if (state.loading) return <></>
     return <>
+        <h3 className="mb-3">Edit delivery info</h3>
+
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <MinFreeDeliveryInput defaultValue={state.deliveryInfo.minFreeDeliveryPrice} />

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { requestHandler } from '../../../common/utils';
+import '../../../assets/css/style.css';
 
 const ManageUsersPage = () => {
+
+    const history = useHistory();
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
@@ -19,35 +22,30 @@ const ManageUsersPage = () => {
 
     if (state.loading) return <></>;
     else if (!state.users) return <h3>No users found</h3>;
+
     return <>
-        <h3>Users</h3>
+        <h3 className="mb-3">Manage users</h3>
 
         {
             state.users.map((user, i) =>
-                <div key={`u-${i}`} className='p-2 mb-3' style={{ border: '1px solid red' }}>
-                    <p>
-                        <b>Id: </b>
-                        <Link to={`/admin/manage/users/${user._id}`}>
-                            {user._id}
-                        </Link>
-                    </p>
+                <div key={`u-${i}`} className='p-3 mb-3 preview-box border border-darken-1'
+                    onClick={() => history.push(`/admin/manage/users/${user._id}`)}>
+                    <b>Id: </b> {user._id}
+                    <br />
 
-                    <p>
-                        <b>Role: </b>{user.role}
-                    </p>
+                    <b>Role: </b>{user.role}
+                    <br />
 
-                    <p>
-                        <b>Provider: </b>{user.provider}
-                    </p>
+                    <b>Provider: </b>{user.provider}
+                    <br />
 
-                    <p>
-                        <b>Provider key: </b>{user.providerKey}
-                    </p>
+                    <b>Provider key: </b>{user.providerKey}
+                    <br />
 
-                    <p>
-                        <b>Name: </b>{user.firstName} {user.lastName}
-                    </p>
-                </div>)
+                    <b>Name: </b>{user.firstName} {user.lastName}
+                    <br />
+                </div>
+            )
         }
     </>
 };

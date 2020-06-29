@@ -1,18 +1,20 @@
 import React from 'react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { getStatusName } from '../../../../common/utils';
 
-const OrdersList = ({ orders }) => {
+const OrdersList = ({ orders, isStatusVisible = true }) => {
 
-    const statuses = {
-        IN_PREPARATION: 'In preparation',
-        IN_DELIVERY: 'In delivery'
-    };
+    const history = useHistory();
 
     return <>
         {
             orders.map((order, i) =>
-                <div className="p-3 mb-2 border border-darken-1" key={`o-${i}`}>
+                <div className="p-3 mb-2 border border-darken-1 preview-box" key={`o-${i}`}
+                    onClick={() => history.push(`/owner/orders/${order._id}`)}>
+
+                    <b>Id: </b>{order._id}                    
+                    <br/>
 
                     <b>Date of order: </b>{moment(order.createdAt).format('YYYY-MM-DD HH:mm')}
 
@@ -24,15 +26,12 @@ const OrdersList = ({ orders }) => {
 
                     <b>Total Price: </b> {order.totalPrice.toFixed(2)}PLN
 
-                    <br />
-
-                    <b>Status: </b> {statuses[order.status]}
-
-                    <div className="mt-2"></div>
-
-                    <Link to={`/owner/orders/${order._id}`} className="btn btn-primary">
-                        Show
-                    </Link>
+                    {
+                        !!isStatusVisible && <>
+                            <br />
+                            <b>Status: </b> {getStatusName(order.status)}
+                        </>
+                    }
                 </div>
             )
         }

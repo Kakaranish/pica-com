@@ -7,13 +7,12 @@ const CancelledRestaurants = ({ currentTab }) => <>
     <Restaurants currentTab={currentTab}
         status="cancelled"
         showRestaurants={restaurants => restaurants.map((restaurant, i) =>
-            <div className="p-3" style={{ border: '1px solid green' }}
-                key={`r-${i}`}>
+            <div className="p-3 border border-darken-1 item-box" key={`r-${i}`}>
 
                 <RestaurantBasicInfo restaurant={restaurant} />
 
                 <Link to={`/admin/manage/restaurants/${restaurant._id}`}
-                    className="btn btn-primary mr-2">
+                    className="btn btn-primary mr-2 mt-3">
                     Overview
                 </Link>
             </div>

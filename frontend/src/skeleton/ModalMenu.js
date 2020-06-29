@@ -5,7 +5,10 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import AwareComponentBuilder from '../common/AwareComponentBuilder';
 import smileIcon from '../assets/img/smile.svg';
 import logoutIcon from '../assets/img/logout.svg';
+import kitchenIcon from '../assets/img/kitchen.svg';
+import squaresIcon from '../assets/img/squares.svg';
 import receiptIcon from '../assets/img/receipt.svg';
+import usersIcon from '../assets/img/users.svg';
 import sadIcon from '../assets/img/sad.svg';
 import './style.css';
 import { requestHandler } from '../common/utils';
@@ -28,7 +31,7 @@ const ModalMenu = (props) => {
     </>
 
     const renderNotLoggedIn = () => <>
-        
+
         <div className="px-4 py-5 d-flex align-items-center" style={{ background: "lightgray" }}>
             <img src={sadIcon} className="my-3" style={{ height: "10vh" }} />
 
@@ -39,7 +42,7 @@ const ModalMenu = (props) => {
                 </a>
 
                 to make it smiled... and make orders
-                <br/>
+                <br />
                 ...or if you have no account then&nbsp;
                 <a href="/auth/register">register</a>
             </div>
@@ -66,13 +69,64 @@ const ModalMenu = (props) => {
 
         <div className="mt-2 p-4">
             <ul className="list-group">
-                <a href='/user/orders' className="text-decoration-none text-body">
-                    <li className="list-group-item d-flex align-items-center"
-                        style={{ cursor: "pointer" }}>
-                        <img src={receiptIcon} className="mr-3" style={{ height: "30px" }} />
-                        <div>Go to your orders</div>
-                    </li>
-                </a>
+                {
+                    props.identity.role === 'USER' &&
+                    <a href='/user/orders' className="text-decoration-none text-body">
+                        <li className="list-group-item d-flex align-items-center"
+                            style={{ cursor: "pointer" }}>
+                            <img src={receiptIcon} className="mr-3" style={{ height: "30px" }} />
+                            <div>Go to your orders</div>
+                        </li>
+                    </a>
+                }
+
+                {
+                    props.identity.role === 'OWNER' && <>
+                        <a href='/owner/restaurants' className="text-decoration-none text-body">
+                            <li className="list-group-item d-flex align-items-center"
+                                style={{ cursor: "pointer" }}>
+                                <img src={kitchenIcon} className="mr-3" style={{ height: "30px" }} />
+                                <div>Manage restaurants</div>
+                            </li>
+                        </a>
+
+                        <a href='/owner/orders' className="text-decoration-none text-body">
+                            <li className="list-group-item d-flex align-items-center"
+                                style={{ cursor: "pointer" }}>
+                                <img src={receiptIcon} className="mr-3" style={{ height: "30px" }} />
+                                <div>Manage orders</div>
+                            </li>
+                        </a>
+                    </>
+                }
+
+                {
+                    props.identity.role === 'ADMIN' && <>
+                        <a href='/admin/manage/restaurants' className="text-decoration-none text-body">
+                            <li className="list-group-item d-flex align-items-center"
+                                style={{ cursor: "pointer" }}>
+                                <img src={kitchenIcon} className="mr-3" style={{ height: "30px" }} />
+                                <div>Manage restaurants</div>
+                            </li>
+                        </a>
+
+                        <a href='/admin/manage/users' className="text-decoration-none text-body">
+                            <li className="list-group-item d-flex align-items-center"
+                                style={{ cursor: "pointer" }}>
+                                <img src={usersIcon} className="mr-3" style={{ height: "30px" }} />
+                                <div>Manage users</div>
+                            </li>
+                        </a>
+
+                        <a href='/admin/manage/categories' className="text-decoration-none text-body">
+                            <li className="list-group-item d-flex align-items-center"
+                                style={{ cursor: "pointer" }}>
+                                <img src={squaresIcon} className="mr-3" style={{ height: "30px" }} />
+                                <div>Manage categories</div>
+                            </li>
+                        </a>
+                    </>
+                }
 
                 <li className="list-group-item d-flex align-items-center"
                     style={{ cursor: "pointer" }} onClick={onLogout}>

@@ -21,10 +21,11 @@ const CreateRestaurantPage = () => {
                 history.push(`/owner/restaurants/${result}/edit`)
             }
         });
-    }
+    };
 
     return <>
-        <h3>Provide basic restaurant info</h3>
+        <h3 className="mb-2">Provide basic restaurant info</h3>
+
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <label>Name</label>

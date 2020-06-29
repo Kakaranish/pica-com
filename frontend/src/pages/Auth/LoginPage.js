@@ -48,7 +48,8 @@ const LoginPage = (props) => {
     };
 
     return <>
-        <h5>Log in using credentials</h5>
+        <h3 className="mb-3">Log in using credentials</h3>
+
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <input name="email" type="email" className="form-control" id="emailInput" placeholder="Email..." required />

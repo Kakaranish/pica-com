@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import AwareComponentBuilder from '../../common/AwareComponentBuilder';
+import googleIcon from '../../assets/img/google.svg';
+import facebookIcon from '../../assets/img/facebook.svg';
 
 const RegisterPage = (props) => {
 
@@ -34,10 +36,21 @@ const RegisterPage = (props) => {
             callback: async result =>
                 setValidationErrors(result.errors.map(e => e.msg ?? e))
         });
-    }
+    };
+
+    const backendBaseUri = process.env.NODE_ENV === 'production'
+        ? 'https://pica-com-backend.azurewebsites.net'
+        : 'http://localhost:9000';
+
+    const logWithGoogleOnClick = () =>
+        window.location = `${backendBaseUri}/auth/provider/google`;
+
+    const logWithFacebookOnClick = () =>
+        window.location = `${backendBaseUri}/auth/provider/facebook`;
 
     return <>
-        <h3>Sign In</h3>
+        <h3 className="mb-3">Register</h3>
+
         <form onSubmit={onSubmit}>
             <div className="form-group">
                 <label>Email</label>
@@ -67,7 +80,7 @@ const RegisterPage = (props) => {
             </div>
 
             <button type="submit" className="btn btn-primary">
-                Submit
+                Register
             </button>
 
             {
@@ -86,6 +99,14 @@ const RegisterPage = (props) => {
                 </div>
             }
         </form>
+
+        <div className="p-2 mt-3">
+            <h5>Or use social providers</h5>
+
+            <img src={googleIcon} className="pr-2" style={{ width: "35px", cursor: "pointer" }} onClick={logWithGoogleOnClick} />
+
+            <img src={facebookIcon} style={{ width: "25px", cursor: "pointer" }} onClick={logWithFacebookOnClick} />
+        </div>
     </>
 };
 

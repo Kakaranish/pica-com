@@ -25,11 +25,14 @@ const EditMenuPage = ({ match }) => {
     if (state.loading) return <></>
 
     return <>
+
+        <h3 className="mb-3">Edit menu</h3>
+
         <div className="nav nav-tabs" id="nav-tab" role="tablist">
 
             <TabHeader title={'Pizzas'} uniqueInitial={'nav-pizza'} isActive={true} />
 
-            <TabHeader title={'Extra Ingredients'} uniqueInitial={'nav-extra-ing'} />
+            <TabHeader title={'Pizza Extra Ingredients'} uniqueInitial={'nav-extra-ing'} />
 
             <TabHeader title={'Extras'} uniqueInitial={'nav-extras'} />
         </div>

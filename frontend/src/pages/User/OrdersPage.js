@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { requestHandler, getStatusName } from '../../common/utils';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const OrdersPage = () => {
+
+	const history = useHistory();
 
 	const [state, setState] = useState({ loading: true });
 	useEffect(() => {
@@ -22,22 +24,18 @@ const OrdersPage = () => {
 	</h3>
 
 	return <>
-		
 		<h3 className="mb-3">Your orders</h3>
 		{
 			state.orders.map((order, i) =>
-				<div className="p-3 mb-2 border border-darken-1" 
-					key={`o-${i}`}>
+				<div className="p-3 mb-2 border border-darken-1 preview-box" key={`o-${i}`}
+					onClick={() => history.push(`/user/orders/${order._id}`)}>
 
 					<div className="mb-2">
 						<b>Date of order: </b>
 						{moment(order.createdAt).format('YYYY-MM-DD HH:mm')}
 						<br />
 
-						<b>Restaurant: </b>
-						<Link to={`/restaurants/${order.restaurant._id}`}>
-							{order.restaurant.name}
-						</Link>
+						<b>Restaurant: </b>{order.restaurant.name}
 						<br />
 
 						<b>Status: </b>
@@ -48,10 +46,6 @@ const OrdersPage = () => {
 						{order.totalPrice.toFixed(2)}PLN
 						<br />
 					</div>
-
-					<Link to={`/user/orders/${order._id}`} className="btn btn-primary">
-						Show
-					</Link>
 				</div>
 			)
 		}

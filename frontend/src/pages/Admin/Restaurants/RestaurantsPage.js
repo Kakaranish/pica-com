@@ -10,7 +10,7 @@ const RestaurantsPage = () => {
     const [currentTab, setCurrentTab] = useState('navbar-pending');
 
     return <>
-        <h3>Restaurants</h3>
+        <h3 className="mb-3">Restaurants</h3>
 
         <div className="nav nav-tabs" id="nav-tab" role="tablist">
             <TabHeader title={'PENDING'} uniqueInitial={'navbar-pending'}

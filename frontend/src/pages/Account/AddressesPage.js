@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
-import { requestHandler } from '../../common/utils';
 import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { requestHandler } from '../../common/utils';
 
 const AddressesPage = () => {
 
     const history = useHistory();
+    const createUri = '/account/create/address';
 
     const [state, setState] = useState({ loading: true });
     useEffect(() => {
@@ -35,14 +38,28 @@ const AddressesPage = () => {
 
     if (state.loading) return <></>;
     else if (!state.addresses.length) return <>
-        <h3>You have already no addresses defined</h3>
+        <h3 className="mb-3">You have already no addresses defined</h3>
 
-        <Link to='/account/create/address' className="btn btn-success">
-            Create
+        <Link to={createUri} className="d-flex align-items-center text-decoration-none mb-3">
+            <div>
+                <FontAwesomeIcon icon={faPlus} size={'2x'} style={{ color: 'green', height: "20px" }} />
+            </div>
+            <div className="text-decoration-none text-dark">
+                Create new address
+            </div>
         </Link>
     </>
     return <>
         <h3 className="mb-3">Your delivery addresses</h3>
+
+        <Link to={createUri} className="d-flex align-items-center text-decoration-none mb-3">
+            <div>
+                <FontAwesomeIcon icon={faPlus} size={'2x'} style={{ color: 'green', height: "20px" }} />
+            </div>
+            <div className="text-decoration-none text-dark">
+                Create new address
+            </div>
+        </Link>
 
         {
             state.addresses.map((address, i) =>
@@ -71,10 +88,6 @@ const AddressesPage = () => {
                 </div>
             )
         }
-
-        <Link to='/account/create/address' className="btn btn-success mt-2">
-            Create new address
-        </Link>
     </>
 };
 
