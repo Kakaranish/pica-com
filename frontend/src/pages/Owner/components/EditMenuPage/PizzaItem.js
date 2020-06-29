@@ -43,29 +43,27 @@ const PizzaItem = ({ pizza }) => {
     };
 
     if (!inEditMode) return <>
-        <p>
-            <b>Name: </b> {pizzaState.name}
-        </p>
+        <b>Name: </b> {pizzaState.name}
+        <br />
 
-        <p>
-            <b>Description: </b> {pizzaState.description}
-        </p>
+        <b>Description: </b> {pizzaState.description}
+        <br />
 
-        <p>
-            <b>Diameter: </b> {pizzaState.diameter} cm
-        </p>
+        <b>Diameter: </b> {pizzaState.diameter} cm
+        <br />
 
-        <p>
-            <b>Price: </b> {pizzaState.price.toFixed(2)} PLN
-        </p>
+        <b>Price: </b> {pizzaState.price.toFixed(2)} PLN
+        <br />
 
-        <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
-            Edit
-        </button>
+        <div className="mt-3">
+            <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
+                Edit
+            </button>
 
-        <button className="btn btn-danger" onClick={onDelete}>
-            Delete
-        </button>
+            <button className="btn btn-danger" onClick={onDelete}>
+                Delete
+            </button>
+        </div>
     </>
 
     return <>

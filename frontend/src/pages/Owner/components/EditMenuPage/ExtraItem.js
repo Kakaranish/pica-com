@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 const ExtraItem = ({ extra }) => {
 
     const history = useHistory();
-    
+
     const [inEditMode, setInEditMode] = useState(false);
     const [extraState, setExtraState] = useState(Object.assign({}, extra));
 
@@ -41,21 +41,21 @@ const ExtraItem = ({ extra }) => {
     };
 
     if (!inEditMode) return <>
-        <p>
-            <b>Name: </b> {extraState.name}
-        </p>
+        <b>Name: </b> {extraState.name}
+        <br />
 
-        <p>
-            <b>Price: </b> {extraState.price.toFixed(2)} PLN
-        </p>
+        <b>Price: </b> {extraState.price.toFixed(2)} PLN
+        <br />
 
-        <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
-            Edit
-        </button>
+        <div className="mt-2">
+            <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
+                Edit
+            </button>
 
-        <button className="btn btn-danger" onClick={onDelete}>
-            Delete
-        </button>
+            <button className="btn btn-danger" onClick={onDelete}>
+                Delete
+            </button>
+        </div>
     </>
 
     return <>

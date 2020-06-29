@@ -23,10 +23,6 @@ const OrderPage = ({ match }) => {
     fetch();
   }, []);
 
-  const shouldBeTimerVisible = () =>
-    state.order.estimatedDeliveryTime &&
-    moment(state.order.estimatedDeliveryTime).isAfter(moment());
-
   if (state.loading) return <></>;
   else if (!state.order) return <h3>There is no such order</h3>;
 
@@ -45,7 +41,10 @@ const OrderPage = ({ match }) => {
 
       <DeliveryStatus order={state.order} />
 
-      {shouldBeTimerVisible() && <OrderTimer order={state.order} />}
+      {
+        state.order.status !== 'COMPLETED' &&
+        <OrderTimer order={state.order} />
+      }
 
       <div className="mb-3"></div>
 

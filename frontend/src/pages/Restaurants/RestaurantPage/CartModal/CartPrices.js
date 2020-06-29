@@ -22,9 +22,12 @@ const CartPrices = ({ cartItemsPrice, deliveryPrice, toFreeDelivery }) => {
                         ? <span className="text-success">FREE</span>
                         : <>
                             {deliveryPrice.toFixed(2)} PLN&nbsp;
-                            <span className="text-success">
-                                ({toFreeDelivery.toFixed(2)} PLN to free delivery)
-                            </span>
+                            {
+                                !!toFreeDelivery &&
+                                <span className="text-success">
+                                    ({toFreeDelivery.toFixed(2)} PLN to free delivery)
+                                </span>
+                            }
                         </>
                 }
             </b>

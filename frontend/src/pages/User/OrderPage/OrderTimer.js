@@ -12,27 +12,33 @@ const OrderTimer = (props) => {
     const [counter, setCounter] = useState(null);
 
     useEffect(() => {
-        if(!initialized) {
+        if (!initialized) {
             setInitialized(true);
             return;
         }
         history.push('/refresh');
     }, [props.notifs]);
-    
+
     useEffect(() => {
         if (!counter) setCounter(getSecondsToCount());
         const timer =
             counter > 0 && setInterval(() => setCounter(getSecondsToCount()), 1000);
         return () => clearInterval(timer);
     }, [counter]);
-    
-    const getSecondsToCount = () => Math.ceil(moment.duration(
-        moment(order.estimatedDeliveryTime).diff(moment())).asSeconds());
+
+    const getSecondsToCount = () => {
+        const toCount = Math.ceil(moment.duration(
+            moment(order.estimatedDeliveryTime).diff(moment())).asSeconds());
+        return toCount >= 0
+            ? toCount
+            : 0;
+    };
 
     return <>
         <h3 className="my-2">
             Estimated Delivery Time&nbsp;
             {Math.trunc(counter / 60).pad(2)}:{(counter % 60).pad(2)}
+            {counter === 0 && ' (should already be arrived)'}
         </h3>
     </>
 };

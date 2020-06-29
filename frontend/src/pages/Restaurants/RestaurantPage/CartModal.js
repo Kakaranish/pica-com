@@ -65,7 +65,9 @@ const CartModal = (props) => {
 	const deliveryPrice = cartItemsPrice >= minFreeDeliveryPrice
 		? 0
 		: props.deliveryPrice;
-	const toFreeDelivery = minFreeDeliveryPrice - cartItemsPrice;
+	const toFreeDelivery = minFreeDeliveryPrice
+		? minFreeDeliveryPrice - cartItemsPrice
+		: null;
 
 	const renderOpenButton = requestOpen => <>
 		<div className="d-flex align-items-center" style={{ cursor: 'pointer' }} onClick={requestOpen}>

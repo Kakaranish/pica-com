@@ -27,7 +27,7 @@ const CartPizzaItems = (props) => {
 	return <>
 		{
 			cart.pizzas.map((pizzaCartItem, i) =>
-				<div key={`c-p-${i}`} className='mb-3 p-2' style={{ border: '1px solid red' }}>
+				<div key={`c-p-${i}`} className='mb-3 p-2 border border-darken-1'>
 					<div className="my-2">
 						<b>{pizzaCartItem.pizza.name} </b>
 						({pizzaCartItem.pizza.price.toFixed(2)}PLN)

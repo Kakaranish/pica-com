@@ -21,8 +21,7 @@ const CartExtraItems = (props) => {
 	return <>
 		{
 			cart.extras.map((extraCartItem, i) =>
-				<div key={`c-e-${i}`} className='mb-3 p-2'
-					style={{ border: '1px solid red' }}>
+				<div key={`c-e-${i}`} className='mb-3 p-2 border border-darken-1'>
 
 					<b>{extraCartItem.extra.name}</b><br />
 

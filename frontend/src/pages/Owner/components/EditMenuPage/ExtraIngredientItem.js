@@ -42,21 +42,21 @@ const ExtraIngredientItem = ({ extraIngredient }) => {
     };
 
     if (!inEditMode) return <>
-        <p>
-            <b>Name: </b> {extraIngredientState.name}
-        </p>
+        <b>Name: </b> {extraIngredientState.name}
+        <br />
 
-        <p>
-            <b>Price: </b> {extraIngredientState.price.toFixed(2)} PLN
-        </p>
+        <b>Price: </b> {extraIngredientState.price.toFixed(2)} PLN
+        <br />
 
-        <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
-            Edit
-        </button>
+        <div className="mt-2">
+            <button className="btn btn-primary mr-2" onClick={() => setInEditMode(true)}>
+                Edit
+            </button>
 
-        <button className="btn btn-danger" onClick={onDelete}>
-            Delete
-        </button>
+            <button className="btn btn-danger" onClick={onDelete}>
+                Delete
+            </button>
+        </div>
     </>
 
     return <>
