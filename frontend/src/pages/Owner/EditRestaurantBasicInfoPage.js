@@ -44,7 +44,7 @@ const EditRestaurantBasicInfoPage = ({ match }) => {
         <h3 className="mb-3">Edit restaurant basic info</h3>
 
         <RestaurantBasicInfoForm restaurant={state.restaurant} onSubmit={onSubmit}>
-            <button className="btn btn-primary btn-block">
+            <button className="btn btn-success w-25">
                 Update
             </button>
         </RestaurantBasicInfoForm>

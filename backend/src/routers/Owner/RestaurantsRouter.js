@@ -85,7 +85,8 @@ RestaurantsRouter.post('/', createDraftValidationMWs(), async (req, res) => {
                 normalizedCity: normalizeText(req.body.city),
                 postcode: req.body.postcode,
                 address: req.body.address
-            }
+            },
+            categories: req.body.categories
         });
         await restaurant.save();
 
@@ -262,6 +263,15 @@ function createDraftValidationMWs() {
         body('postcode').notEmpty().withMessage('cannot be empty'),
         body('address').notEmpty().withMessage('cannot be empty'),
         body('contactNumber').notEmpty().withMessage('cannot be empty'),
+        body('categories').isLength({ min: 1 })
+            .withMessage('must have at least 1 element').bail()
+            .customSanitizer(categories =>
+                categories.map(cat => parseObjectId(cat)))
+            .custom(categories => {
+                if (categories.some(cat => cat === null))
+                    throw new Error('at least 1 invalid category')
+                return true;
+            }),
         validationExaminator
     ];
 }

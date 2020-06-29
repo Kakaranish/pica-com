@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { getFormDataJsonFromEvent, requestHandler } from '../../common/utils';
 import { toast } from 'react-toastify';
+import RestaurantBasicInfoForm from './components/RestaurantBasicInfoForm';
 
 const CreateRestaurantPage = () => {
 
@@ -10,7 +11,8 @@ const CreateRestaurantPage = () => {
 
     const onSubmit = async event => {
         event.preventDefault();
-        const formData = getFormDataJsonFromEvent(event);
+        let formData = getFormDataJsonFromEvent(event);
+        formData.categories = JSON.parse(formData.categories);
 
         const action = async () => axios.post('/owner/restaurants', formData,
             { validateStatus: false });
@@ -18,7 +20,7 @@ const CreateRestaurantPage = () => {
             status: 200,
             callback: async result => {
                 toast('Restaurant created');
-                history.push(`/owner/restaurants/${result}/edit`)
+                history.push(`/owner/restaurants/${result.id}/edit`)
             }
         });
     };
@@ -26,48 +28,11 @@ const CreateRestaurantPage = () => {
     return <>
         <h3 className="mb-2">Provide basic restaurant info</h3>
 
-        <form onSubmit={onSubmit}>
-            <div className="form-group">
-                <label>Name</label>
-                <input name="name" type="text" className="form-control"
-                    placeholder="Name..." required />
-            </div>
-
-            <div className="form-group">
-                <label>Description</label>
-                <textarea name="description" type="text" className="form-control"
-                    placeholder="Description..." rows="4" required>
-                </textarea>
-            </div>
-
-            <div className="form-group">
-                <label>City</label>
-                <input name="city" type="text" className="form-control"
-                    placeholder="City..." required />
-            </div>
-
-            <div className="form-group">
-                <label>Postcode</label>
-                <input name="postcode" type="text" className="form-control"
-                    placeholder="Postcode..." required />
-            </div>
-
-            <div className="form-group">
-                <label>Address</label>
-                <input name="address" type="text" className="form-control"
-                    placeholder="Address..." required />
-            </div>
-
-            <div className="form-group">
-                <label>Contact number</label>
-                <input name="contactNumber" type="text" className="form-control"
-                    placeholder="Contact number..." required />
-            </div>
-
-            <button type="submit" className="btn btn-success btn-block">
-                Create Draft
+        <RestaurantBasicInfoForm onSubmit={onSubmit}>
+            <button className="btn btn-success w-25">
+                Create
             </button>
-        </form>
+        </RestaurantBasicInfoForm>
     </>
 };
 
